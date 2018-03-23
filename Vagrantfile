@@ -15,7 +15,7 @@ Vagrant.configure("2") do |config|
     apt-get install -y postgresql-client-9.4 postgresql-9.4
     echo "Configuring and restarting PostgreSQL"
     echo 'listen_addresses = '"'"'*'"'" >> /etc/postgresql/9.4/main/postgresql.conf
-    echo 'host    all             all             10.0.2.0/24            md5' >> /etc/postgresql/9.4/main/pg_hba.conf
+    echo 'host    all             all             0.0.0.0/0          md5' >> /etc/postgresql/9.4/main/pg_hba.conf
     systemctl restart postgresql
     echo "Creating vagrant user and database"
     echo "CREATE ROLE vagrant CREATEDB CREATEROLE CREATEUSER LOGIN UNENCRYPTED PASSWORD 'vagrant'" | sudo -u postgres psql -a -f -
