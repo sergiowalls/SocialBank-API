@@ -2,7 +2,7 @@
 
 ## Database setup
 
-In **application.properties** file add following variables:
+In **application.properties** file located in `src/main/resources/` add the following variables:
 
 ```
 spring.datasource.url=
