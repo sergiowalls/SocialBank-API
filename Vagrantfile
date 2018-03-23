@@ -2,6 +2,9 @@ Vagrant.configure("2") do |config|
   config.vm.box = "ubuntu/xenial64"
   config.ssh.insert_key = false
   config.vm.network "forwarded_port", guest: 5432, host: 5432, host_ip: "127.0.0.1"
+  config.vm.provider "virtualbox" do |vb|
+       vb.customize [ "modifyvm", :id, "--uartmode1", "disconnected" ]
+  end
   config.vm.provision "shell", inline: <<-SHELL
     sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
     wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -

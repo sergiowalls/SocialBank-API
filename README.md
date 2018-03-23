@@ -2,6 +2,17 @@
 
 ## Database setup
 
+In **application.properties** file add following variables:
+
+```
+spring.datasource.url=
+spring.datasource.username=
+spring.datasource.password=
+```
+
+Where _url_ should look like `jdbc:postgresql://localhost:<PORT>/<DATABASE_NAME>?useSSL=false`
+_username_ is the username of the database and _password_ the belonging password.
+
 ### With Vagrant VM
 
 Download and install [VirtualBox 5.2.8](https://www.virtualbox.org/)
