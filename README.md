@@ -1,4 +1,4 @@
-# SocialBank test
+# SocialBank
 
 ## Database setup
 
@@ -8,10 +8,13 @@ In **application.properties** file located in `src/main/resources/` add the foll
 spring.datasource.url=
 spring.datasource.username=
 spring.datasource.password=
+flyway.url=
+flyway.user=
+flyway.password=
 ```
 
 Where _url_ should look like `jdbc:postgresql://localhost:<PORT>/<DATABASE_NAME>?useSSL=false`
-_username_ is the username of the database and _password_ the belonging password.
+_username_ and _user_ are the username of the database and _password_ the belonging password.
 
 ### With Vagrant VM
 
