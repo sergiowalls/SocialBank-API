@@ -1,4 +1,4 @@
-# SocialBank
+# SocialBank test
 
 ## Database setup
 
