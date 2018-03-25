@@ -1,7 +1,5 @@
 package me.integrate.socialbank.User;
 
-import java.util.Date;
-
 public class UserRepository {
     private final String USER_TABLE;
     private final String EMAIL;
