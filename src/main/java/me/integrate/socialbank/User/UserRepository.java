@@ -1,14 +1,14 @@
 package me.integrate.socialbank.User;
 
 public class UserRepository {
-    private final String USER_TABLE;
-    private final String EMAIL;
-    private final String NAME;
-    private final String SURNAME;
-    private final String PASSWORD;
-    private final String BIRTHDATE;
-    private final String GENDER;
-    private final String BALANCE;
-    private final String DESCRIPTION;
+    private final String USER_TABLE = "user";
+    private final String EMAIL = "email";
+    private final String NAME = "name";
+    private final String SURNAME = "surname";
+    private final String PASSWORD = "password";
+    private final String BIRTHDATE = "birthdate";
+    private final String GENDER = "gender";
+    private final String BALANCE = "balance";
+    private final String DESCRIPTION = "description";
 
 }
