@@ -6,7 +6,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
-import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -17,7 +16,7 @@ import java.util.ArrayList;
 import static me.integrate.socialbank.auth.Constants.HEADER_STRING;
 
 public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
-    public JWTAuthorizationFilter(AuthenticationManager authenticationManager, AuthUserDetailsService authUserDetailsService) {
+    JWTAuthorizationFilter(AuthenticationManager authenticationManager, AuthUserDetailsService authUserDetailsService) {
         super(authenticationManager);
     }
 
