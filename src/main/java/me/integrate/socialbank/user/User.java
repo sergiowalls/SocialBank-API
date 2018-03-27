@@ -1,6 +1,7 @@
-package me.integrate.socialbank.User;
+package me.integrate.socialbank.user;
 
 import java.util.Date;
+import java.util.Objects;
 
 public class User {
 
@@ -36,7 +37,7 @@ public class User {
         return password;
     }
 
-    public Date getDate() {
+    public Date getBirthdate() {
         return birthdate;
     }
 
@@ -80,7 +81,31 @@ public class User {
         this.balance = balance;
     }
 
-    public void setString(String description) {
+    public void setDescription(String description) {
         this.description = description;
     }
+
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Float.compare(user.balance, balance) == 0 &&
+                Objects.equals(email, user.email) &&
+                Objects.equals(name, user.name) &&
+                Objects.equals(surname, user.surname) &&
+                Objects.equals(password, user.password) &&
+                Objects.equals(birthdate, user.birthdate) &&
+                gender == user.gender &&
+                Objects.equals(description, user.description);
+    }
+
+    @Override
+    public int hashCode()
+    {
+
+        return Objects.hash(email, name, surname, password, birthdate, gender, balance, description);
+    }
+
 }
