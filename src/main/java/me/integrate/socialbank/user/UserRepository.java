@@ -55,6 +55,8 @@ public class UserRepository
     {
         return jdbcTemplate.queryForObject("SELECT * FROM " + USER_TABLE + " WHERE " + EMAIL + "= ?",
                 new Object[]{email}, new UserRowMapper());
+
+
     }
 
     public User saveUser(User user)

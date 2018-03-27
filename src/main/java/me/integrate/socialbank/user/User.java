@@ -1,5 +1,7 @@
 package me.integrate.socialbank.user;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.Date;
 import java.util.Objects;
 
@@ -14,6 +16,7 @@ public class User {
     private String email;
     private String name;
     private String surname;
+    @JsonProperty(access= JsonProperty.Access.WRITE_ONLY)
     private String password;
     private Date birthdate;
     private Gender gender;
@@ -95,7 +98,6 @@ public class User {
                 Objects.equals(email, user.email) &&
                 Objects.equals(name, user.name) &&
                 Objects.equals(surname, user.surname) &&
-                Objects.equals(password, user.password) &&
                 Objects.equals(birthdate, user.birthdate) &&
                 gender == user.gender &&
                 Objects.equals(description, user.description);
