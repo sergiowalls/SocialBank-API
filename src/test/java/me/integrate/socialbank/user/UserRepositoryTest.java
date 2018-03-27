@@ -38,7 +38,7 @@ class UserRepositoryTest {
     }
 
     @Test
-    void getUserByEmail() {
+    void givenUserStoredInDatabaseWhenRetrievedByEmailThenReturnsSameUser() {
         String email = "swaggaaa@integrate.me";
         User user = createDummyUser(email);
         userRepository.saveUser(user);
@@ -47,7 +47,7 @@ class UserRepositoryTest {
     }
 
     @Test
-    void saveUsers() {
+    void givenTwoDifferentUsersWhenSavedThenReturnSameUsers() {
         String emailOne = "swaggaaa@integrate.me";
         String emailTwo = "wallz@integrate.me";
         User userOne = createDummyUser(emailOne);
@@ -61,7 +61,7 @@ class UserRepositoryTest {
     }
 
     @Test
-    public void saveInvalidUser() {
+    public void givenUserWhenSavedTwiceThenThrowsException() {
         String email = "swaggaaa@integrate.me";
         User user = createDummyUser(email);
         userRepository.saveUser(user);
@@ -70,7 +70,7 @@ class UserRepositoryTest {
     }
 
     @Test
-    public void updatePassword() {
+    public void givenUserWhenUpdatesPasswordThenReturnNewPassword() {
         String email = "swaggaaa@integrate.me";
         String newPassword = "press123forgf";
         User user = createDummyUser(email);

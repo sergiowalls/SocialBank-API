@@ -1,5 +1,6 @@
 package me.integrate.socialbank.user;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,17 +43,18 @@ class UserServiceTest {
     }
 
     @Test
-    void saveUser() {
+    void givenUserWhenSaveItThenReturnsSameUser() {
         String email = "admin@integrate.me";
         String password = "123";
         User user = createDummyUser(email, password);
         User encryptedUser = userService.saveUser(user);
 
         assertEquals(user, encryptedUser);
+
     }
 
     @Test
-    void updatePassword() {
+    void givenUserWhenUpdateItsPasswordThenReturnsNewEncryptedPassword() {
         String email = "admin@integrate.me";
         String password = "123";
         String newPassword = "456";
