@@ -9,9 +9,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-
+import static me.integrate.socialbank.user.UserTestUtils.createUser;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -25,28 +23,11 @@ class UserServiceTest {
     @Autowired
     BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    private User createDummyUser(String email, String password) {
-        User user = new User();
-        user.setEmail(email);
-        user.setBalance(1337.f);
-        try {
-            user.setBirthdate(new SimpleDateFormat("yyyy-MM-dd").parse("2017-03-03"));
-        } catch (ParseException ex) {
-            ex.printStackTrace();
-        }
-        user.setDescription("asd");
-        user.setGender(User.Gender.FEMALE);
-        user.setName("Manolo");
-        user.setSurname("Del Campo");
-        user.setPassword(password);
-        return user;
-    }
-
     @Test
     void givenUserWhenSaveItThenReturnsSameUser() {
         String email = "admin@integrate.me";
         String password = "123";
-        User user = createDummyUser(email, password);
+        User user = createUser(email, password);
         User encryptedUser = userService.saveUser(user);
 
         assertEquals(user, encryptedUser);
@@ -58,7 +39,7 @@ class UserServiceTest {
         String email = "admin@integrate.me";
         String password = "123";
         String newPassword = "456";
-        userService.saveUser(createDummyUser(email, password));
+        userService.saveUser(createUser(email, password));
         userService.updatePassword(email, newPassword);
         User encryptedUser = userService.getUserByEmail(email);
 
