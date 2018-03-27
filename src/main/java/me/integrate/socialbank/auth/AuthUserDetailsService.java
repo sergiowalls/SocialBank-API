@@ -1,6 +1,6 @@
 package me.integrate.socialbank.auth;
 
-import me.integrate.socialbank.user.UserRepository;
+import me.integrate.socialbank.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,16 +12,16 @@ import java.util.ArrayList;
 @Service
 public class AuthUserDetailsService implements UserDetailsService {
 
-    private final UserRepository userRepository;
+    private final UserService userService;
 
     @Autowired
-    public AuthUserDetailsService(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public AuthUserDetailsService(UserService userService) {
+        this.userService = userService;
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) {
-        String password = userRepository.getUserByEmail(username).getPassword();
+        String password = userService.getUserByEmail(username).getPassword();
         return new User(username, password, new ArrayList<>());
     }
 
