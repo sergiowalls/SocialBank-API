@@ -12,15 +12,15 @@ import java.sql.SQLException;
 @Repository
 public class UserRepository
 {
-    private final String USER_TABLE = "\"user\"";
-    private final String EMAIL = "email";
-    private final String NAME = "name";
-    private final String SURNAME = "surname";
-    private final String PASSWORD = "password";
-    private final String BIRTHDATE = "birthdate";
-    private final String GENDER = "gender";
-    private final String BALANCE = "balance";
-    private final String DESCRIPTION = "description";
+    private final static String USER_TABLE = "\"user\"";
+    private final static String EMAIL = "email";
+    private final static String NAME = "name";
+    private final static String SURNAME = "surname";
+    private final static String PASSWORD = "password";
+    private final static String BIRTHDATE = "birthdate";
+    private final static String GENDER = "gender";
+    private final static String BALANCE = "balance";
+    private final static String DESCRIPTION = "description";
 
     private JdbcTemplate jdbcTemplate;
 
@@ -71,5 +71,11 @@ public class UserRepository
         }
 
         return user;
+    }
+
+    public void updatePassword(String email, String password)
+    {
+        jdbcTemplate.update("UPDATE " + USER_TABLE + " SET " + PASSWORD + " = ? WHERE " + EMAIL + " = ?",
+                password, email);
     }
 }

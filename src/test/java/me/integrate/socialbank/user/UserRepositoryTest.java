@@ -1,5 +1,7 @@
 package me.integrate.socialbank.user;
 
+import me.integrate.socialbank.user.User;
+import me.integrate.socialbank.user.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +13,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 @Transactional
@@ -20,10 +23,8 @@ class UserRepositoryTest
     @Autowired
     private UserRepository userRepository;
 
-    @Test
-    void getUserByEmail()
+    private User createDummyUser(String email)
     {
-        String email = "swaggaaa@integrate.me";
         User user = new User();
         user.setEmail(email);
         user.setBalance(1337.f);
@@ -40,8 +41,52 @@ class UserRepositoryTest
         user.setName("Manolo");
         user.setSurname("Del Campo");
         user.setPassword("JordiJAJAJ");
+        return user;
+    }
+
+    @Test
+    void getUserByEmail()
+    {
+        String email = "swaggaaa@integrate.me";
+        User user = createDummyUser(email);
         userRepository.saveUser(user);
 
         assertEquals(user, userRepository.getUserByEmail(email));
+    }
+
+    @Test
+    void saveUsers()
+    {
+        String emailOne = "swaggaaa@integrate.me";
+        String emailTwo = "wallz@integrate.me";
+        User userOne = createDummyUser(emailOne);
+        User userTwo = createDummyUser(emailTwo);
+        userRepository.saveUser(userOne);
+        userRepository.saveUser(userTwo);
+
+        assertEquals(userOne, userRepository.getUserByEmail(emailOne));
+        assertEquals(userTwo, userRepository.getUserByEmail(emailTwo));
+
+    }
+
+    @Test
+    void saveInvalidUser()
+    {
+        String email = "swaggaaa@integrate.me";
+        User user = createDummyUser(email);
+        userRepository.saveUser(user);
+
+        assertThrows(EmailAlreadyExistsException.class, () -> userRepository.saveUser(user)); //Duplicate primary key
+    }
+
+    @Test
+    void updatePassword()
+    {
+        String email = "swaggaaa@integrate.me";
+        String newPassword = "press123forgf";
+        User user = createDummyUser(email);
+        userRepository.saveUser(user);
+        userRepository.updatePassword(email, newPassword);
+        assertEquals(newPassword, userRepository.getUserByEmail(email).getPassword());
     }
 }
