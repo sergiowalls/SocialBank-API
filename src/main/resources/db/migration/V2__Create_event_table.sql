@@ -1,4 +1,4 @@
-CREATE TABLE "user" (
+CREATE TABLE "event" (
   id VARCHAR(255) PRIMARY KEY,
   creator VARCHAR(255) NOT NULL,
   password VARCHAR(255) NOT NULL,
