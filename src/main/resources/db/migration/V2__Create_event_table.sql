@@ -1,6 +1,6 @@
 CREATE TABLE "event" (
   id VARCHAR(255) PRIMARY KEY,
-  creator VARCHAR(255) NOT NULL,
+  creatorEmail VARCHAR(255) NOT NULL,
   iniDate DATE NOT NULL,
   endDate DATE NOT NULL,
   hours INT NOT NULL,
