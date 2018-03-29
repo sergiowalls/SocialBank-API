@@ -1,13 +1,11 @@
 package me.integrate.socialbank.event;
 
-import me.integrate.socialbank.user.User;
-
 import java.util.Date;
 
 public class Event {
 
     private int id;
-    private User creator;
+    private String creatorEmail;
     private Date iniDate, endDate;
     private int hours;
     private String location;
@@ -22,12 +20,12 @@ public class Event {
         this.id = id;
     }
 
-    public User getCreator() {
-        return creator;
+    public String getCreatorEmail() {
+        return creatorEmail;
     }
 
-    public void setCreator(User creator) {
-        this.creator = creator;
+    public void setCreatorEmail(String creatorEmail) {
+        this.creatorEmail = creatorEmail;
     }
 
     public Date getIniDate() {
@@ -69,4 +67,9 @@ public class Event {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    public int getHours() { return hours; }
+
+    public void setHours(int hours) { this.hours = hours; }
+
 }
