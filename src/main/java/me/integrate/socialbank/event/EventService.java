@@ -1,6 +1,5 @@
 package me.integrate.socialbank.event;
 
-import me.integrate.socialbank.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class EventService
