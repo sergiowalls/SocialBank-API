@@ -1,6 +1,6 @@
-package me.integrate.socialbank.Event;
+package me.integrate.socialbank.event;
 
-import me.integrate.socialbank.User.User;
+import me.integrate.socialbank.user.User;
 
 import java.util.Date;
 
