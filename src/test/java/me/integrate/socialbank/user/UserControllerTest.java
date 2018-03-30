@@ -1,7 +1,6 @@
 package me.integrate.socialbank.user;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +8,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -25,7 +24,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @AutoConfigureMockMvc
-@ActiveProfiles("test")
 class UserControllerTest {
 
     @Autowired
@@ -40,7 +38,8 @@ class UserControllerTest {
         user.put("email", "pepito@pepito.com");
         user.put("password", "sergiFeo");
 
-        given(userService.saveUser(any())).willReturn(UserTestUtils.createUser("pepito@pepito.com"));
+        given(userService.saveUser(any()))
+                .willReturn(UserTestUtils.createUser("pepito@pepito.com"));
 
         this.mockMvc.perform(
                 post("/users")
@@ -50,16 +49,31 @@ class UserControllerTest {
     }
 
     @Test
-    @Disabled
+    @WithMockUser
     void shouldReturnOkStatus() throws Exception {
-        Map<String, String> user = new HashMap<>();
-        user.put("email", "pepito@pepito.com");
-        user.put("password", "sergiFeo");
-
-        given(userService.getUserByEmail("pepito@pepito.com")).willReturn(UserTestUtils.createUser("pepito@pepito.com"));
+        given(userService.getUserByEmail("pepito@pepito.com"))
+                .willReturn(UserTestUtils.createUser("pepito@pepito.com"));
 
         this.mockMvc.perform(
                 get("/users/pepito@pepito.com"))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    @WithMockUser
+    void shouldReturnNotFoundStatus() throws Exception {
+        given(userService.getUserByEmail("pepito@pepito.com"))
+                .willThrow(UserNotFoundException.class);
+
+        this.mockMvc.perform(
+                get("/users/pepito@pepito.com"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void shouldReturnUnauthorizedStatus() throws Exception {
+        this.mockMvc.perform(
+                get("/users/pepito@pepito.com"))
+                .andExpect(status().isForbidden());
     }
 }
