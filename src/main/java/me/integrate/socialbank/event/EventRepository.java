@@ -34,7 +34,7 @@ public class EventRepository {
             event.setId(resultSet.getInt(ID));
             event.setCreatorEmail(resultSet.getString(CREATOR));
             event.setIniDate(resultSet.getDate(INIDATE));
-            event.setIniDate(resultSet.getDate(ENDDATE));
+            event.setEndDate(resultSet.getDate(ENDDATE));
             event.setHours(resultSet.getInt(HOURS));
             event.setLocation(resultSet.getString(LOCATION));
             event.setTitle(resultSet.getString(TITLE));
