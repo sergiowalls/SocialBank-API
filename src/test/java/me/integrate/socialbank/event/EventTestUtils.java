@@ -3,7 +3,7 @@ package me.integrate.socialbank.event;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
-public class EventTestUtils {
+class EventTestUtils {
 
     static Event createEvent(int id) {
         return createEvent(id, "pepito@pepito.com");
