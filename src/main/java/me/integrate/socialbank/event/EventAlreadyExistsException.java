@@ -4,5 +4,5 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(value= HttpStatus.CONFLICT, reason="Email already exists")
-public class IdAlreadyExistsException extends RuntimeException{
+public class EventAlreadyExistsException extends RuntimeException{
 }
