@@ -1,7 +1,6 @@
 package me.integrate.socialbank.event;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,12 +8,11 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.HashMap;
-import java.util.Map;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -35,13 +33,11 @@ class EventControllerTest {
     private EventService eventService;
 
     @Test
+    @WithMockUser
     void shouldReturnCreatedStatus() throws Exception {
-        Map<String, String> event = new HashMap<>();
-        event.put("id", "1");
-        event.put("creatorEmail", "pepito@peptio.com");
-
-        given(eventService.saveEvent(any())).willReturn(EventTestUtils.createEvent(1));
-
+        int id = 1;
+        Event event = EventTestUtils.createEvent(id);
+        given(eventService.saveEvent(any())).willReturn(event);
         this.mockMvc.perform(
                 post("/events")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -50,15 +46,31 @@ class EventControllerTest {
     }
 
     @Test
-    @Disabled
+    @WithMockUser
     void shouldReturnOkStatus() throws Exception {
-        Map<String, String> event = new HashMap<>();
-        event.put("id", "1");
-
-        given(eventService.getEventById(1)).willReturn(EventTestUtils.createEvent(1));
+        int id = 1;
+        given(eventService.getEventById(id)).willReturn(EventTestUtils.createEvent(id));
 
         this.mockMvc.perform(
-                get("/events/1"))
+                get("/events/"+id))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    @WithMockUser
+    void shouldReturnNotFoundStatus() throws Exception {
+        given(eventService.getEventById(123))
+                .willThrow(EventNotFoundException.class);
+
+        this.mockMvc.perform(
+                get("/events/123"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void shouldReturnUnauthorizedStatus() throws Exception {
+        this.mockMvc.perform(
+                get("/events/1"))
+                .andExpect(status().isForbidden());
     }
 }
