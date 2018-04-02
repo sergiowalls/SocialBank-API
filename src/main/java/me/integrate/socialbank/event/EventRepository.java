@@ -62,7 +62,7 @@ public class EventRepository {
         }
         catch (DuplicateKeyException ex)
         {
-            throw new IdAlreadyExistsException();
+            throw new EventAlreadyExistsException();
         }
         return event;
     }
