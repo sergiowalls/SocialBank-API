@@ -2,4 +2,4 @@ ALTER TABLE "event"
   ADD CONSTRAINT CHK_DATE CHECK (iniDate < endDate);
 
 ALTER TABLE "event"
-  ADD CONSTRAINT CHK_DATE_NOW CHECK (iniDate < now());
+  ADD CONSTRAINT CHK_DATE_NOW CHECK (now() < iniDate);
