@@ -79,11 +79,11 @@ public class Event {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Event event = (Event) o;
-        return  Objects.equals(id, event.id) &&
+        return  id == event.id &&
                 Objects.equals(creatorEmail, event.creatorEmail) &&
                 Objects.equals(iniDate, event.iniDate) &&
                 Objects.equals(endDate, event.endDate) &&
-                Objects.equals(hours, event.hours) &&
+                hours == event.hours &&
                 Objects.equals(location, event.location) &&
                 Objects.equals(title, event.title) &&
                 Objects.equals(description, event.description);
