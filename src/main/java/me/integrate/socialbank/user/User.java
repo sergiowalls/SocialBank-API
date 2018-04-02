@@ -16,7 +16,7 @@ public class User {
     private String email;
     private String name;
     private String surname;
-    @JsonProperty(access= JsonProperty.Access.WRITE_ONLY)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
     private Date birthdate;
     private Gender gender;
@@ -89,8 +89,7 @@ public class User {
     }
 
     @Override
-    public boolean equals(Object o)
-    {
+    public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
@@ -104,8 +103,7 @@ public class User {
     }
 
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
 
         return Objects.hash(email, name, surname, password, birthdate, gender, balance, description);
     }

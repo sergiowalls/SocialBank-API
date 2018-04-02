@@ -27,6 +27,11 @@ class UserRepositoryTest {
     }
 
     @Test
+    void whenGetNonExistingUserThenThrowsException() {
+        assertThrows(UserNotFoundException.class, () -> userRepository.getUserByEmail("pepito@pepa.com"));
+    }
+
+    @Test
     void givenTwoDifferentUsersWhenSavedThenReturnSameUsers() {
         String emailOne = "swaggaaa@integrate.me";
         String emailTwo = "wallz@integrate.me";
@@ -41,7 +46,7 @@ class UserRepositoryTest {
     }
 
     @Test
-    public void givenUserWhenSavedTwiceThenThrowsException() {
+    void givenUserWhenSavedTwiceThenThrowsException() {
         String email = "swaggaaa@integrate.me";
         User user = UserTestUtils.createUser(email);
         userRepository.saveUser(user);
@@ -50,7 +55,7 @@ class UserRepositoryTest {
     }
 
     @Test
-    public void givenUserWhenUpdatesPasswordThenReturnNewPassword() {
+    void givenUserWhenUpdatesPasswordThenReturnNewPassword() {
         String email = "swaggaaa@integrate.me";
         String newPassword = "press123forgf";
         User user = UserTestUtils.createUser(email);
