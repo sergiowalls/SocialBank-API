@@ -1,6 +1,7 @@
 package me.integrate.socialbank.event;
 
 import java.util.Date;
+import java.util.Objects;
 
 public class Event {
 
@@ -71,5 +72,27 @@ public class Event {
     public int getHours() { return hours; }
 
     public void setHours(int hours) { this.hours = hours; }
+
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Event event = (Event) o;
+        return  Objects.equals(id, event.id) &&
+                Objects.equals(creatorEmail, event.creatorEmail) &&
+                Objects.equals(iniDate, event.iniDate) &&
+                Objects.equals(endDate, event.endDate) &&
+                Objects.equals(hours, event.hours) &&
+                Objects.equals(location, event.location) &&
+                Objects.equals(title, event.title) &&
+                Objects.equals(description, event.description);
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return Objects.hash(id, creatorEmail, iniDate, endDate, hours, location, title, description);
+    }
 
 }
