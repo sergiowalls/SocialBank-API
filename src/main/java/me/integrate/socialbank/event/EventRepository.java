@@ -14,7 +14,7 @@ public class EventRepository {
 
     public static String EVENT_TABLE = "\"event\"";
     public static String ID = "id";
-    public static String CREATOR = "creator";
+    public static String CREATOR = "creatorEmail";
     public static String INIDATE = "iniDate";
     public static String ENDDATE = "endDate";
     public static String HOURS = "hours";
