@@ -20,10 +20,10 @@ public class EventRepositoryTest {
     @Test
     void givenEventStoredInDatabaseWhenRetrievedByIdThenReturnsSameEvent() {
         int id = 1;
-        Event event = EventTestUtils.createEvent(1);
+        Event event = EventTestUtils.createEvent(id);
         eventRepository.saveEvent(event);
 
-        assertEquals(event, eventRepository.getEventById(1));
+        assertEquals(event, eventRepository.getEventById(id));
     }
 
     @Test
