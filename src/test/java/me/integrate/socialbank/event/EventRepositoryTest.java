@@ -12,8 +12,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static me.integrate.socialbank.event.EventTestUtils.sameEvent;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 @Transactional
@@ -25,8 +26,7 @@ public class EventRepositoryTest {
     @Test
     void givenEventStoredInDatabaseWhenRetrievedByIdThenReturnsSameEvent() {
         Event event = eventRepository.saveEvent(EventTestUtils.createEvent());
-
-        assertEquals(EventTestUtils.createEvent(), eventRepository.getEventById(event.getId()));
+        assertTrue(sameEvent(event, eventRepository.getEventById(event.getId())));
     }
 
     @Test
@@ -34,58 +34,9 @@ public class EventRepositoryTest {
         Event eventOne = eventRepository.saveEvent(EventTestUtils.createEvent());
         Event eventTwo = eventRepository.saveEvent(EventTestUtils.createEvent());
 
-        assertEquals(EventTestUtils.createEvent(), eventRepository.getEventById(eventOne.getId()));
-        assertEquals(EventTestUtils.createEvent(), eventRepository.getEventById(eventTwo.getId()));
-
+        assertTrue(sameEvent(eventOne, eventRepository.getEventById(eventOne.getId())));
+        assertTrue(sameEvent(eventTwo, eventRepository.getEventById(eventTwo.getId())));
     }
 
-    @Test
-    void givenEventWhenSavedTwiceThenThrowsException() {
-        Event event = EventTestUtils.createEvent();
-        eventRepository.saveEvent(event);
 
-        assertThrows(EventAlreadyExistsException.class, () -> eventRepository.saveEvent(event)); //Duplicate primary key
-    }
-
-    @Disabled
-    @Test
-    void givenEventWithIniDateNotLesThanEndDateThenThrowsException() {
-        Date iniDate, endDate;
-        iniDate = endDate = new Date();
-        try {
-            iniDate = new SimpleDateFormat("yyyy-MM-dd").parse("2020-03-03");
-        } catch (ParseException ex) {
-            ex.printStackTrace();
-        }
-        try {
-            endDate = new SimpleDateFormat("yyyy-MM-dd").parse("2019-03-03");
-        } catch (ParseException ex) {
-            ex.printStackTrace();
-        }
-        Event event = EventTestUtils.createEvent(iniDate, endDate);
-        eventRepository.saveEvent(event);
-
-        assertThrows(EventWithIncorrectDateException.class, () -> eventRepository.saveEvent(event));
-    }
-
-    @Disabled
-    @Test
-    void givenEventWithIniDateLesThanCurrentDateThenThrowsException() {
-        Date iniDate, endDate;
-        iniDate = endDate = new Date();
-        try {
-            iniDate = new SimpleDateFormat("yyyy-MM-dd").parse("1990-03-03");
-        } catch (ParseException ex) {
-            ex.printStackTrace();
-        }
-        try {
-            endDate = new SimpleDateFormat("yyyy-MM-dd").parse("2019-03-03");
-        } catch (ParseException ex) {
-            ex.printStackTrace();
-        }
-        Event event = EventTestUtils.createEvent(iniDate, endDate);
-        eventRepository.saveEvent(event);
-
-        assertThrows(EventWithIncorrectDateException.class, () -> eventRepository.saveEvent(event));
-    }
 }

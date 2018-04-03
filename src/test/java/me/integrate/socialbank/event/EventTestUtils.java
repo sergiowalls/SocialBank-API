@@ -3,6 +3,7 @@ package me.integrate.socialbank.event;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Objects;
 
 class EventTestUtils {
 
@@ -32,5 +33,17 @@ class EventTestUtils {
         event.setDescription("Worldwide Meeting");
         event.setTitle("Worldwide Meeting");
         return event;
+    }
+
+    //event null != event null
+    static boolean sameEvent(Event a, Event b) {
+        return  a != null && b != null &&
+                Objects.equals(a.getCreatorEmail(), b.getCreatorEmail()) &&
+                Objects.equals(a.getIniDate(), b.getIniDate()) &&
+                Objects.equals(a.getEndDate(), b.getEndDate()) &&
+                a.getHours() == b.getHours() &&
+                Objects.equals(a.getLocation(), b.getLocation()) &&
+                Objects.equals(a.getTitle(), b.getTitle()) &&
+                Objects.equals(a.getDescription(), b.getDescription());
     }
 }

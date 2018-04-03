@@ -13,6 +13,11 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -34,7 +39,6 @@ class EventControllerTest {
     @Test
     @WithMockUser
     void shouldReturnCreatedStatus() throws Exception {
-        int id = 1;
         Event event = EventTestUtils.createEvent();
         given(eventService.saveEvent(any())).willReturn(event);
         this.mockMvc.perform(
@@ -71,5 +75,54 @@ class EventControllerTest {
         this.mockMvc.perform(
                 get("/events/1"))
                 .andExpect(status().isForbidden());
+    }
+
+
+    @Test
+    @WithMockUser
+    void givenEventPostWithIniDateNotLesThanEndDateShouldReturnBadRequestStatus() throws Exception{
+        Date iniDate, endDate;
+        iniDate = endDate = new Date();
+        try {
+            iniDate = new SimpleDateFormat("yyyy-MM-dd").parse("2020-03-03");
+        } catch (ParseException ex) {
+            ex.printStackTrace();
+        }
+        try {
+            endDate = new SimpleDateFormat("yyyy-MM-dd").parse("2019-03-03");
+        } catch (ParseException ex) {
+            ex.printStackTrace();
+        }
+
+        Event event = EventTestUtils.createEvent(iniDate, endDate);
+        this.mockMvc.perform(
+                post("/events")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(event)))
+                .andExpect(status().isBadRequest());
+    }
+
+
+    @Test
+    @WithMockUser
+    void givenEventPostWithIniDateLessThanCurrentDateShouldReturnBadRequestStatus() throws Exception{
+        Date iniDate, endDate;
+        iniDate = endDate = new Date();
+        try {
+            iniDate = new SimpleDateFormat("yyyy-MM-dd").parse("1990-03-03");
+        } catch (ParseException ex) {
+            ex.printStackTrace();
+        }
+        try {
+            endDate = new SimpleDateFormat("yyyy-MM-dd").parse("2019-03-03");
+        } catch (ParseException ex) {
+            ex.printStackTrace();
+        }
+        Event event = EventTestUtils.createEvent(iniDate, endDate);
+        this.mockMvc.perform(
+                post("/events")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(event)))
+                .andExpect(status().isBadRequest());
     }
 }
