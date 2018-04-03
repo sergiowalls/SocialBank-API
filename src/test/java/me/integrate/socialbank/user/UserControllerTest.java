@@ -37,6 +37,8 @@ class UserControllerTest {
         Map<String, String> user = new HashMap<>();
         user.put("email", "pepito@pepito.com");
         user.put("password", "sergiFeo");
+        user.put("birthdate", "1995-02-25");
+        user.put("gender", "MALE");
 
         given(userService.saveUser(any()))
                 .willReturn(UserTestUtils.createUser("pepito@pepito.com"));
