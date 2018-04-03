@@ -6,7 +6,7 @@ import java.util.Date;
 
 class EventTestUtils {
 
-    static Event createEvent(int id) {
+    static Event createEvent() {
         Date iniDate, endDate;
         iniDate = endDate = new Date();
         try {
@@ -19,12 +19,11 @@ class EventTestUtils {
         } catch (ParseException ex) {
             ex.printStackTrace();
         }
-        return createEvent(id, iniDate, endDate);
+        return createEvent(iniDate, endDate);
     }
 
-    static Event createEvent(int id, Date iniDate, Date endDate) {
+    static Event createEvent(Date iniDate, Date endDate) {
         Event event = new Event();
-        event.setId(id);
         event.setCreatorEmail("pepito@peito.com");
         event.setHours(13);
         event.setIniDate(iniDate);

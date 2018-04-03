@@ -13,7 +13,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
-
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -36,7 +35,7 @@ class EventControllerTest {
     @WithMockUser
     void shouldReturnCreatedStatus() throws Exception {
         int id = 1;
-        Event event = EventTestUtils.createEvent(id);
+        Event event = EventTestUtils.createEvent();
         given(eventService.saveEvent(any())).willReturn(event);
         this.mockMvc.perform(
                 post("/events")
@@ -49,7 +48,7 @@ class EventControllerTest {
     @WithMockUser
     void shouldReturnOkStatus() throws Exception {
         int id = 1;
-        given(eventService.getEventById(id)).willReturn(EventTestUtils.createEvent(id));
+        given(eventService.getEventById(id)).willReturn(EventTestUtils.createEvent());
 
         this.mockMvc.perform(
                 get("/events/"+id))

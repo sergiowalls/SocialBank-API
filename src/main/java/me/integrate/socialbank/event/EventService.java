@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class EventService
 {
-    EventRepository eventRepository;
+    private EventRepository eventRepository;
 
     @Autowired
     public EventService(EventRepository eventRepository) { this.eventRepository = eventRepository; }

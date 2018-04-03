@@ -1,6 +1,5 @@
 package me.integrate.socialbank.event;
 
-import jdk.nashorn.internal.ir.annotations.Ignore;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,31 +24,24 @@ public class EventRepositoryTest {
 
     @Test
     void givenEventStoredInDatabaseWhenRetrievedByIdThenReturnsSameEvent() {
-        int id = 1;
-        Event event = EventTestUtils.createEvent(id);
-        eventRepository.saveEvent(event);
+        Event event = eventRepository.saveEvent(EventTestUtils.createEvent());
 
-        assertEquals(event, eventRepository.getEventById(id));
+        assertEquals(EventTestUtils.createEvent(), eventRepository.getEventById(event.getId()));
     }
 
     @Test
     void givenTwoDifferentEventsWhenSavedThenReturnSameEvents() {
-        int idOne = 1;
-        int idTwo = 2;
-        Event eventOne = EventTestUtils.createEvent(idOne);
-        Event eventTwo = EventTestUtils.createEvent(idTwo);
-        eventRepository.saveEvent(eventOne);
-        eventRepository.saveEvent(eventTwo);
+        Event eventOne = eventRepository.saveEvent(EventTestUtils.createEvent());
+        Event eventTwo = eventRepository.saveEvent(EventTestUtils.createEvent());
 
-        assertEquals(eventOne, eventRepository.getEventById(idOne));
-        assertEquals(eventTwo, eventRepository.getEventById(idTwo));
+        assertEquals(EventTestUtils.createEvent(), eventRepository.getEventById(eventOne.getId()));
+        assertEquals(EventTestUtils.createEvent(), eventRepository.getEventById(eventTwo.getId()));
 
     }
 
     @Test
     void givenEventWhenSavedTwiceThenThrowsException() {
-        int id = 1;
-        Event event = EventTestUtils.createEvent(id);
+        Event event = EventTestUtils.createEvent();
         eventRepository.saveEvent(event);
 
         assertThrows(EventAlreadyExistsException.class, () -> eventRepository.saveEvent(event)); //Duplicate primary key
@@ -70,7 +62,7 @@ public class EventRepositoryTest {
         } catch (ParseException ex) {
             ex.printStackTrace();
         }
-        Event event = EventTestUtils.createEvent(1, iniDate, endDate);
+        Event event = EventTestUtils.createEvent(iniDate, endDate);
         eventRepository.saveEvent(event);
 
         assertThrows(EventWithIncorrectDateException.class, () -> eventRepository.saveEvent(event));
@@ -91,7 +83,7 @@ public class EventRepositoryTest {
         } catch (ParseException ex) {
             ex.printStackTrace();
         }
-        Event event = EventTestUtils.createEvent(1, iniDate, endDate);
+        Event event = EventTestUtils.createEvent(iniDate, endDate);
         eventRepository.saveEvent(event);
 
         assertThrows(EventWithIncorrectDateException.class, () -> eventRepository.saveEvent(event));

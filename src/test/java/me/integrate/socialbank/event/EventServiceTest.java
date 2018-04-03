@@ -21,7 +21,7 @@ public class EventServiceTest {
     @Test
     void givenEventWhenSaveItThenReturnsSameEvent() {
         int id = 123;
-        Event event = createEvent(id);
+        Event event = createEvent();
         Event savedEvent = eventService.saveEvent(event);
 
         assertEquals(event, savedEvent);

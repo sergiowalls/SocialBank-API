@@ -6,16 +6,21 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class EventController {
-    EventService eventService;
+    private EventService eventService;
 
     @Autowired
     public EventController(EventService eventService) { this.eventService = eventService; }
 
     @GetMapping("/events/{id}")
-    public Event getEventByEmail(@PathVariable int id) { return eventService.getEventById(id); }
+    public Event getEventById(@PathVariable int id) {
+        return eventService.getEventById(id);
+    }
 
     @PostMapping("/events")
     @ResponseStatus(HttpStatus.CREATED)
-    public Event saveEvent(@RequestBody Event event) { return eventService.saveEvent(event);}
+    public Event saveEvent(@RequestBody Event event) {
+        if (event.getIniDate().after(event.getEndDate())) throw new EventWithIncorrectDateException();
+        return eventService.saveEvent(event);
+    }
 
 }
