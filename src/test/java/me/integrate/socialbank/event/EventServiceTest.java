@@ -20,7 +20,6 @@ public class EventServiceTest {
 
     @Test
     void givenEventWhenSaveItThenReturnsSameEvent() {
-        int id = 123;
         Event event = createEvent();
         Event savedEvent = eventService.saveEvent(event);
 

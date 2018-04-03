@@ -17,7 +17,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -62,11 +61,12 @@ class EventControllerTest {
     @Test
     @WithMockUser
     void shouldReturnNotFoundStatus() throws Exception {
-        given(eventService.getEventById(123))
+        int id = 123;
+        given(eventService.getEventById(id))
                 .willThrow(EventNotFoundException.class);
 
         this.mockMvc.perform(
-                get("/events/123"))
+                get("/events/"+id))
                 .andExpect(status().isNotFound());
     }
 
