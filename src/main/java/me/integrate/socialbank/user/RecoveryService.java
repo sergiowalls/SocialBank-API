@@ -1,36 +1,31 @@
 package me.integrate.socialbank.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
 @Service
-public class RecoveryService
-{
+public class RecoveryService {
     private UserRepository userRepository;
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
+    private UserService userService;
 
     @Autowired
-    public RecoveryService(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder)
-    {
+    public RecoveryService(UserRepository userRepository, UserService userService) {
         this.userRepository = userRepository;
-        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+        this.userService = userService;
     }
 
-    public String requestEmail(String email)
-    {
+    public String requestEmail(String email) {
         String recoveryToken = UUID.randomUUID().toString();
         userRepository.updateRecoveryToken(email, recoveryToken);
 
         return recoveryToken;
     }
 
-    public void requestPasswordChange(String token, String newPassword)
-    {
+    public void requestPasswordChange(String token, String newPassword) {
         String email = userRepository.getEmailFromToken(token);
-        userRepository.updatePassword(email, bCryptPasswordEncoder.encode(newPassword));
+        userService.updatePassword(email, newPassword);
         userRepository.updateRecoveryToken(email, null);
     }
 }

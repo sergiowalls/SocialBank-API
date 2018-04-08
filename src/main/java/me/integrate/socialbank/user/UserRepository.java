@@ -56,22 +56,17 @@ public class UserRepository {
                 password, email);
     }
 
-    public void updateRecoveryToken(String email, String recoveryToken)
-    {
+    public void updateRecoveryToken(String email, String recoveryToken) {
         jdbcTemplate.update("UPDATE " + USER_TABLE + " SET " + RECOVERY + " = ? WHERE " + EMAIL + " = ?",
                 recoveryToken, email);
     }
 
-    public String getEmailFromToken(String token)
-    {
-        String email = "";
-        try
-        {
+    public String getEmailFromToken(String token) {
+        String email;
+        try {
             email = jdbcTemplate.queryForObject("SELECT email FROM " + USER_TABLE + " WHERE " + RECOVERY + "= ?",
                     new Object[]{token}, String.class);
-        }
-        catch (EmptyResultDataAccessException ex)
-        {
+        } catch (EmptyResultDataAccessException ex) {
             throw new UserNotFoundException();
         }
 
