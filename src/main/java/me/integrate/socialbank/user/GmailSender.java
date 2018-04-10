@@ -1,24 +1,30 @@
 package me.integrate.socialbank.user;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.stereotype.Service;
 
 import java.util.Properties;
 
-public class GmailSender implements IMailSender {
-    private String from;
+@Service
+public class GmailSender implements MailSender {
+
+    private final String from;
     private JavaMailSenderImpl mailSender;
 
-    GmailSender(String from) {
+    @Autowired
+    GmailSender(@Value("${mail.host}") String host, @Value("${mail.port}") int port,
+                @Value("${mail.from}") String from, @Value("${mail.password}") String password) {
         this.from = from;
 
         mailSender = new JavaMailSenderImpl();
-        mailSender.setHost("smtp.gmail.com");
-        mailSender.setPort(587);
-        //TODO: Move this somewhero elsooo
+        mailSender.setHost(host);
+        mailSender.setPort(port);
         mailSender.setUsername(from);
-        mailSender.setPassword("joansanchezspring");
+        mailSender.setPassword(password);
 
         Properties props = mailSender.getJavaMailProperties();
         props.put("mail.transport.protocol", "smtp");

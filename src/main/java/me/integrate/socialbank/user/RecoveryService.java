@@ -9,13 +9,13 @@ import java.util.UUID;
 public class RecoveryService {
     private UserRepository userRepository;
     private UserService userService;
-    private IMailSender mailSender;
+    private MailSender mailSender;
 
     @Autowired
-    public RecoveryService(UserRepository userRepository, UserService userService) {
+    public RecoveryService(UserRepository userRepository, UserService userService, MailSender mailSender) {
         this.userRepository = userRepository;
         this.userService = userService;
-        this.mailSender = new GmailSender("integrate.me.app@gmail.com");
+        this.mailSender = mailSender;
     }
 
     public String requestEmail(String email) {

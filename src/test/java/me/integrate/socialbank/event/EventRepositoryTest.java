@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @ExtendWith(SpringExtension.class)
 public class EventRepositoryTest {
     @Autowired
-    private EventRepository eventRepository;
+    private EventRepositoryImpl eventRepository;
 
     @Test
     void givenEventStoredInDatabaseWhenRetrievedByIdThenReturnsSameEvent() {

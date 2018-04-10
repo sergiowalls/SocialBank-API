@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @ExtendWith(SpringExtension.class)
 class UserRepositoryTest {
     @Autowired
-    private UserRepository userRepository;
+    private UserRepositoryImpl userRepository;
 
     @Test
     void givenUserStoredInDatabaseWhenRetrievedByEmailThenReturnsSameUser() {

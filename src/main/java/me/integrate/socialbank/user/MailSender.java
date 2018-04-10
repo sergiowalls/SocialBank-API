@@ -1,6 +1,6 @@
 package me.integrate.socialbank.user;
 
-public interface IMailSender {
+public interface MailSender {
     /**
      * Sends a recovery password email and returns the email sent
      **/
