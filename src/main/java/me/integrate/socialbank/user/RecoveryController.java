@@ -13,6 +13,7 @@ public class RecoveryController {
         this.recoveryService = recoveryService;
     }
 
+
     @PostMapping("/recover")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void requestEmail(@RequestBody String email) {
