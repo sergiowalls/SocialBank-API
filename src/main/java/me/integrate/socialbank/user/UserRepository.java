@@ -21,6 +21,7 @@ public class UserRepository {
     private final static String GENDER = "gender";
     private final static String BALANCE = "balance";
     private final static String DESCRIPTION = "description";
+    private final static String RECOVERY = "recovery";
 
     private JdbcTemplate jdbcTemplate;
 
@@ -53,6 +54,23 @@ public class UserRepository {
     public void updatePassword(String email, String password) {
         jdbcTemplate.update("UPDATE " + USER_TABLE + " SET " + PASSWORD + " = ? WHERE " + EMAIL + " = ?",
                 password, email);
+    }
+
+    public void updateRecoveryToken(String email, String recoveryToken) {
+        jdbcTemplate.update("UPDATE " + USER_TABLE + " SET " + RECOVERY + " = ? WHERE " + EMAIL + " = ?",
+                recoveryToken, email);
+    }
+
+    public String getEmailFromToken(String token) {
+        String email;
+        try {
+            email = jdbcTemplate.queryForObject("SELECT email FROM " + USER_TABLE + " WHERE " + RECOVERY + "= ?",
+                    new Object[]{token}, String.class);
+        } catch (EmptyResultDataAccessException ex) {
+            throw new UserNotFoundException();
+        }
+
+        return email;
     }
 
     private class UserRowMapper implements RowMapper<User> {
