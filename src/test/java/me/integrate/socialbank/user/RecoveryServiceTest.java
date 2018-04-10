@@ -8,7 +8,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 @Transactional
@@ -28,8 +32,8 @@ class RecoveryServiceTest {
         User user = UserTestUtils.createUser("ejemplo@integrate.me", "123");
         userService.saveUser(user);
 
-        String UUID = recoveryService.requestEmail("ejemplo@integrate.me");
-        assertFalse(UUID.equals(""));
+        String emailContent = recoveryService.requestEmail("ejemplo@integrate.me");
+        assertTrue(emailContent.contains("code:"));
     }
 
     @Test
@@ -37,7 +41,11 @@ class RecoveryServiceTest {
         User user = UserTestUtils.createUser("ejemplo@integrate.me", "123");
         userService.saveUser(user);
 
-        String UUID = recoveryService.requestEmail("ejemplo@integrate.me");
+        String emailContent = recoveryService.requestEmail("ejemplo@integrate.me");
+        Pattern pattern = Pattern.compile("(code: )(.*)");
+        Matcher matcher = pattern.matcher(emailContent);
+        matcher.find();
+        String UUID = matcher.group(2);
         recoveryService.requestPasswordChange(UUID, "456");
 
         User encryptedUser = userService.getUserByEmail("ejemplo@integrate.me");
@@ -49,7 +57,7 @@ class RecoveryServiceTest {
         User user = UserTestUtils.createUser("ejemplo@integrate.me", "123");
         userService.saveUser(user);
 
-        recoveryService.requestEmail("ejemplo@integrate.me");
+        String emailContent = recoveryService.requestEmail("ejemplo@integrate.me");
         assertThrows(UserNotFoundException.class, () ->
                 recoveryService.requestPasswordChange("fake-token-123", "456"));
     }

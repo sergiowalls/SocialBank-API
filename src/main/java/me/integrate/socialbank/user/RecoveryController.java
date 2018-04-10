@@ -13,9 +13,10 @@ public class RecoveryController {
         this.recoveryService = recoveryService;
     }
 
-    @GetMapping("/recover/{email}")
-    public String requestEmail(@PathVariable String email) {
-        return recoveryService.requestEmail(email);
+    @PostMapping("/recover")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void requestEmail(@RequestBody String email) {
+        recoveryService.requestEmail(email);
     }
 
     @PutMapping("/recover/{token}")
