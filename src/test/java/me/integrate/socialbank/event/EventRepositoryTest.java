@@ -1,5 +1,7 @@
 package me.integrate.socialbank.event;
 
+import me.integrate.socialbank.user.UserRepository;
+import me.integrate.socialbank.user.UserTestUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,20 +15,27 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @SpringBootTest
 @Transactional
 @ExtendWith(SpringExtension.class)
-public class EventRepositoryTest {
+class EventRepositoryTest {
     @Autowired
     private EventRepository eventRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
     @Test
     void givenEventStoredInDatabaseWhenRetrievedByIdThenReturnsSameEvent() {
-        Event event = eventRepository.saveEvent(EventTestUtils.createEvent());
+        String email = "pepito@pepito.com";
+        userRepository.saveUser(UserTestUtils.createUser(email));
+        Event event = eventRepository.saveEvent(EventTestUtils.createEvent(email));
         assertTrue(sameEvent(event, eventRepository.getEventById(event.getId())));
     }
 
     @Test
     void givenTwoDifferentEventsWhenSavedThenReturnSameEvents() {
-        Event eventOne = eventRepository.saveEvent(EventTestUtils.createEvent());
-        Event eventTwo = eventRepository.saveEvent(EventTestUtils.createEvent());
+        String email = "pepito@pepito.com";
+        userRepository.saveUser(UserTestUtils.createUser(email));
+        Event eventOne = eventRepository.saveEvent(EventTestUtils.createEvent(email));
+        Event eventTwo = eventRepository.saveEvent(EventTestUtils.createEvent(email));
 
         assertTrue(sameEvent(eventOne, eventRepository.getEventById(eventOne.getId())));
         assertTrue(sameEvent(eventTwo, eventRepository.getEventById(eventTwo.getId())));

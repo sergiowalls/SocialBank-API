@@ -3,9 +3,9 @@ package me.integrate.socialbank.user;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
-class UserTestUtils {
+public class UserTestUtils {
 
-    static User createUser(String email) {
+    public static User createUser(String email) {
         return createUser(email, "123");
     }
 
