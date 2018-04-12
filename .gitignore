@@ -8,6 +8,7 @@ target/
 .project
 .settings
 .springBeans
+/src/main/resources/application.properties
 
 ### IntelliJ IDEA ###
 .idea
@@ -22,3 +23,6 @@ nbbuild/
 dist/
 nbdist/
 .nb-gradle/
+
+### Vagrant ###
+.vagrant
