@@ -11,6 +11,10 @@ spring.datasource.password=
 flyway.url=
 flyway.user=
 flyway.password=
+mail.host=
+mail.port=
+mail.from=
+mail.password=
 ```
 
 Where _url_ should look like `jdbc:postgresql://localhost:<PORT>/<DATABASE_NAME>?useSSL=false`
