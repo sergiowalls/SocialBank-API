@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @ExtendWith(SpringExtension.class)
 class EventRepositoryTest {
     @Autowired
-    private EventRepository eventRepository;
+    private EventRepositoryImpl eventRepository;
 
     @Autowired
     private UserRepository userRepository;

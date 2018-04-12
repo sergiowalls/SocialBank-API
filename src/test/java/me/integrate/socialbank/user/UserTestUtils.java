@@ -12,7 +12,6 @@ public class UserTestUtils {
     static User createUser(String email, String password) {
         User user = new User();
         user.setEmail(email);
-        user.setBalance(1337.f);
         try {
             user.setBirthdate(new SimpleDateFormat("yyyy-MM-dd").parse("2017-03-03"));
         } catch (ParseException ex) {
