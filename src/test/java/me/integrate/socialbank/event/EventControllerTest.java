@@ -1,6 +1,7 @@
 package me.integrate.socialbank.event;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,6 +56,18 @@ class EventControllerTest {
 
         this.mockMvc.perform(
                 get("/events/"+id))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @Disabled
+    @WithMockUser
+    void shouldReturnListOfEvents() throws Exception {
+        int id = 1;
+        given(eventService.getEventById(id)).willReturn(EventTestUtils.createEvent());
+
+        this.mockMvc.perform(
+                get("/events/"))
                 .andExpect(status().isOk());
     }
 
