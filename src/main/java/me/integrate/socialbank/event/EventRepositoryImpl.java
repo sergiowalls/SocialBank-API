@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Repository
@@ -53,6 +54,10 @@ public class EventRepositoryImpl implements EventRepository {
     public Event getEventById(int id) {
         return jdbcTemplate.queryForObject("SELECT * FROM " + EVENT_TABLE + " WHERE " + ID + "= ?",
                 new Object[]{id}, new EventRowMapper());
+    }
+
+    public List<Event> getEvents() {
+        return jdbcTemplate.query("SELECT * FROM" + EVENT_TABLE, new EventRowMapper());
     }
 
     private class EventRowMapper implements RowMapper<Event> {
