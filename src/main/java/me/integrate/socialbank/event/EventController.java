@@ -29,7 +29,7 @@ public class EventController {
 
     @GetMapping("/events")
     public @ResponseBody List<Event> getEvents() {
-        return getEvents();
+        return eventService.getEvents();
     }
 
 }
