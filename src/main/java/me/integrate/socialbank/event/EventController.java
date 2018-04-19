@@ -2,6 +2,7 @@ package me.integrate.socialbank.event;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -22,7 +23,8 @@ public class EventController {
 
     @PostMapping("/events")
     @ResponseStatus(HttpStatus.CREATED)
-    public Event saveEvent(@RequestBody Event event) {
+    public Event saveEvent(@RequestBody Event event,  Authentication authentication) {
+        event.setCreatorEmail(authentication.getName());
         if (event.getIniDate().after(event.getEndDate()) || event.getIniDate().before(new Date())) throw new EventWithIncorrectDateException();
         return eventService.saveEvent(event);
     }

@@ -7,25 +7,35 @@ import java.util.Objects;
 
 class EventTestUtils {
 
+    private static String INI_DATE = "2019-03-03";
+    private static String END_DATE = "2020-03-03";
+    private static String EMAIL = "pepito@pepito.com";
+
+    private static Date getDate(String inputDate) {
+        Date date = new Date();
+        try {
+            date = new SimpleDateFormat("yyyy-MM-dd").parse(inputDate);
+        } catch (ParseException ex) {
+            ex.printStackTrace();
+        }
+        return date;
+    }
+
     static Event createEvent() {
-        Date iniDate, endDate;
-        iniDate = endDate = new Date();
-        try {
-            iniDate = new SimpleDateFormat("yyyy-MM-dd").parse("2019-03-03");
-        } catch (ParseException ex) {
-            ex.printStackTrace();
-        }
-        try {
-           endDate = new SimpleDateFormat("yyyy-MM-dd").parse("2020-03-03");
-        } catch (ParseException ex) {
-            ex.printStackTrace();
-        }
-        return createEvent(iniDate, endDate);
+        return createEvent(EMAIL,getDate(INI_DATE),  getDate(END_DATE));
+    }
+
+    static Event createEvent(String email) {
+        return createEvent(email,getDate(INI_DATE), getDate(END_DATE));
     }
 
     static Event createEvent(Date iniDate, Date endDate) {
+        return createEvent(EMAIL,iniDate, endDate);
+    }
+
+    static Event createEvent(String email, Date iniDate, Date endDate) {
         Event event = new Event();
-        event.setCreatorEmail("pepito@peito.com");
+        event.setCreatorEmail(email);
         event.setHours(13);
         event.setIniDate(iniDate);
         event.setEndDate(endDate);
