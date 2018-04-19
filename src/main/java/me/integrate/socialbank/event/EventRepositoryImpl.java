@@ -57,7 +57,7 @@ public class EventRepositoryImpl implements EventRepository {
     }
 
     public List<Event> getEvents() {
-        return jdbcTemplate.query("SELECT * FROM" + EVENT_TABLE, new EventRowMapper());
+        return jdbcTemplate.query("SELECT * FROM " + EVENT_TABLE, new EventRowMapper());
     }
 
     private class EventRowMapper implements RowMapper<Event> {

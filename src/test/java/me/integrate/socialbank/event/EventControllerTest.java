@@ -1,7 +1,6 @@
 package me.integrate.socialbank.event;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,12 +15,20 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.core.IsCollectionContaining.hasItems;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.when;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
@@ -60,15 +67,21 @@ class EventControllerTest {
     }
 
     @Test
-    @Disabled
     @WithMockUser
     void shouldReturnListOfEvents() throws Exception {
-        int id = 1;
-        given(eventService.getEventById(id)).willReturn(EventTestUtils.createEvent());
+        Event e1 = EventTestUtils.createEvent("a@a.a");
+        Event e2 = EventTestUtils.createEvent("b@b.b");
+        List<Event> le = new ArrayList<>();
+        le.add(e1); le.add(e2);
 
-        this.mockMvc.perform(
-                get("/events/"))
-                .andExpect(status().isOk());
+        when(eventService.getEvents()).thenReturn(le);
+        this.mockMvc.perform(get("/events/"))
+                .andDo(print())
+                .andExpect(jsonPath("$", hasSize(le.size())))
+                .andExpect(jsonPath("$.[*].creatorEmail", hasItems("a@a.a", "b@b.b")))
+                .andExpect(status().isOk())
+                .andReturn();
+
     }
 
     @Test
