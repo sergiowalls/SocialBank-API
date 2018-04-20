@@ -9,6 +9,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static me.integrate.socialbank.event.EventTestUtils.createEvent;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -33,5 +36,22 @@ public class EventServiceTest {
 
         assertEquals(event, savedEvent);
 
+    }
+
+    @Test
+    void givenEventsWhenSaveItThenReturnListOfThem() {
+        String email = "pepito@pepito.com";
+        userRepository.saveUser(UserTestUtils.createUser(email));
+        Event event = eventService.saveEvent(createEvent(email));
+        Event event2 = eventService.saveEvent(createEvent(email));
+        List<Event> eventList = new ArrayList<>();
+        eventList.add(event); eventList.add(event2);
+
+        List<Event> returnList = eventService.getEvents();
+
+        assertEquals(eventList.size(), returnList.size());
+        for (int i = 0; i < eventList.size(); i++) {
+            assertEquals(eventList.get(i), returnList.get(i));
+        }
     }
 }

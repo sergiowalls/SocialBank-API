@@ -3,6 +3,8 @@ package me.integrate.socialbank.event;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class EventService {
     private EventRepository eventRepository;
@@ -19,4 +21,6 @@ public class EventService {
     public Event saveEvent(Event event) {
         return eventRepository.saveEvent(event);
     }
+
+    public List<Event> getEvents() { return eventRepository.getEvents(); }
 }
