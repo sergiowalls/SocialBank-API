@@ -19,6 +19,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final static String SIGN_UP_URL = "/users";
     private final static String RECOVER_PASSWORD_URL = "/recover";
+    private final static String[] SWAGGER_DOCS = {"/v2/api-docs", "/configuration/ui", "/swagger-resources", "/configuration/security", "/swagger-ui.html", "/webjars/**"};
 
     @Autowired
     public WebSecurityConfig(@Qualifier("authUserDetailsService") UserDetailsService userDetailsService,
@@ -34,6 +35,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST, SIGN_UP_URL).permitAll()
                 .antMatchers(HttpMethod.POST, RECOVER_PASSWORD_URL).permitAll()
                 .antMatchers(HttpMethod.PUT, RECOVER_PASSWORD_URL + "/{\\w+}").permitAll()
+                .antMatchers(HttpMethod.GET, SWAGGER_DOCS).permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .addFilter(new JWTAuthenticationFilter(authenticationManager()))
