@@ -8,7 +8,6 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,7 +24,6 @@ public class EventRepositoryImpl implements EventRepository {
     private static String LOCATION = "location";
     private static String TITLE = "title";
     private static String DESCRIPTION = "description";
-    private static String IMAGE = "image";
     private final SimpleJdbcInsert simpleJdbcInsert;
 
     private JdbcTemplate jdbcTemplate;
@@ -35,7 +33,7 @@ public class EventRepositoryImpl implements EventRepository {
         this.jdbcTemplate = jdbcTemplate;
         this.simpleJdbcInsert = new SimpleJdbcInsert(this.jdbcTemplate)
                 .withTableName(EVENT_TABLE)
-                .usingColumns(CREATOR, INIDATE, ENDDATE, HOURS, LOCATION, TITLE, DESCRIPTION, IMAGE)
+                .usingColumns(CREATOR, INIDATE, ENDDATE, HOURS, LOCATION, TITLE, DESCRIPTION)
                 .usingGeneratedKeyColumns(ID);
     }
 
@@ -48,7 +46,6 @@ public class EventRepositoryImpl implements EventRepository {
         params.put(LOCATION, event.getLocation());
         params.put(TITLE, event.getTitle());
         params.put(DESCRIPTION, event.getDescription());
-        params.put(IMAGE, Base64.getMimeDecoder().decode(event.getImage()));
         Number id = this.simpleJdbcInsert.executeAndReturnKey(params);
         event.setId(id.intValue());
         return event;
@@ -76,7 +73,7 @@ public class EventRepositoryImpl implements EventRepository {
             event.setLocation(resultSet.getString(LOCATION));
             event.setTitle(resultSet.getString(TITLE));
             event.setDescription(resultSet.getString(DESCRIPTION));
-            event.setImage(Base64.getMimeEncoder().encodeToString(resultSet.getBytes(IMAGE)));
+
             return event;
         }
     }
