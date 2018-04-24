@@ -12,6 +12,7 @@ public class Event {
     private String location;
     private String title;
     private String description;
+    private String image;
 
     public int getId() {
         return id;
@@ -95,4 +96,11 @@ public class Event {
         return Objects.hash(id, creatorEmail, iniDate, endDate, hours, location, title, description);
     }
 
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
 }
