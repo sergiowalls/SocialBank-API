@@ -39,7 +39,7 @@ public class Swagger {
     public UiConfiguration uiConfig() {
         return UiConfigurationBuilder.builder()
                 .displayRequestDuration(true)
-                .validatorUrl(null) // Disable the validator to avoid "Error" at the bottom of the Swagger UI page
+                .validatorUrl("") // Disable the validator to avoid "Error" at the bottom of the Swagger UI page
                 .build();
     }
 }
