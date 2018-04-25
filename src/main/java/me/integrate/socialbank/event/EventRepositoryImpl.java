@@ -59,6 +59,10 @@ public class EventRepositoryImpl implements EventRepository {
                 new Object[]{id}, new EventRowMapper());
     }
 
+    public List<Event> getEventsByCreator(String email) {
+        return jdbcTemplate.query("SELECT * FROM " + EVENT_TABLE + " WHERE " + CREATOR + "=" + email, new EventRowMapper());
+    }
+
     public List<Event> getEvents() {
         return jdbcTemplate.query("SELECT * FROM " + EVENT_TABLE, new EventRowMapper());
     }

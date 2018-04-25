@@ -33,4 +33,9 @@ public class EventController {
         return eventService.getEvents();
     }
 
+    @RequestMapping("/events")
+    public @ResponseBody List<Event> getEventsByCreator(@RequestParam String emailCreator) {
+        return eventService.getEventsByCreator(emailCreator);
+    }
+
 }
