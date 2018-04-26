@@ -8,7 +8,6 @@ public class Event {
     private int id;
     private String creatorEmail;
     private Date iniDate, endDate;
-    private int hours;
     private String location;
     private String title;
     private String description;
@@ -70,9 +69,6 @@ public class Event {
         this.description = description;
     }
 
-    public int getHours() { return hours; }
-
-    public void setHours(int hours) { this.hours = hours; }
 
     @Override
     public boolean equals(Object o)
@@ -84,7 +80,6 @@ public class Event {
                 Objects.equals(creatorEmail, event.creatorEmail) &&
                 Objects.equals(iniDate, event.iniDate) &&
                 Objects.equals(endDate, event.endDate) &&
-                hours == event.hours &&
                 Objects.equals(location, event.location) &&
                 Objects.equals(title, event.title) &&
                 Objects.equals(description, event.description);
@@ -93,7 +88,7 @@ public class Event {
     @Override
     public int hashCode()
     {
-        return Objects.hash(id, creatorEmail, iniDate, endDate, hours, location, title, description);
+        return Objects.hash(id, creatorEmail, iniDate, endDate, /*hours,*/ location, title, description);
     }
 
     public String getImage() {
