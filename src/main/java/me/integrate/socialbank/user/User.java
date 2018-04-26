@@ -7,6 +7,14 @@ import java.util.Objects;
 
 public class User {
 
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
     public enum Gender {
         FEMALE,
         MALE,
@@ -22,6 +30,7 @@ public class User {
     private Gender gender;
     private float balance;
     private String description;
+    private String image;
 
 
     public String getEmail() {
