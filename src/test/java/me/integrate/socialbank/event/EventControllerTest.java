@@ -24,7 +24,6 @@ import static org.hamcrest.core.IsCollectionContaining.hasItems;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
-
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -57,12 +56,34 @@ class EventControllerTest {
 
     @Test
     @WithMockUser
+    void withDateShouldReturnCreatedStatus() throws Exception {
+        String json = "{\n" +
+                "  \"creatorEmail\": \"string\",\n" +
+                "  \"description\": \"string\",\n" +
+                "  \"endDate\": \"2019-04-26T15:12:44.865Z\",\n" +
+                "  \"id\": 0,\n" +
+                "  \"image\": \"string\",\n" +
+                "  \"iniDate\": \"2019-04-25T15:12:44.865Z\",\n" +
+                "  \"location\": \"string\",\n" +
+                "  \"title\": \"string\"\n" +
+                "}";
+        Event event = EventTestUtils.createEvent();
+        given(eventService.saveEvent(any())).willReturn(event);
+        this.mockMvc.perform(
+                post("/events")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpect(status().isCreated());
+    }
+
+    @Test
+    @WithMockUser
     void shouldReturnOkStatus() throws Exception {
         int id = 1;
         given(eventService.getEventById(id)).willReturn(EventTestUtils.createEvent());
 
         this.mockMvc.perform(
-                get("/events/"+id))
+                get("/events/" + id))
                 .andExpect(status().isOk());
     }
 
@@ -72,7 +93,8 @@ class EventControllerTest {
         Event e1 = EventTestUtils.createEvent("a@a.a");
         Event e2 = EventTestUtils.createEvent("b@b.b");
         List<Event> le = new ArrayList<>();
-        le.add(e1); le.add(e2);
+        le.add(e1);
+        le.add(e2);
 
         when(eventService.getEvents()).thenReturn(le);
         this.mockMvc.perform(get("/events/"))
@@ -92,7 +114,7 @@ class EventControllerTest {
                 .willThrow(EventNotFoundException.class);
 
         this.mockMvc.perform(
-                get("/events/"+id))
+                get("/events/" + id))
                 .andExpect(status().isNotFound());
     }
 
@@ -106,7 +128,7 @@ class EventControllerTest {
 
     @Test
     @WithMockUser
-    void givenEventPostWithIniDateNotLesThanEndDateShouldReturnBadRequestStatus() throws Exception{
+    void givenEventPostWithIniDateNotLesThanEndDateShouldReturnBadRequestStatus() throws Exception {
         Date iniDate, endDate;
         iniDate = endDate = new Date();
         try {
@@ -131,7 +153,7 @@ class EventControllerTest {
 
     @Test
     @WithMockUser
-    void givenEventPostWithIniDateLessThanCurrentDateShouldReturnBadRequestStatus() throws Exception{
+    void givenEventPostWithIniDateLessThanCurrentDateShouldReturnBadRequestStatus() throws Exception {
         Date iniDate, endDate;
         iniDate = endDate = new Date();
         try {
