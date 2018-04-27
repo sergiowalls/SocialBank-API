@@ -27,4 +27,8 @@ public class UserService {
     public void updatePassword(String email, String password) {
         userRepository.updatePassword(email, bCryptPasswordEncoder.encode(password));
     }
+
+    public void updateUser(String email, User user) {
+        userRepository.updateUser(email, user);
+    }
 }
