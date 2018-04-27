@@ -108,6 +108,25 @@ class EventControllerTest {
 
     @Test
     @WithMockUser
+    void shouldReturnListOfEventsCreatedByUser() throws Exception {
+        String email = "a@a.a";
+        Event e1 = EventTestUtils.createEvent(email);
+        Event e2 = EventTestUtils.createEvent(email);
+        List<Event> le = new ArrayList<>();
+        le.add(e1); le.add(e2);
+
+        when(eventService.getEvents()).thenReturn(le);
+        this.mockMvc.perform(get("/events/"))
+                .andDo(print())
+                .andExpect(jsonPath("$", hasSize(le.size())))
+                .andExpect(jsonPath("$.[*].creatorEmail", hasItems("a@a.a", "a@a.a")))
+                .andExpect(status().isOk())
+                .andReturn();
+
+    }
+
+    @Test
+    @WithMockUser
     void shouldReturnNotFoundStatus() throws Exception {
         int id = 123;
         given(eventService.getEventById(id))
