@@ -8,9 +8,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
+
 import static me.integrate.socialbank.user.UserTestUtils.createUser;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
@@ -43,5 +44,30 @@ class UserServiceTest {
         User encryptedUser = userService.getUserByEmail(email);
 
         assertTrue(bCryptPasswordEncoder.matches(newPassword, encryptedUser.getPassword()));
+    }
+
+    @Test
+    void givenUserWhenUpdatedAllInfoGetsUpdated() {
+        String email = "admin@integrate.me";
+        String password = "123";
+        User user = createUser(email, password);
+        userService.saveUser(user);
+
+        User newUser = new User();
+        newUser.setEmail(email);
+        newUser.setPassword(password);
+        newUser.setBalance(user.getBalance());
+
+        newUser.setName("newName");
+        newUser.setDescription("newDescription");
+        newUser.setBirthdate(new Date());
+        newUser.setGender(User.Gender.OTHER);
+        newUser.setImage("MTIz");
+        newUser.setSurname("newSurName");
+        userService.updateUser(email, newUser);
+
+        User userByEmail = userService.getUserByEmail(email);
+        assertNotEquals(user, userByEmail);
+        assertEquals(newUser, userByEmail);
     }
 }

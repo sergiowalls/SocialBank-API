@@ -28,4 +28,9 @@ public class UserController {
     public void updatePassword(@PathVariable String email, @RequestBody String password) {
         userService.updatePassword(email, password);
     }
+
+    @PutMapping("/users/{email}/update")
+    public void updateUser(@PathVariable String email, @RequestBody User user) {
+        userService.updateUser(email, user);
+    }
 }

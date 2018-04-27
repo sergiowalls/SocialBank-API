@@ -22,6 +22,7 @@ public class UserRepositoryImpl implements UserRepository {
     private final static String BALANCE = "balance";
     private final static String DESCRIPTION = "description";
     private final static String RECOVERY = "recovery";
+    private final static String IMAGE = "image";
 
     private JdbcTemplate jdbcTemplate;
 
@@ -41,9 +42,9 @@ public class UserRepositoryImpl implements UserRepository {
 
     public User saveUser(User user) {
         try {
-            jdbcTemplate.update("INSERT INTO " + USER_TABLE + " VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+            jdbcTemplate.update("INSERT INTO " + USER_TABLE + " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                     user.getEmail(), user.getName(), user.getSurname(), user.getPassword(), user.getBirthdate(),
-                    user.getGender().toString(), user.getBalance(), user.getDescription());
+                    user.getGender().toString(), user.getBalance(), user.getDescription(), null, user.getImage());
         } catch (DuplicateKeyException ex) {
             throw new EmailAlreadyExistsException();
         }
@@ -54,6 +55,18 @@ public class UserRepositoryImpl implements UserRepository {
     public void updatePassword(String email, String password) {
         jdbcTemplate.update("UPDATE " + USER_TABLE + " SET " + PASSWORD + " = ? WHERE " + EMAIL + " = ?",
                 password, email);
+    }
+
+    public void updateUser(String email, User user) {
+        jdbcTemplate.update("UPDATE " + USER_TABLE +
+                        " SET " + NAME + " = ?," +
+                        SURNAME + " = ?, " +
+                        BIRTHDATE + " = ?, " +
+                        GENDER + " = ?, " +
+                        DESCRIPTION + " = ?, " +
+                        IMAGE + " = ? WHERE " + EMAIL + " = ?",
+                user.getName(), user.getSurname(), user.getBirthdate(), user.getGender().toString(),
+                user.getDescription(), user.getImage(), user.getEmail());
     }
 
     public void updateRecoveryToken(String email, String recoveryToken) {
@@ -86,6 +99,7 @@ public class UserRepositoryImpl implements UserRepository {
             user.setGender(User.Gender.valueOf(resultSet.getString(GENDER)));
             user.setBalance(resultSet.getFloat(BALANCE));
             user.setDescription(resultSet.getString(DESCRIPTION));
+            user.setImage(resultSet.getString(IMAGE));
 
             return user;
         }

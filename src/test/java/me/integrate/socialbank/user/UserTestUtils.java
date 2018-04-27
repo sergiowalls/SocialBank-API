@@ -22,6 +22,7 @@ public class UserTestUtils {
         user.setName("Manolo");
         user.setSurname("Del Campo");
         user.setPassword(password);
+        user.setImage("123");
         return user;
     }
 }
