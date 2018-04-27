@@ -21,7 +21,6 @@ public class EventRepositoryImpl implements EventRepository {
     private static String CREATOR = "creatorEmail";
     private static String INIDATE = "iniDate";
     private static String ENDDATE = "endDate";
-    private static String HOURS = "hours";
     private static String LOCATION = "location";
     private static String TITLE = "title";
     private static String DESCRIPTION = "description";
@@ -35,7 +34,7 @@ public class EventRepositoryImpl implements EventRepository {
         this.jdbcTemplate = jdbcTemplate;
         this.simpleJdbcInsert = new SimpleJdbcInsert(this.jdbcTemplate)
                 .withTableName(EVENT_TABLE)
-                .usingColumns(CREATOR, INIDATE, ENDDATE, HOURS, LOCATION, TITLE, DESCRIPTION, IMAGE)
+                .usingColumns(CREATOR, INIDATE, ENDDATE, LOCATION, TITLE, DESCRIPTION, IMAGE)
                 .usingGeneratedKeyColumns(ID);
     }
 
@@ -44,7 +43,6 @@ public class EventRepositoryImpl implements EventRepository {
         params.put(CREATOR, event.getCreatorEmail());
         params.put(INIDATE, event.getIniDate());
         params.put(ENDDATE, event.getEndDate());
-        params.put(HOURS, event.getHours());
         params.put(LOCATION, event.getLocation());
         params.put(TITLE, event.getTitle());
         params.put(DESCRIPTION, event.getDescription());
@@ -57,6 +55,10 @@ public class EventRepositoryImpl implements EventRepository {
     public Event getEventById(int id) {
         return jdbcTemplate.queryForObject("SELECT * FROM " + EVENT_TABLE + " WHERE " + ID + "= ?",
                 new Object[]{id}, new EventRowMapper());
+    }
+
+    public List<Event> getEventsByCreator(String email) {
+        return jdbcTemplate.query("SELECT * FROM " + EVENT_TABLE + " WHERE " + CREATOR + "=" + email, new EventRowMapper());
     }
 
     public List<Event> getEvents() {
@@ -72,7 +74,6 @@ public class EventRepositoryImpl implements EventRepository {
             event.setCreatorEmail(resultSet.getString(CREATOR));
             event.setIniDate(resultSet.getDate(INIDATE));
             event.setEndDate(resultSet.getDate(ENDDATE));
-            event.setHours(resultSet.getInt(HOURS));
             event.setLocation(resultSet.getString(LOCATION));
             event.setTitle(resultSet.getString(TITLE));
             event.setDescription(resultSet.getString(DESCRIPTION));

@@ -37,7 +37,6 @@ class EventTestUtils {
     static Event createEvent(String email, Date iniDate, Date endDate) {
         Event event = new Event();
         event.setCreatorEmail(email);
-        event.setHours(13);
         event.setIniDate(iniDate);
         event.setEndDate(endDate);
         event.setLocation("53.2734, -7.778320310000026");
@@ -53,7 +52,6 @@ class EventTestUtils {
                 Objects.equals(a.getCreatorEmail(), b.getCreatorEmail()) &&
                 Objects.equals(a.getIniDate(), b.getIniDate()) &&
                 Objects.equals(a.getEndDate(), b.getEndDate()) &&
-                a.getHours() == b.getHours() &&
                 Objects.equals(a.getLocation(), b.getLocation()) &&
                 Objects.equals(a.getTitle(), b.getTitle()) &&
                 Objects.equals(a.getDescription(), b.getDescription());

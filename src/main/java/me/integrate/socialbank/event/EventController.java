@@ -5,7 +5,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -32,6 +31,11 @@ public class EventController {
     @GetMapping("/events")
     public @ResponseBody List<Event> getEvents() {
         return eventService.getEvents();
+    }
+
+    @RequestMapping("/events")
+    public @ResponseBody List<Event> getEventsByCreator(@RequestParam String emailCreator) {
+        return eventService.getEventsByCreator(emailCreator);
     }
 
 }
