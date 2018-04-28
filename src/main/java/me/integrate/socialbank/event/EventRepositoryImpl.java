@@ -25,6 +25,7 @@ public class EventRepositoryImpl implements EventRepository {
     private static String TITLE = "title";
     private static String DESCRIPTION = "description";
     private static String IMAGE = "image";
+    private static String ISDEMAND = "isDemand";
     private final SimpleJdbcInsert simpleJdbcInsert;
 
     private JdbcTemplate jdbcTemplate;
@@ -34,7 +35,7 @@ public class EventRepositoryImpl implements EventRepository {
         this.jdbcTemplate = jdbcTemplate;
         this.simpleJdbcInsert = new SimpleJdbcInsert(this.jdbcTemplate)
                 .withTableName(EVENT_TABLE)
-                .usingColumns(CREATOR, INIDATE, ENDDATE, LOCATION, TITLE, DESCRIPTION, IMAGE)
+                .usingColumns(CREATOR, INIDATE, ENDDATE, LOCATION, TITLE, DESCRIPTION, IMAGE, ISDEMAND)
                 .usingGeneratedKeyColumns(ID);
     }
 
@@ -47,6 +48,7 @@ public class EventRepositoryImpl implements EventRepository {
         params.put(TITLE, event.getTitle());
         params.put(DESCRIPTION, event.getDescription());
         params.put(IMAGE, Base64.getMimeDecoder().decode(event.getImage()));
+        params.put(ISDEMAND, event.isDemand());
         Number id = this.simpleJdbcInsert.executeAndReturnKey(params);
         event.setId(id.intValue());
         return event;
@@ -78,6 +80,7 @@ public class EventRepositoryImpl implements EventRepository {
             event.setTitle(resultSet.getString(TITLE));
             event.setDescription(resultSet.getString(DESCRIPTION));
             event.setImage(resultSet.getString(IMAGE));
+            event.setDemand(resultSet.getBoolean(ISDEMAND));
             return event;
         }
     }

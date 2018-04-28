@@ -15,6 +15,7 @@ public class Event {
     private String title;
     private String description;
     private String image;
+    private Boolean isDemand;
 
     public int getId() {
         return id;
@@ -100,5 +101,13 @@ public class Event {
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    public Boolean isDemand() {
+        return isDemand;
+    }
+
+    public void setDemand(Boolean demand) {
+        isDemand = demand;
     }
 }
