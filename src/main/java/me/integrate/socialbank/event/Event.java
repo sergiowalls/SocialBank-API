@@ -86,7 +86,9 @@ public class Event {
                 Objects.equals(endDate, event.endDate) &&
                 Objects.equals(location, event.location) &&
                 Objects.equals(title, event.title) &&
-                Objects.equals(description, event.description);
+                Objects.equals(description, event.description) &&
+                Objects.equals(image, event.image) &&
+                Objects.equals(isDemand, event.isDemand);
     }
 
     @Override
