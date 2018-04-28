@@ -43,6 +43,7 @@ class EventTestUtils {
         event.setDescription("Worldwide Meeting");
         event.setTitle("Worldwide Meeting");
         event.setImage(IMAGE);
+        event.setDemand(true);
         return event;
     }
 

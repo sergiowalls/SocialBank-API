@@ -65,7 +65,8 @@ class EventControllerTest {
                 "  \"image\": \"string\",\n" +
                 "  \"iniDate\": \"2019-04-25T15:12:44.865Z\",\n" +
                 "  \"location\": \"string\",\n" +
-                "  \"title\": \"string\"\n" +
+                "  \"title\": \"string\",\n" +
+                "  \"demand\": \"true\"" +
                 "}";
         Event event = EventTestUtils.createEvent();
         given(eventService.saveEvent(any())).willReturn(event);
