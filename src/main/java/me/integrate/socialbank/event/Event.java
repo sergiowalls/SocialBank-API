@@ -1,5 +1,7 @@
 package me.integrate.socialbank.event;
 
+import org.springframework.lang.Nullable;
+
 import java.util.Date;
 import java.util.Objects;
 
@@ -7,6 +9,7 @@ public class Event {
 
     private int id;
     private String creatorEmail;
+    @Nullable
     private Date iniDate, endDate;
     private String location;
     private String title;

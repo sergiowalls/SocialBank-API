@@ -24,7 +24,7 @@ public class EventController {
     @ResponseStatus(HttpStatus.CREATED)
     public Event saveEvent(@RequestBody Event event, Authentication authentication) {
         event.setCreatorEmail(authentication.getName());
-        if (event.getIniDate().after(event.getEndDate()) || event.getIniDate().before(new Date())) throw new EventWithIncorrectDateException();
+        if (event.getIniDate() != null && event.getEndDate() != null && (event.getIniDate().after(event.getEndDate()) || event.getIniDate().before(new Date()))) throw new EventWithIncorrectDateException();
         return eventService.saveEvent(event);
     }
 
