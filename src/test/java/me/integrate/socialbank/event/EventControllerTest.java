@@ -95,7 +95,7 @@ class EventControllerTest {
                 post("/events")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
-                .andExpect(status().isCreated());
+                .andExpect(status().isBadRequest());
     }
 
     @Test
