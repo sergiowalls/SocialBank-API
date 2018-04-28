@@ -47,7 +47,7 @@ public class EventRepositoryImpl implements EventRepository {
         params.put(LOCATION, event.getLocation());
         params.put(TITLE, event.getTitle());
         params.put(DESCRIPTION, event.getDescription());
-        params.put(IMAGE, Base64.getMimeDecoder().decode(event.getImage()));
+        params.put(IMAGE, event.getImage());
         params.put(ISDEMAND, event.isDemand());
         Number id = this.simpleJdbcInsert.executeAndReturnKey(params);
         event.setId(id.intValue());
