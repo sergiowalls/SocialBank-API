@@ -77,7 +77,7 @@ public class EventRepositoryImpl implements EventRepository {
             event.setLocation(resultSet.getString(LOCATION));
             event.setTitle(resultSet.getString(TITLE));
             event.setDescription(resultSet.getString(DESCRIPTION));
-            event.setImage(Base64.getMimeEncoder().encodeToString(resultSet.getBytes(IMAGE)));
+            event.setImage(resultSet.getString(IMAGE));
             return event;
         }
     }

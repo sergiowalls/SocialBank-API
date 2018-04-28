@@ -33,8 +33,9 @@ public class EventController {
         return eventService.getEvents();
     }
 
-    @RequestMapping("/events")
-    public @ResponseBody List<Event> getEventsByCreator(@RequestParam String emailCreator) {
+    @GetMapping("/users/{emailCreator}/events")
+    public @ResponseBody
+    List<Event> getEventsByCreator(@PathVariable String emailCreator) {
         return eventService.getEventsByCreator(emailCreator);
     }
 
