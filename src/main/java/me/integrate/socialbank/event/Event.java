@@ -16,6 +16,8 @@ public class Event {
     private String description;
     private String image;
     private Boolean isDemand;
+    private Double latitude;
+    private Double longitude;
 
     public int getId() {
         return id;
@@ -72,6 +74,38 @@ public class Event {
     public void setDescription(String description) {
         this.description = description;
     }
+    
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    public Boolean isDemand() {
+        return isDemand;
+    }
+
+    public void setDemand(Boolean demand) {
+        isDemand = demand;
+    }
+
+    public Double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(Double latitude) {
+        this.latitude = latitude;
+    }
+
+    public Double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(Double longitude) {
+        this.longitude = longitude;
+    }
 
 
     @Override
@@ -88,28 +122,14 @@ public class Event {
                 Objects.equals(title, event.title) &&
                 Objects.equals(description, event.description) &&
                 Objects.equals(image, event.image) &&
-                Objects.equals(isDemand, event.isDemand);
+                Objects.equals(isDemand, event.isDemand) &&
+                Objects.equals(latitude, event.latitude) &&
+                Objects.equals(longitude, event.longitude);
     }
 
     @Override
     public int hashCode()
     {
         return Objects.hash(id, creatorEmail, iniDate, endDate, /*hours,*/ location, title, description);
-    }
-
-    public String getImage() {
-        return image;
-    }
-
-    public void setImage(String image) {
-        this.image = image;
-    }
-
-    public Boolean isDemand() {
-        return isDemand;
-    }
-
-    public void setDemand(Boolean demand) {
-        isDemand = demand;
     }
 }

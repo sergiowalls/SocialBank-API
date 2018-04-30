@@ -9,8 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
-import static me.integrate.socialbank.event.EventTestUtils.sameEvent;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
 @Transactional
@@ -27,7 +26,7 @@ class EventRepositoryTest {
         String email = "pepito@pepito.com";
         userRepository.saveUser(UserTestUtils.createUser(email));
         Event event = eventRepository.saveEvent(EventTestUtils.createEvent(email));
-        assertTrue(sameEvent(event, eventRepository.getEventById(event.getId())));
+        assertEquals(event, eventRepository.getEventById(event.getId()));
     }
 
     @Test
@@ -37,8 +36,8 @@ class EventRepositoryTest {
         Event eventOne = eventRepository.saveEvent(EventTestUtils.createEvent(email));
         Event eventTwo = eventRepository.saveEvent(EventTestUtils.createEvent(email));
 
-        assertTrue(sameEvent(eventOne, eventRepository.getEventById(eventOne.getId())));
-        assertTrue(sameEvent(eventTwo, eventRepository.getEventById(eventTwo.getId())));
+        assertEquals(eventOne, eventRepository.getEventById(eventOne.getId()));
+        assertEquals(eventTwo, eventRepository.getEventById(eventTwo.getId()));
     }
 
 }
