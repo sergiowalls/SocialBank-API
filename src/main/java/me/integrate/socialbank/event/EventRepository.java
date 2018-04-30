@@ -8,7 +8,7 @@ public interface EventRepository {
 
     Event getEventById(int id);
 
-    List<Event> getEvents();
+    List<Event> getAllEvents();
 
     List<Event> getEventsByCreator(String email);
 }

@@ -45,7 +45,7 @@ public class EventServiceTest {
         Event event = eventService.saveEvent(createEvent(email));
         Event event2 = eventService.saveEvent(createEvent(email));
 
-        List<Event> returnList = eventService.getEvents();
+        List<Event> returnList = eventService.getAllEvents();
 
         assertTrue(returnList.contains(event));
         assertTrue(returnList.contains(event2));

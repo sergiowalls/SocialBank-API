@@ -26,6 +26,8 @@ public class EventRepositoryImpl implements EventRepository {
     private static String DESCRIPTION = "description";
     private static String IMAGE = "image";
     private static String ISDEMAND = "isDemand";
+    private static String LATITUDE = "latitude";
+    private static String LONGITUDE = "longitude";
     private final SimpleJdbcInsert simpleJdbcInsert;
 
     private JdbcTemplate jdbcTemplate;
@@ -35,7 +37,7 @@ public class EventRepositoryImpl implements EventRepository {
         this.jdbcTemplate = jdbcTemplate;
         this.simpleJdbcInsert = new SimpleJdbcInsert(this.jdbcTemplate)
                 .withTableName(EVENT_TABLE)
-                .usingColumns(CREATOR, INIDATE, ENDDATE, LOCATION, TITLE, DESCRIPTION, IMAGE, ISDEMAND)
+                .usingColumns(CREATOR, INIDATE, ENDDATE, LOCATION, TITLE, DESCRIPTION, IMAGE, ISDEMAND, LATITUDE, LONGITUDE)
                 .usingGeneratedKeyColumns(ID);
     }
 
@@ -49,6 +51,8 @@ public class EventRepositoryImpl implements EventRepository {
         params.put(DESCRIPTION, event.getDescription());
         params.put(IMAGE, event.getImage());
         params.put(ISDEMAND, event.isDemand());
+        params.put(LATITUDE, event.getLatitude());
+        params.put(LONGITUDE, event.getLongitude());
         Number id = this.simpleJdbcInsert.executeAndReturnKey(params);
         event.setId(id.intValue());
         return event;
@@ -63,7 +67,7 @@ public class EventRepositoryImpl implements EventRepository {
         return jdbcTemplate.query("SELECT * FROM " + EVENT_TABLE + " WHERE " + CREATOR + "=" + email, new EventRowMapper());
     }
 
-    public List<Event> getEvents() {
+    public List<Event> getAllEvents() {
         return jdbcTemplate.query("SELECT * FROM " + EVENT_TABLE, new EventRowMapper());
     }
 
@@ -81,6 +85,8 @@ public class EventRepositoryImpl implements EventRepository {
             event.setDescription(resultSet.getString(DESCRIPTION));
             event.setImage(resultSet.getString(IMAGE));
             event.setDemand(resultSet.getBoolean(ISDEMAND));
+            event.setLatitude(resultSet.getDouble(LATITUDE));
+            event.setLongitude(resultSet.getDouble(LONGITUDE));
             return event;
         }
     }

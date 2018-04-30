@@ -29,8 +29,8 @@ public class EventController {
     }
 
     @GetMapping("/events")
-    public @ResponseBody List<Event> getEvents() {
-        return eventService.getEvents();
+    public @ResponseBody List<Event> getAllEvents() {
+        return eventService.getAllEvents();
     }
 
     @GetMapping("/users/{emailCreator}/events")
