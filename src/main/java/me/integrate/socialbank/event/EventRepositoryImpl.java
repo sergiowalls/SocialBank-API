@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Base64;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -74,8 +74,8 @@ public class EventRepositoryImpl implements EventRepository {
             Event event = new Event();
             event.setId(resultSet.getInt(ID));
             event.setCreatorEmail(resultSet.getString(CREATOR));
-            event.setIniDate(resultSet.getDate(INIDATE));
-            event.setEndDate(resultSet.getDate(ENDDATE));
+            event.setIniDate(new Date(resultSet.getTimestamp(INIDATE).getTime()));
+            event.setEndDate(new Date(resultSet.getTimestamp(ENDDATE).getTime()));
             event.setLocation(resultSet.getString(LOCATION));
             event.setTitle(resultSet.getString(TITLE));
             event.setDescription(resultSet.getString(DESCRIPTION));

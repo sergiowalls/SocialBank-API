@@ -197,10 +197,6 @@ class EventControllerTest {
         iniDate = endDate = new Date();
         try {
             iniDate = new SimpleDateFormat("yyyy-MM-dd").parse("2020-03-03");
-        } catch (ParseException ex) {
-            ex.printStackTrace();
-        }
-        try {
             endDate = new SimpleDateFormat("yyyy-MM-dd").parse("2019-03-03");
         } catch (ParseException ex) {
             ex.printStackTrace();
@@ -222,14 +218,11 @@ class EventControllerTest {
         iniDate = endDate = new Date();
         try {
             iniDate = new SimpleDateFormat("yyyy-MM-dd").parse("1990-03-03");
-        } catch (ParseException ex) {
-            ex.printStackTrace();
-        }
-        try {
             endDate = new SimpleDateFormat("yyyy-MM-dd").parse("2019-03-03");
         } catch (ParseException ex) {
             ex.printStackTrace();
         }
+
         Event event = EventTestUtils.createEvent(iniDate, endDate);
         this.mockMvc.perform(
                 post("/events")
