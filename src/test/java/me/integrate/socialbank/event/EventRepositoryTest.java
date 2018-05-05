@@ -40,4 +40,16 @@ class EventRepositoryTest {
         assertEquals(eventTwo, eventRepository.getEventById(eventTwo.getId()));
     }
 
+    @Test
+    void givenEventsStoredInDatabaseWhenRetrievedByEmailReturnSameEvents() {
+        String email = "pepito@pepito.com";
+        String otherEmail = "otheruser@other.com";
+        userRepository.saveUser(UserTestUtils.createUser(email));
+        userRepository.saveUser(UserTestUtils.createUser(otherEmail));
+        Event eventOne = eventRepository.saveEvent(EventTestUtils.createEvent(email));
+        Event otherEvent = eventRepository.saveEvent(EventTestUtils.createEvent(otherEmail));
+
+        assertEquals(eventOne, eventRepository.getEventsByCreator(email).get(0));
+    }
+
 }
