@@ -1,9 +1,9 @@
 package me.integrate.socialbank.auth;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import me.integrate.socialbank.user.User;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -16,6 +16,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private static final String CONTENT_TYPE = "application/json";
@@ -29,13 +31,13 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     public Authentication attemptAuthentication(HttpServletRequest req,
                                                 HttpServletResponse res) throws AuthenticationException {
         try {
-            User credentials = new ObjectMapper()
-                    .readValue(req.getInputStream(), User.class);
+            Map<String, String> user = new ObjectMapper().readValue(req.getInputStream(), new TypeReference<Map<String, String>>() {
+            });
 
             return authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
-                            credentials.getEmail(),
-                            credentials.getPassword(),
+                            user.get("email"),
+                            user.get("password"),
                             new ArrayList<>())
             );
         } catch (IOException e) {
@@ -47,7 +49,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     protected void successfulAuthentication(HttpServletRequest req,
                                             HttpServletResponse res,
                                             FilterChain chain,
-                                            Authentication auth) {
+                                            Authentication auth) throws IOException {
 
         String token = Jwts.builder()
                 .setSubject(((org.springframework.security.core.userdetails.User) auth.getPrincipal()).getUsername())
@@ -55,6 +57,14 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                 .signWith(SignatureAlgorithm.HS512, Constants.SECRET)
                 .compact();
         res.addHeader(Constants.HEADER_STRING, Constants.TOKEN_PREFIX + token);
+
+        Map<String, String> user = new HashMap<>();
+        User principal = (User) auth.getPrincipal();
+        user.put("email", principal.getUsername());
+        user.put("name", principal.getName());
+
+        res.getWriter().write(new ObjectMapper().writeValueAsString(user));
+
         res.setContentType(CONTENT_TYPE);
     }
 }

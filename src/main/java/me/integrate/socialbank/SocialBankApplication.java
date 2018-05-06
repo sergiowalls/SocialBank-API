@@ -16,4 +16,5 @@ public class SocialBankApplication {
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
 }

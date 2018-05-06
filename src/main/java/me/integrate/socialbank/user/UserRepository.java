@@ -11,4 +11,5 @@ public interface UserRepository {
 
     String getEmailFromToken(String token);
 
+    void updateUser(String email, User user);
 }

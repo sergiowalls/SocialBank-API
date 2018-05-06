@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.*;
 
 @Repository
 public class UserRepositoryImpl implements UserRepository {
@@ -22,6 +23,7 @@ public class UserRepositoryImpl implements UserRepository {
     private final static String BALANCE = "balance";
     private final static String DESCRIPTION = "description";
     private final static String RECOVERY = "recovery";
+    private final static String IMAGE = "image";
 
     private JdbcTemplate jdbcTemplate;
 
@@ -32,8 +34,8 @@ public class UserRepositoryImpl implements UserRepository {
 
     public User getUserByEmail(String email) {
         try {
-            return jdbcTemplate.queryForObject("SELECT * FROM " + USER_TABLE + " WHERE " + EMAIL + "= ?",
-                    new Object[]{email}, new UserRowMapper());
+            return jdbcTemplate.queryForObject("SELECT * FROM " + USER_TABLE + " WHERE " + EMAIL + "= ?", new
+                    Object[]{email}, new UserRowMapper());
         } catch (EmptyResultDataAccessException ex) {
             throw new UserNotFoundException();
         }
@@ -41,9 +43,9 @@ public class UserRepositoryImpl implements UserRepository {
 
     public User saveUser(User user) {
         try {
-            jdbcTemplate.update("INSERT INTO " + USER_TABLE + " VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+            jdbcTemplate.update("INSERT INTO " + USER_TABLE + " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                     user.getEmail(), user.getName(), user.getSurname(), user.getPassword(), user.getBirthdate(),
-                    user.getGender().toString(), user.getBalance(), user.getDescription());
+                    user.getGender().toString(), user.getBalance(), user.getDescription(), null, user.getImage());
         } catch (DuplicateKeyException ex) {
             throw new EmailAlreadyExistsException();
         }
@@ -52,8 +54,37 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     public void updatePassword(String email, String password) {
-        jdbcTemplate.update("UPDATE " + USER_TABLE + " SET " + PASSWORD + " = ? WHERE " + EMAIL + " = ?",
-                password, email);
+        jdbcTemplate.update("UPDATE " + USER_TABLE + " SET " + PASSWORD + " = ? WHERE " + EMAIL + " = ?", password,
+                email);
+    }
+
+    public void updateUser(String email, User user) {
+        StringBuilder sql = new StringBuilder("UPDATE " + USER_TABLE + " SET");
+        Map<String, Object> fields = new HashMap<>();
+
+        if (user.getName() != null)
+            fields.put(NAME, user.getName());
+        if (user.getSurname() != null)
+            fields.put(SURNAME, user.getSurname());
+        if (user.getBirthdate() != null)
+            fields.put(BIRTHDATE, user.getBirthdate());
+        if (user.getGender() != null)
+            fields.put(GENDER, user.getGender().toString());
+        if (user.getDescription() != null)
+            fields.put(DESCRIPTION, user.getDescription());
+        if (user.getImage() != null)
+            fields.put(IMAGE, user.getImage());
+
+        for (Iterator<String> it = fields.keySet().iterator(); it.hasNext();) {
+            sql.append(" ").append(it.next()).append(" = ?");
+
+            if (it.hasNext()) {
+                sql.append(",");
+            }
+        }
+        sql.append(" WHERE email = \'").append(email).append("\'");
+
+        jdbcTemplate.update(sql.toString(), fields.values().toArray());
     }
 
     public void updateRecoveryToken(String email, String recoveryToken) {
@@ -64,8 +95,8 @@ public class UserRepositoryImpl implements UserRepository {
     public String getEmailFromToken(String token) {
         String email;
         try {
-            email = jdbcTemplate.queryForObject("SELECT email FROM " + USER_TABLE + " WHERE " + RECOVERY + "= ?",
-                    new Object[]{token}, String.class);
+            email = jdbcTemplate.queryForObject("SELECT email FROM " + USER_TABLE + " WHERE " + RECOVERY + "= ?", new
+                    Object[]{token}, String.class);
         } catch (EmptyResultDataAccessException ex) {
             throw new UserNotFoundException();
         }
@@ -86,6 +117,7 @@ public class UserRepositoryImpl implements UserRepository {
             user.setGender(User.Gender.valueOf(resultSet.getString(GENDER)));
             user.setBalance(resultSet.getFloat(BALANCE));
             user.setDescription(resultSet.getString(DESCRIPTION));
+            user.setImage(resultSet.getString(IMAGE));
 
             return user;
         }
