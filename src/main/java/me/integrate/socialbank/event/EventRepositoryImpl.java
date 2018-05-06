@@ -79,8 +79,8 @@ public class EventRepositoryImpl implements EventRepository {
             Event event = new Event();
             event.setId(resultSet.getInt(ID));
             event.setCreatorEmail(resultSet.getString(CREATOR));
-            event.setIniDate(resultSet.getDate(INIDATE));
-            event.setEndDate(resultSet.getDate(ENDDATE));
+            event.setIniDate(resultSet.getTimestamp(INIDATE));
+            event.setEndDate(resultSet.getTimestamp(ENDDATE));
             event.setLocation(resultSet.getString(LOCATION));
             event.setTitle(resultSet.getString(TITLE));
             event.setDescription(resultSet.getString(DESCRIPTION));

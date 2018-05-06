@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.*;
 
 @Repository
 public class UserRepositoryImpl implements UserRepository {
@@ -58,15 +59,32 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     public void updateUser(String email, User user) {
-        jdbcTemplate.update("UPDATE " + USER_TABLE +
-                        " SET " + NAME + " = ?," +
-                        SURNAME + " = ?, " +
-                        BIRTHDATE + " = ?, " +
-                        GENDER + " = ?, " +
-                        DESCRIPTION + " = ?, " +
-                        IMAGE + " = ? WHERE " + EMAIL + " = ?",
-                user.getName(), user.getSurname(), user.getBirthdate(), user.getGender().toString(),
-                user.getDescription(), user.getImage(), user.getEmail());
+        StringBuilder sql = new StringBuilder("UPDATE " + USER_TABLE + " SET");
+        Map<String, Object> fields = new HashMap<>();
+
+        if (user.getName() != null)
+            fields.put(NAME, user.getName());
+        if (user.getSurname() != null)
+            fields.put(SURNAME, user.getSurname());
+        if (user.getBirthdate() != null)
+            fields.put(BIRTHDATE, user.getBirthdate());
+        if (user.getGender() != null)
+            fields.put(GENDER, user.getGender().toString());
+        if (user.getDescription() != null)
+            fields.put(DESCRIPTION, user.getDescription());
+        if (user.getImage() != null)
+            fields.put(IMAGE, user.getImage());
+
+        for (Iterator<String> it = fields.keySet().iterator(); it.hasNext();) {
+            sql.append(" ").append(it.next()).append(" = ?");
+
+            if (it.hasNext()) {
+                sql.append(",");
+            }
+        }
+        sql.append(" WHERE email = \'").append(email).append("\'");
+
+        jdbcTemplate.update(sql.toString(), fields.values().toArray());
     }
 
     public void updateRecoveryToken(String email, String recoveryToken) {
