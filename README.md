@@ -1,6 +1,6 @@
 # SocialBank
 
-## Database setup
+## Basic setup
 
 In **application.properties** file located in `src/main/resources/` add the following variables:
 
