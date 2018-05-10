@@ -11,4 +11,8 @@ public interface EventRepository {
     List<Event> getEvents();
 
     void deleteEvent(int id);
+
+    List<Event> getAllEvents();
+
+    List<Event> getEventsByCreator(String email);
 }

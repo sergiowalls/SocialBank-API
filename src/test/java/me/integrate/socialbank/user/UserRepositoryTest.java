@@ -63,4 +63,18 @@ class UserRepositoryTest {
         userRepository.updatePassword(email, newPassword);
         assertEquals(newPassword, userRepository.getUserByEmail(email).getPassword());
     }
+
+    @Test
+    void givenUserWhenUpdatedReturnNewValues() {
+        String email = "swaggaaa@integrate.me";
+        User user = userRepository.saveUser(UserTestUtils.createUser(email));
+        String newName = "Wallsy";
+        String newDescription = "Me voy al teatro";
+        user.setName(newName);
+        user.setDescription(newDescription);
+
+        userRepository.updateUser(email, user);
+        assertEquals(user, userRepository.getUserByEmail(email));
+
+    }
 }

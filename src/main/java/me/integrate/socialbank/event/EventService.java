@@ -22,7 +22,9 @@ public class EventService {
         return eventRepository.saveEvent(event);
     }
 
-    public List<Event> getEvents() { return eventRepository.getEvents(); }
+    public List<Event> getAllEvents() { return eventRepository.getAllEvents(); }
+
+    public List<Event> getEventsByCreator(String email) { return eventRepository.getEventsByCreator(email); }
 
     public void deteleEvent(int id) { eventRepository.deleteEvent(id); }
 }

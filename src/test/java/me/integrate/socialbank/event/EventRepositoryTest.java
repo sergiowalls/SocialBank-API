@@ -9,12 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static me.integrate.socialbank.event.EventTestUtils.sameEvent;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 @Transactional
@@ -31,7 +26,7 @@ class EventRepositoryTest {
         String email = "pepito@pepito.com";
         userRepository.saveUser(UserTestUtils.createUser(email));
         Event event = eventRepository.saveEvent(EventTestUtils.createEvent(email));
-        assertTrue(sameEvent(event, eventRepository.getEventById(event.getId())));
+        assertEquals(event, eventRepository.getEventById(event.getId()));
     }
 
     @Test
@@ -41,26 +36,20 @@ class EventRepositoryTest {
         Event eventOne = eventRepository.saveEvent(EventTestUtils.createEvent(email));
         Event eventTwo = eventRepository.saveEvent(EventTestUtils.createEvent(email));
 
-        assertTrue(sameEvent(eventOne, eventRepository.getEventById(eventOne.getId())));
-        assertTrue(sameEvent(eventTwo, eventRepository.getEventById(eventTwo.getId())));
+        assertEquals(eventOne, eventRepository.getEventById(eventOne.getId()));
+        assertEquals(eventTwo, eventRepository.getEventById(eventTwo.getId()));
     }
 
     @Test
-    void givenTwoDifferentEventsWhenSavedThenReturnListAllEvents() {
+    void givenEventsStoredInDatabaseWhenRetrievedByEmailReturnSameEvents() {
         String email = "pepito@pepito.com";
+        String otherEmail = "otheruser@other.com";
         userRepository.saveUser(UserTestUtils.createUser(email));
+        userRepository.saveUser(UserTestUtils.createUser(otherEmail));
         Event eventOne = eventRepository.saveEvent(EventTestUtils.createEvent(email));
-        Event eventTwo = eventRepository.saveEvent(EventTestUtils.createEvent(email));
-        List<Event> eventList = new ArrayList<>();
-        eventList.add(eventOne); eventList.add(eventTwo);
+        Event otherEvent = eventRepository.saveEvent(EventTestUtils.createEvent(otherEmail));
 
-        List<Event> returnList = eventRepository.getEvents();
-
-        assertEquals(eventList.size(), returnList.size());
-        for (int i = 0; i < eventList.size(); i++) {
-            assertEquals(eventList.get(i), returnList.get(i));
-        }
+        assertEquals(eventOne, eventRepository.getEventsByCreator(email).get(0));
     }
-
 
 }

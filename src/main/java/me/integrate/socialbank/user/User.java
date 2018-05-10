@@ -2,18 +2,11 @@ package me.integrate.socialbank.user;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Objects;
 
 public class User {
-
-    public String getImage() {
-        return image;
-    }
-
-    public void setImage(String image) {
-        this.image = image;
-    }
 
     public enum Gender {
         FEMALE,
@@ -30,7 +23,7 @@ public class User {
     private Gender gender;
     private float balance;
     private String description;
-    private String image;
+    private String image; //base 64
 
 
     public String getEmail() {
@@ -65,6 +58,10 @@ public class User {
         return description;
     }
 
+    public String getImage() {
+        return image;
+    }
+
     public void setEmail(String email) {
         this.email = email;
     }
@@ -97,6 +94,10 @@ public class User {
         this.description = description;
     }
 
+    public void setImage(String image) {
+        this.image = image;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -106,15 +107,17 @@ public class User {
                 Objects.equals(email, user.email) &&
                 Objects.equals(name, user.name) &&
                 Objects.equals(surname, user.surname) &&
-                Objects.equals(birthdate, user.birthdate) &&
+                new SimpleDateFormat("yyyyMMdd").format(birthdate).equals(
+                        new SimpleDateFormat("yyyyMMdd").format(user.birthdate)) &&
                 gender == user.gender &&
-                Objects.equals(description, user.description);
+                Objects.equals(description, user.description) &&
+                Objects.equals(image, user.image);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(email, name, surname, password, birthdate, gender, balance, description);
+        return Objects.hash(email, name, surname, birthdate, gender, balance, description);
     }
 
 }
