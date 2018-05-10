@@ -61,6 +61,11 @@ public class EventRepositoryImpl implements EventRepository {
         return jdbcTemplate.query("SELECT * FROM " + EVENT_TABLE, new EventRowMapper());
     }
 
+    public void deleteEvent(int id) {
+        jdbcTemplate.queryForObject("DELETE FROM " + EVENT_TABLE + " WHERE " + ID + "= ?",
+                new Object[]{id}, new EventRowMapper());
+    }
+
     private class EventRowMapper implements RowMapper<Event> {
         @Override
         public Event mapRow(ResultSet resultSet, int i) throws SQLException {

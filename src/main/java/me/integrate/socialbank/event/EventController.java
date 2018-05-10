@@ -33,4 +33,10 @@ public class EventController {
         return eventService.getEvents();
     }
 
+    @DeleteMapping("/events/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteEvent(@PathVariable int id) {
+        eventService.deteleEvent(id);
+    }
+
 }

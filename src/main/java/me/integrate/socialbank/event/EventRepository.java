@@ -9,4 +9,6 @@ public interface EventRepository {
     Event getEventById(int id);
 
     List<Event> getEvents();
+
+    void deleteEvent(int id);
 }

@@ -23,4 +23,6 @@ public class EventService {
     }
 
     public List<Event> getEvents() { return eventRepository.getEvents(); }
+
+    public void deteleEvent(int id) { eventRepository.deleteEvent(id); }
 }
