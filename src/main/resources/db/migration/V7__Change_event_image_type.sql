@@ -1,0 +1,2 @@
+ALTER TABLE event
+  ALTER COLUMN image TYPE TEXT;

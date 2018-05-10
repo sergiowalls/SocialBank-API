@@ -56,14 +56,59 @@ class EventControllerTest {
 
     @Test
     @WithMockUser
-    void withDateShouldReturnCreatedStatus() throws Exception {
+    void withValidDateShouldReturnCreatedStatus() throws Exception {
         String json = "{\n" +
                 "  \"creatorEmail\": \"string\",\n" +
                 "  \"description\": \"string\",\n" +
-                "  \"endDate\": \"2019-04-26T15:12:44.865Z\",\n" +
+                "  \"endDate\": \"2019-04-25T15:12:44.867Z\",\n" +
                 "  \"id\": 0,\n" +
                 "  \"image\": \"string\",\n" +
                 "  \"iniDate\": \"2019-04-25T15:12:44.865Z\",\n" +
+                "  \"location\": \"string\",\n" +
+                "  \"title\": \"string\",\n" +
+                "  \"demand\": \"true\"" +
+                "}";
+        Event event = EventTestUtils.createEvent();
+        given(eventService.saveEvent(any())).willReturn(event);
+        this.mockMvc.perform(
+                post("/events")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpect(status().isCreated());
+    }
+
+    @Test
+    @WithMockUser
+    void withInvalidDateShouldReturnBadRequest() throws Exception {
+        String json = "{\n" +
+                "  \"creatorEmail\": \"string\",\n" +
+                "  \"description\": \"string\",\n" +
+                "  \"endDate\": \"2019-04-25T15:12:44.864Z\",\n" +
+                "  \"id\": 0,\n" +
+                "  \"image\": \"string\",\n" +
+                "  \"iniDate\": \"2019-04-25T15:12:44.865Z\",\n" +
+                "  \"location\": \"string\",\n" +
+                "  \"title\": \"string\"\n" +
+                "}";
+        Event event = EventTestUtils.createEvent();
+        given(eventService.saveEvent(any())).willReturn(event);
+        this.mockMvc.perform(
+                post("/events")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @WithMockUser
+    void withEmptyDateShouldReturnCreatedStatus() throws Exception {
+        String json = "{\n" +
+                "  \"creatorEmail\": \"string\",\n" +
+                "  \"description\": \"string\",\n" +
+                "  \"endDate\": \"\",\n" +
+                "  \"id\": 0,\n" +
+                "  \"image\": \"string\",\n" +
+                "  \"iniDate\": \"\",\n" +
                 "  \"location\": \"string\",\n" +
                 "  \"title\": \"string\"\n" +
                 "}";
@@ -96,7 +141,7 @@ class EventControllerTest {
         le.add(e1);
         le.add(e2);
 
-        when(eventService.getEvents()).thenReturn(le);
+        when(eventService.getAllEvents()).thenReturn(le);
         this.mockMvc.perform(get("/events/"))
                 .andDo(print())
                 .andExpect(jsonPath("$", hasSize(le.size())))
@@ -115,7 +160,7 @@ class EventControllerTest {
         List<Event> le = new ArrayList<>();
         le.add(e1); le.add(e2);
 
-        when(eventService.getEvents()).thenReturn(le);
+        when(eventService.getAllEvents()).thenReturn(le);
         this.mockMvc.perform(get("/events/"))
                 .andDo(print())
                 .andExpect(jsonPath("$", hasSize(le.size())))

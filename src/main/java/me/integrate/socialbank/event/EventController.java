@@ -24,17 +24,18 @@ public class EventController {
     @ResponseStatus(HttpStatus.CREATED)
     public Event saveEvent(@RequestBody Event event, Authentication authentication) {
         event.setCreatorEmail(authentication.getName());
-        if (event.getIniDate().after(event.getEndDate()) || event.getIniDate().before(new Date())) throw new EventWithIncorrectDateException();
+        if (event.getIniDate() != null && event.getEndDate() != null && (event.getIniDate().after(event.getEndDate()) || event.getIniDate().before(new Date()))) throw new EventWithIncorrectDateException();
         return eventService.saveEvent(event);
     }
 
     @GetMapping("/events")
-    public @ResponseBody List<Event> getEvents() {
-        return eventService.getEvents();
+    public @ResponseBody List<Event> getAllEvents() {
+        return eventService.getAllEvents();
     }
 
-    @RequestMapping("/events")
-    public @ResponseBody List<Event> getEventsByCreator(@RequestParam String emailCreator) {
+    @GetMapping("/users/{emailCreator}/events")
+    public @ResponseBody
+    List<Event> getEventsByCreator(@PathVariable String emailCreator) {
         return eventService.getEventsByCreator(emailCreator);
     }
 
