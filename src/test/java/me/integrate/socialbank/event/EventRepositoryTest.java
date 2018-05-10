@@ -1,15 +1,23 @@
 package me.integrate.socialbank.event;
 
+import jdk.jfr.events.ExceptionThrownEvent;
 import me.integrate.socialbank.user.UserRepository;
 import me.integrate.socialbank.user.UserTestUtils;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import java.sql.SQLException;
+
+import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 @SpringBootTest
 @Transactional
@@ -52,4 +60,18 @@ class EventRepositoryTest {
         assertEquals(eventOne, eventRepository.getEventsByCreator(email).get(0));
     }
 
+    @Test
+    void givenEventStoredInDatabaseWhenDeletedThenIsNoLongerStored() {
+        String email = "email@email.tld";
+        userRepository.saveUser(UserTestUtils.createUser(email));
+        int eventId = eventRepository.saveEvent(EventTestUtils.createEvent(email)).getId();
+        eventRepository.deleteEvent(eventId);
+        try {
+           eventRepository.getEventById(eventId);
+        }
+        catch (Exception e) {
+
+        }
+
+    }
 }
