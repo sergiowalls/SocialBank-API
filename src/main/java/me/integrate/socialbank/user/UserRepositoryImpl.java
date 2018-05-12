@@ -32,6 +32,7 @@ public class UserRepositoryImpl implements UserRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+
     public User getUserByEmail(String email) {
         try {
             return jdbcTemplate.queryForObject("SELECT * FROM " + USER_TABLE + " WHERE " + EMAIL + "= ?", new
@@ -85,6 +86,10 @@ public class UserRepositoryImpl implements UserRepository {
         sql.append(" WHERE email = \'").append(email).append("\'");
 
         jdbcTemplate.update(sql.toString(), fields.values().toArray());
+    }
+
+    public Set<User> getUsers() {
+        return new HashSet<>(jdbcTemplate.query("SELECT * FROM " + USER_TABLE, new UserRowMapper()));
     }
 
     public void updateRecoveryToken(String email, String recoveryToken) {

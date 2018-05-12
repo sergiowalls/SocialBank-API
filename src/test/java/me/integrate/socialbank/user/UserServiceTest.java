@@ -9,6 +9,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.Set;
 
 import static me.integrate.socialbank.user.UserTestUtils.createUser;
 import static org.junit.jupiter.api.Assertions.*;
@@ -69,5 +70,21 @@ class UserServiceTest {
         User userByEmail = userService.getUserByEmail(email);
         assertNotEquals(user, userByEmail);
         assertEquals(newUser, userByEmail);
+    }
+
+    @Test
+    void givenTwoUsersReturnSameUsers() {
+        String email = "aaa@aaa.aaa";
+        String password = "123";
+        String email2 = "bbb@bbb.bbb";
+
+        User user = createUser(email, password);
+        userService.saveUser(user);
+        User user1 = createUser(email2, password);
+        userService.saveUser(user1);
+
+        Set<User> users = userService.getUsers();
+        assertTrue(users.contains(user));
+        assertTrue(users.contains(user1));
     }
 }
