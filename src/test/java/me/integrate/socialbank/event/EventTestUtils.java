@@ -3,7 +3,6 @@ package me.integrate.socialbank.event;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Objects;
 
 class EventTestUtils {
 
@@ -46,6 +45,7 @@ class EventTestUtils {
         event.setDemand(true);
         event.setLatitude(37.2);
         event.setLongitude(19.9);
+        event.setCategory(Category.OTHER);
         return event;
     }
 }

@@ -18,6 +18,7 @@ public class Event {
     private Boolean isDemand;
     private Double latitude;
     private Double longitude;
+    private Category category;
 
     public int getId() {
         return id;
@@ -107,6 +108,13 @@ public class Event {
         this.longitude = longitude;
     }
 
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
 
     @Override
     public boolean equals(Object o)
@@ -124,12 +132,13 @@ public class Event {
                 Objects.equals(image, event.image) &&
                 Objects.equals(isDemand, event.isDemand) &&
                 Objects.equals(latitude, event.latitude) &&
-                Objects.equals(longitude, event.longitude);
+                Objects.equals(longitude, event.longitude) &&
+                Objects.equals(category, event.category);
     }
 
     @Override
     public int hashCode()
     {
-        return Objects.hash(id, creatorEmail, iniDate, endDate, /*hours,*/ location, title, description);
+        return Objects.hash(id, creatorEmail, iniDate, endDate, /*hours,*/ location, title, description, category);
     }
 }

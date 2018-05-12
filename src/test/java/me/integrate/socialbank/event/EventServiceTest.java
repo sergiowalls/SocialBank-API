@@ -35,7 +35,6 @@ public class EventServiceTest {
         Event savedEvent = eventService.saveEvent(event);
 
         assertEquals(event, savedEvent);
-
     }
 
     @Test
