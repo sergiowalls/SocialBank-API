@@ -29,7 +29,9 @@ public class EventController {
     }
 
     @GetMapping("/events")
-    public @ResponseBody List<Event> getAllEvents() {
+    public @ResponseBody
+    List<Event> getAllEvents(@RequestParam(value = "category", required = false) Category category) {
+        if (category != null) return eventService.getEventsByCategory(category);
         return eventService.getAllEvents();
     }
 

@@ -11,4 +11,6 @@ public interface EventRepository {
     List<Event> getAllEvents();
 
     List<Event> getEventsByCreator(String email);
+
+    List<Event> getEventsByCategory(Category category);
 }

@@ -25,4 +25,8 @@ public class EventService {
     public List<Event> getAllEvents() { return eventRepository.getAllEvents(); }
 
     public List<Event> getEventsByCreator(String email) { return eventRepository.getEventsByCreator(email); }
+
+    public List<Event> getEventsByCategory(Category category) {
+        return eventRepository.getEventsByCategory(category);
+    }
 }

@@ -70,6 +70,11 @@ public class EventRepositoryImpl implements EventRepository {
                 new Object[]{email}, new EventRowMapper());
     }
 
+    public List<Event> getEventsByCategory(Category category) {
+        return jdbcTemplate.query("SELECT * FROM " + EVENT_TABLE + " WHERE " + CATEGORY + "= ?",
+                new Object[]{category.name()}, new EventRowMapper());
+    }
+
     public List<Event> getAllEvents() {
         return jdbcTemplate.query("SELECT * FROM " + EVENT_TABLE, new EventRowMapper());
     }

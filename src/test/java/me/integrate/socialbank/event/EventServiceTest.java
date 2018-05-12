@@ -12,8 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import static me.integrate.socialbank.event.EventTestUtils.createEvent;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
@@ -48,6 +47,44 @@ public class EventServiceTest {
 
         assertTrue(returnList.contains(event));
         assertTrue(returnList.contains(event2));
+    }
+
+    @Test
+    void givenEventsOfSameCategoryWhenGetByCategoryThenReturnsBoth() {
+        String email = "pepito@pepito.com";
+        userRepository.saveUser(UserTestUtils.createUser(email));
+        Event event = eventService.saveEvent(createEvent(email, Category.CULTURE));
+        Event event2 = eventService.saveEvent(createEvent(email, Category.CULTURE));
+
+        List<Event> events = eventService.getEventsByCategory(Category.CULTURE);
+
+        assertTrue(events.contains(event));
+        assertTrue(events.contains(event2));
+    }
+
+    @Test
+    void givenEventsOfDifferentCategoriesWhenGetByCategoryThenReturnsOnlyOne() {
+        String email = "pepito@pepito.com";
+        userRepository.saveUser(UserTestUtils.createUser(email));
+        Event event = eventService.saveEvent(createEvent(email, Category.CULTURE));
+        Event event2 = eventService.saveEvent(createEvent(email, Category.GASTRONOMY));
+
+        List<Event> events = eventService.getEventsByCategory(Category.CULTURE);
+
+        assertTrue(events.contains(event));
+        assertFalse(events.contains(event2));
+    }
+
+    @Test
+    void givenEventsOfDifferentCategoriesWhenGetByAnotherCategoryThenReturnsEmptyList() {
+        String email = "pepito@pepito.com";
+        userRepository.saveUser(UserTestUtils.createUser(email));
+        eventService.saveEvent(createEvent(email, Category.CULTURE));
+        eventService.saveEvent(createEvent(email, Category.GASTRONOMY));
+
+        List<Event> events = eventService.getEventsByCategory(Category.LEISURE);
+
+        assertTrue(events.isEmpty());
     }
 
     @Test
