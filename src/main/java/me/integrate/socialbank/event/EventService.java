@@ -26,5 +26,9 @@ public class EventService {
 
     public List<Event> getEventsByCreator(String email) { return eventRepository.getEventsByCreator(email); }
 
+    public List<Event> getEventsByCategory(Category category) {
+        return eventRepository.getEventsByCategory(category);
+    }
+
     public void deteleEvent(int id) { eventRepository.deleteEvent(id); }
 }

@@ -3,7 +3,6 @@ package me.integrate.socialbank.event;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Objects;
 
 class EventTestUtils {
 
@@ -23,15 +22,21 @@ class EventTestUtils {
     }
 
     static Event createEvent() {
-        return createEvent(EMAIL,getDate(INI_DATE),  getDate(END_DATE));
+        return createEvent(EMAIL, getDate(INI_DATE), getDate(END_DATE));
     }
 
     static Event createEvent(String email) {
-        return createEvent(email,getDate(INI_DATE), getDate(END_DATE));
+        return createEvent(email, getDate(INI_DATE), getDate(END_DATE));
+    }
+
+    static Event createEvent(String email, Category category) {
+        Event event = createEvent(email, getDate(INI_DATE), getDate(END_DATE));
+        event.setCategory(category);
+        return event;
     }
 
     static Event createEvent(Date iniDate, Date endDate) {
-        return createEvent(EMAIL,iniDate, endDate);
+        return createEvent(EMAIL, iniDate, endDate);
     }
 
     static Event createEvent(String email, Date iniDate, Date endDate) {
@@ -46,6 +51,7 @@ class EventTestUtils {
         event.setDemand(true);
         event.setLatitude(37.2);
         event.setLongitude(19.9);
+        event.setCategory(Category.OTHER);
         return event;
     }
 }

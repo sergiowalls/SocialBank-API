@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Set;
+
 @Service
 public class UserService {
     private UserRepository userRepository;
@@ -30,5 +32,9 @@ public class UserService {
 
     public void updateUser(String email, User user) {
         userRepository.updateUser(email, user);
+    }
+
+    public Set<User> getUsers() {
+        return userRepository.getUsers();
     }
 }
