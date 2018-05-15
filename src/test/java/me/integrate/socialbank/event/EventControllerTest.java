@@ -24,8 +24,7 @@ import static org.hamcrest.core.IsCollectionContaining.hasItems;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -158,7 +157,8 @@ class EventControllerTest {
         Event e1 = EventTestUtils.createEvent(email);
         Event e2 = EventTestUtils.createEvent(email);
         List<Event> le = new ArrayList<>();
-        le.add(e1); le.add(e2);
+        le.add(e1);
+        le.add(e2);
 
         when(eventService.getAllEvents()).thenReturn(le);
         this.mockMvc.perform(get("/events/"))
@@ -189,6 +189,15 @@ class EventControllerTest {
                 .andExpect(status().isForbidden());
     }
 
+
+    @Test
+    @WithMockUser
+    void whenUpdateEventShouldReturnOk() throws Exception {
+        String json = "";
+        this.mockMvc.perform(
+                put("/events/1").contentType(MediaType.APPLICATION_JSON).content(json))
+                .andExpect(status().isOk());
+    }
 
     @Test
     @WithMockUser
