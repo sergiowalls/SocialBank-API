@@ -29,4 +29,9 @@ public class EventService {
     public List<Event> getEventsByCategory(Category category) {
         return eventRepository.getEventsByCategory(category);
     }
+
+    public Event updateEvent(int id, Event event) {
+        eventRepository.updateEvent(id, event);
+        return eventRepository.getEventById(id);
+    }
 }
