@@ -189,16 +189,6 @@ class EventControllerTest {
                 .andExpect(status().isForbidden());
     }
 
-
-    @Test
-    @WithMockUser
-    void whenUpdateEventShouldReturnOk() throws Exception {
-        String json = "";
-        this.mockMvc.perform(
-                put("/events/1").contentType(MediaType.APPLICATION_JSON).content(json))
-                .andExpect(status().isOk());
-    }
-
     @Test
     @WithMockUser
     void givenEventPostWithIniDateNotLesThanEndDateShouldReturnBadRequestStatus() throws Exception {

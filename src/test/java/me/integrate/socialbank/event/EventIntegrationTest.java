@@ -39,7 +39,6 @@ class EventIntegrationTest {
     private UserService userService;
 
     @Test
-    @Disabled("pending implementation")
     @WithMockUser
     void whenUpdateEventShouldReturnUpdatedEvent() throws Exception {
         User user = UserTestUtils.createUser("aaa@aaa.aaa");
