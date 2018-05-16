@@ -1,6 +1,7 @@
 package me.integrate.socialbank.event;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -61,8 +62,19 @@ public class EventRepositoryImpl implements EventRepository {
     }
 
     public Event getEventById(int id) {
-        return jdbcTemplate.queryForObject("SELECT * FROM " + EVENT_TABLE + " WHERE " + ID + "= ?",
-                new Object[]{id}, new EventRowMapper());
+        Event event;
+        try {
+            event = jdbcTemplate.queryForObject("SELECT * FROM " + EVENT_TABLE + " WHERE " + ID + "= ?",
+                    new Object[]{id}, new EventRowMapper());
+        } catch (EmptyResultDataAccessException e) {
+            throw new EventNotFoundException();
+        }
+        return event;
+    }
+
+    public void updateEvent(int id, Event event) {
+        String sql = "UPDATE " + EVENT_TABLE + " SET " + IMAGE + " = ?, " + DESCRIPTION + " = ? WHERE " + ID + " = ?";
+        jdbcTemplate.update(sql, event.getImage(), event.getDescription(), id);
     }
 
     public List<Event> getEventsByCreator(String email) {

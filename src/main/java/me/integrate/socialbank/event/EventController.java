@@ -20,6 +20,11 @@ public class EventController {
         return eventService.getEventById(id);
     }
 
+    @PutMapping("/events/{id}")
+    public Event updateEvent(@PathVariable int id, @RequestBody Event event) {
+        return eventService.updateEvent(id, event);
+    }
+
     @PostMapping("/events")
     @ResponseStatus(HttpStatus.CREATED)
     public Event saveEvent(@RequestBody Event event, Authentication authentication) {

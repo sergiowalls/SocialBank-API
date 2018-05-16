@@ -15,4 +15,6 @@ public interface EventRepository {
     List<Event> getEventsByCreator(String email);
 
     List<Event> getEventsByCategory(Category category);
+
+    void updateEvent(int id, Event event);
 }
