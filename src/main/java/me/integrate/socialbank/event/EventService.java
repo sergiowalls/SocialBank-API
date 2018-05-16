@@ -37,5 +37,10 @@ public class EventService {
         return eventRepository.getEventById(id);
     }
 
-    public void deteleEvent(int id) { eventRepository.deleteEvent(id); }
+    public Event deleteEvent(int id) {
+        Event eventById = eventRepository.getEventById(id);
+        if (eventById == null) throw new EventNotFoundException();
+        eventRepository.deleteEvent(id);
+        return eventById;
+    }
 }

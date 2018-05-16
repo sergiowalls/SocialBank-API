@@ -2,15 +2,16 @@ package me.integrate.socialbank.event;
 
 import me.integrate.socialbank.user.UserRepository;
 import me.integrate.socialbank.user.UserTestUtils;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 @Transactional
@@ -59,30 +60,17 @@ class EventRepositoryTest {
         userRepository.saveUser(UserTestUtils.createUser(email));
         int eventId = eventRepository.saveEvent(EventTestUtils.createEvent(email)).getId();
         eventRepository.deleteEvent(eventId);
-
-        try {
-            eventRepository.getEventById(eventId);
-           fail("Event should be erased but was found");
-        }
-        catch (EmptyResultDataAccessException e) {
-                //test pass
-        }
+        Assertions.assertThrows(EventNotFoundException.class, () -> eventRepository.getEventById(eventId));
     }
 
     @Test
     void givenDifferentEventsStoredInDatabaseWhenDeletedOneThenTheOtherIsStillStored() {
-        String email = "email@email.tld";
+        String email = "em@email.tld";
         userRepository.saveUser(UserTestUtils.createUser(email));
         Event eventOne = eventRepository.saveEvent(EventTestUtils.createEvent(email));
         Event eventTwo = eventRepository.saveEvent(EventTestUtils.createEvent(email));
         eventRepository.deleteEvent(eventOne.getId());
         assertEquals(eventTwo, eventRepository.getEventById(eventTwo.getId()));
-        try {
-            eventRepository.getEventById(eventOne.getId());
-            fail("Event should be erased but was found");
-        }
-        catch (EmptyResultDataAccessException e) {
-            //test pass
-        }
+        assertThrows(EventNotFoundException.class, () -> eventRepository.getEventById(eventOne.getId()));
     }
 }

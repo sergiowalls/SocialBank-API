@@ -24,7 +24,6 @@ import static org.hamcrest.core.IsCollectionContaining.hasItems;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.util.AssertionErrors.fail;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -239,13 +238,16 @@ class EventControllerTest {
 
     @Test
     @WithMockUser
-    void WhenDeleteShouldReturnOkStatus() {
+    void WhenDeleteEventShouldReturnOkStatus() throws Exception {
+        this.mockMvc.perform(delete("/events/123").contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
+    }
 
-        try {
-            this.mockMvc.perform(delete("/events/"+123).contentType(MediaType.APPLICATION_JSON))
-                    .andExpect(status().isOk());
-        } catch (Exception e) {
-            fail("test failed");
-        }
+    @Test
+    @WithMockUser
+    void WhenDeleteNotExistentEventShouldReturnNotFoundStatus() throws Exception {
+        int id = 123;
+        given(eventService.deleteEvent(id)).willThrow(EventNotFoundException.class);
+        this.mockMvc.perform(delete("/events/" + id).contentType(MediaType.APPLICATION_JSON)).andExpect(status()
+                .isNotFound());
     }
 }

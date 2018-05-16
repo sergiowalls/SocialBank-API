@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -104,14 +103,8 @@ public class EventServiceTest {
         String email = "pepito@pepito.com";
         userRepository.saveUser(UserTestUtils.createUser(email));
         int savedEventId = eventService.saveEvent(createEvent(email)).getId();
-        eventService.deteleEvent(savedEventId);
-        try {
-            eventService.getEventById(savedEventId);
-            fail("Event should be erased but was found");
-        }
-        catch (EmptyResultDataAccessException e) {
-            //test pass
-        }
+        eventService.deleteEvent(savedEventId);
+        assertThrows(EventNotFoundException.class, () -> eventService.getEventById(savedEventId));
     }
 
     @Test
@@ -120,15 +113,9 @@ public class EventServiceTest {
         userRepository.saveUser(UserTestUtils.createUser(email));
         Event eventOne = eventService.saveEvent(EventTestUtils.createEvent(email));
         Event eventTwo = eventService.saveEvent(EventTestUtils.createEvent(email));
-        eventService.deteleEvent(eventOne.getId());
+        eventService.deleteEvent(eventOne.getId());
         assertEquals(eventTwo, eventService.getEventById(eventTwo.getId()));
-        try {
-            eventService.getEventById(eventOne.getId());
-            fail("Event should be erased but was found");
-        }
-        catch (EmptyResultDataAccessException e) {
-            //test pass
-        }
+        assertThrows(EventNotFoundException.class, () -> eventService.getEventById(eventOne.getId()));
     }
 
 
