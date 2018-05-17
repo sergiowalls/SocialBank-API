@@ -1,0 +1,2 @@
+ALTER TABLE "user"
+  ADD COLUMN verified_account BOOLEAN DEFAULT FALSE NOT NULL;

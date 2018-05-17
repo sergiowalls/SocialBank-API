@@ -24,6 +24,7 @@ public class UserRepositoryImpl implements UserRepository {
     private final static String DESCRIPTION = "description";
     private final static String RECOVERY = "recovery";
     private final static String IMAGE = "image";
+    private final static String VERIFIED = "verified_account";
 
     private JdbcTemplate jdbcTemplate;
 
@@ -123,6 +124,7 @@ public class UserRepositoryImpl implements UserRepository {
             user.setBalance(resultSet.getFloat(BALANCE));
             user.setDescription(resultSet.getString(DESCRIPTION));
             user.setImage(resultSet.getString(IMAGE));
+            user.setVerified(resultSet.getBoolean(VERIFIED));
 
             return user;
         }

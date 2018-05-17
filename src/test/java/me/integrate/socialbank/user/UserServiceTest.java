@@ -36,6 +36,17 @@ class UserServiceTest {
     }
 
     @Test
+    void givenNewUserWhenSaveItThenUserIsNotVerified() {
+        String email = "admin@integrate.me";
+        String password = "123";
+        User user = createUser(email, password);
+        user.setVerified(true);
+        user = userService.saveUser(user);
+
+        assertFalse(user.getVerified());
+    }
+
+    @Test
     void givenUserWhenUpdateItsPasswordThenReturnsNewEncryptedPassword() {
         String email = "admin@integrate.me";
         String password = "123";
