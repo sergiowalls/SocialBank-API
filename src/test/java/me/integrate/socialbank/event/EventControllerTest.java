@@ -256,7 +256,6 @@ class EventControllerTest {
     void WhenDeleteIsTooLateShouldReturnForbiddenStatus() throws Exception {
         int id = 123;
         given(eventService.deleteEvent(id)).willThrow(TooLateException.class);
-        this.mockMvc.perform(delete("/events/" + id).contentType(MediaType.APPLICATION_JSON)).andExpect(status()
-                .isForbidden());
+        this.mockMvc.perform(delete("/events/" + id).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isConflict());
     }
 }
