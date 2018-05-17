@@ -157,8 +157,7 @@ class EventControllerTest {
         Event e1 = EventTestUtils.createEvent(email);
         Event e2 = EventTestUtils.createEvent(email);
         List<Event> le = new ArrayList<>();
-        le.add(e1);
-        le.add(e2);
+        le.add(e1); le.add(e2);
 
         when(eventService.getAllEvents()).thenReturn(le);
         this.mockMvc.perform(get("/events/"))
@@ -235,5 +234,20 @@ class EventControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(event)))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @WithMockUser
+    void WhenDeleteEventShouldReturnOkStatus() throws Exception {
+        this.mockMvc.perform(delete("/events/123").contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
+    }
+
+    @Test
+    @WithMockUser
+    void WhenDeleteNotExistentEventShouldReturnNotFoundStatus() throws Exception {
+        int id = 123;
+        given(eventService.deleteEvent(id)).willThrow(EventNotFoundException.class);
+        this.mockMvc.perform(delete("/events/" + id).contentType(MediaType.APPLICATION_JSON)).andExpect(status()
+                .isNotFound());
     }
 }

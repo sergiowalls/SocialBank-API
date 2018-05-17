@@ -46,4 +46,10 @@ public class EventController {
         return eventService.getEventsByCreator(emailCreator);
     }
 
+    @DeleteMapping("/events/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteEvent(@PathVariable int id) {
+        eventService.deleteEvent(id);
+    }
+
 }

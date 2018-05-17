@@ -96,7 +96,26 @@ public class EventServiceTest {
         Event savedEvent = eventService.saveEvent(event);
 
         assertEquals(event, savedEvent);
+    }
 
+    @Test
+    void givenStoredEventWhenDeletedThenIsNoLongerStored() {
+        String email = "pepito@pepito.com";
+        userRepository.saveUser(UserTestUtils.createUser(email));
+        int savedEventId = eventService.saveEvent(createEvent(email)).getId();
+        eventService.deleteEvent(savedEventId);
+        assertThrows(EventNotFoundException.class, () -> eventService.getEventById(savedEventId));
+    }
+
+    @Test
+    void givenDifferentEventsStoredInDatabaseWhenDeletedOneThenTheOtherIsStillStored() {
+        String email = "email@email.tld";
+        userRepository.saveUser(UserTestUtils.createUser(email));
+        Event eventOne = eventService.saveEvent(EventTestUtils.createEvent(email));
+        Event eventTwo = eventService.saveEvent(EventTestUtils.createEvent(email));
+        eventService.deleteEvent(eventOne.getId());
+        assertEquals(eventTwo, eventService.getEventById(eventTwo.getId()));
+        assertThrows(EventNotFoundException.class, () -> eventService.getEventById(eventOne.getId()));
     }
 
 
