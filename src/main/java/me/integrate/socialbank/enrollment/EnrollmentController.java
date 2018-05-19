@@ -49,9 +49,10 @@ public class EnrollmentController {
         return enrollmentService.getEnrollmentsOfUser(email);
     }
 
-    @DeleteMapping("/events/{id}/enrollments/{email}")
+    @DeleteMapping("/events/{id}/enrollments")
     @ResponseStatus(HttpStatus.OK)
-    public void deleteEvent(@PathVariable int id, @PathVariable String email) {
+    public void deleteEvent(@PathVariable int id, Authentication auth) {
+        String email = auth.getName();
         enrollmentService.deleteEnrollment(id, email);
     }
 }

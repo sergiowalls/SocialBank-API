@@ -1,6 +1,8 @@
 package me.integrate.socialbank.enrollment;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import me.integrate.socialbank.enrollment.exceptions.EnrollmentNotFoundException;
+import me.integrate.socialbank.enrollment.exceptions.TooLateException;
 import me.integrate.socialbank.event.Event;
 import me.integrate.socialbank.event.EventService;
 import me.integrate.socialbank.event.EventTestUtils;
@@ -26,10 +28,11 @@ import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.core.IsCollectionContaining.hasItems;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -60,7 +63,7 @@ public class EnrollmentControllerTest {
         given(enrollmentService.saveEnrollment(enrollment)).willReturn(enrollment);
 
         this.mockMvc.perform(
-                post("/events/"+id+"/enroll")
+                post("/events/" + id + "/enroll")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(null)))
                 .andExpect(status().isCreated());
@@ -81,11 +84,11 @@ public class EnrollmentControllerTest {
         given(enrollmentService.saveEnrollment(enrollment)).willReturn(enrollment);
 
         this.mockMvc.perform(
-                post("/events/"+id+"/enroll")
+                post("/events/" + id + "/enroll")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(null)))
                 .andExpect(status().isConflict());
-}
+    }
 
     @Test
     @Disabled
@@ -100,7 +103,7 @@ public class EnrollmentControllerTest {
         given(enrollmentService.saveEnrollment(enrollment)).willReturn(enrollment);
 
         this.mockMvc.perform(
-                post("/events/"+id+"/enroll")
+                post("/events/" + id + "/enroll")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(null)))
                 .andExpect(status().isConflict());
@@ -115,10 +118,11 @@ public class EnrollmentControllerTest {
         Event e1 = EventTestUtils.createEvent(emailCreator);
         Event e2 = EventTestUtils.createEvent(emailCreator);
         List<Integer> le = new ArrayList<>();
-        le.add(e1.getId()); le.add(e2.getId());
+        le.add(e1.getId());
+        le.add(e2.getId());
 
         when(enrollmentService.getEnrollmentsOfUser(emailEnrolled)).thenReturn(le);
-        this.mockMvc.perform(get("/users/"+emailEnrolled+"/enrollments"))
+        this.mockMvc.perform(get("/users/" + emailEnrolled + "/enrollments"))
                 .andDo(print())
                 .andExpect(jsonPath("$", hasSize(le.size())))
                 .andExpect(jsonPath("$.[*]", hasItems(e1.getId(), e2.getId())))
@@ -135,14 +139,38 @@ public class EnrollmentControllerTest {
         UserTestUtils.createUser(emailEnrolledTwo);
         int id = EventTestUtils.createEvent(emailCreator).getId();
         List<String> le = new ArrayList<>();
-        le.add(emailEnrolledOne); le.add(emailEnrolledTwo);
+        le.add(emailEnrolledOne);
+        le.add(emailEnrolledTwo);
 
         when(enrollmentService.getEnrollmentsOfEvent(id)).thenReturn(le);
-        this.mockMvc.perform(get("/events/"+id+"/enrollments"))
+        this.mockMvc.perform(get("/events/" + id + "/enrollments"))
                 .andDo(print())
                 .andExpect(jsonPath("$", hasSize(le.size())))
                 .andExpect(jsonPath("$.[*]", hasItems(emailEnrolledOne, emailEnrolledTwo)))
                 .andExpect(status().isOk())
                 .andReturn();
+    }
+
+    @Test
+    @WithMockUser
+    void WhenDeleteEnrollmentShouldReturnOkStatus() throws Exception {
+        this.mockMvc.perform(delete("/events/123/enrollments").contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
+    }
+
+    @Test
+    @WithMockUser
+    void WhenDeleteNotExistentEnrollmentShouldReturnNotFoundStatus() throws Exception {
+        int id = 123;
+        given(enrollmentService.deleteEnrollment(anyInt(), any())).willThrow(EnrollmentNotFoundException.class);
+        this.mockMvc.perform(delete("/events/" + id + "/enrollments").contentType(MediaType.APPLICATION_JSON)).andExpect(status()
+                .isNotFound());
+    }
+
+    @Test
+    @WithMockUser
+    void WhenDeleteIsTooLateShouldReturnConflictStatus() throws Exception {
+        int id = 123;
+        given(enrollmentService.deleteEnrollment(anyInt(), any())).willThrow(TooLateException.class);
+        this.mockMvc.perform(delete("/events/" + id+"/enrollments").contentType(MediaType.APPLICATION_JSON)).andExpect(status().isConflict());
     }
 }

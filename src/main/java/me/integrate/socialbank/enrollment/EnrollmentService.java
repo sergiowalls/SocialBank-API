@@ -27,6 +27,8 @@ public class EnrollmentService {
         return enrollmentRepository.getEnrollmentsOfUser(email);
     }
 
-    public void deleteEnrollment(int id, String email) { enrollmentRepository.deleteEnrollment(id, email);
+    public Enrollment deleteEnrollment(int id, String email) {
+        enrollmentRepository.deleteEnrollment(id, email);
+        return new Enrollment(email, id); //necessary for tests
     }
 }
