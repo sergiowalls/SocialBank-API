@@ -4,8 +4,13 @@ import me.integrate.socialbank.enrollment.exceptions.EnrollmentAlreadyExistsExce
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.List;
 
 @Repository
 public class EnrollmentRepositoryImpl implements EnrollmentRepository{
@@ -36,5 +41,27 @@ public class EnrollmentRepositoryImpl implements EnrollmentRepository{
         }
 
         return enrollment;
+    }
+
+    @Override
+    public List<Enrollment> getEnrollmentsOfEvent(int id) {
+        return jdbcTemplate.query("SELECT * FROM " + ENROLLMENT_TABLE + " WHERE " + EVENTID + "= ?",
+                new Object[]{id}, new EnrollmentRepositoryImpl.EnrollmentRowMapper());
+    }
+
+    @Override
+    public List<Enrollment> getEnrollmentsOfUser(String email) {
+        return jdbcTemplate.query("SELECT * FROM " + ENROLLMENT_TABLE + " WHERE " + USEREMAIL + "= ?",
+                new Object[]{email}, new EnrollmentRepositoryImpl.EnrollmentRowMapper());
+    }
+
+    private class EnrollmentRowMapper implements RowMapper<Enrollment> {
+        @Override
+        public Enrollment mapRow(ResultSet resultSet, int i) throws SQLException {
+            Enrollment enrollment = new Enrollment();
+            enrollment.setUserEmail(resultSet.getString(USEREMAIL));
+            enrollment.setEventId(resultSet.getInt(EVENTID));
+            return enrollment;
+        }
     }
 }
