@@ -1,8 +1,12 @@
 package me.integrate.socialbank.enrollment;
 
 
-import me.integrate.socialbank.event.*;
-import me.integrate.socialbank.user.*;
+import me.integrate.socialbank.event.Event;
+import me.integrate.socialbank.event.EventRepository;
+import me.integrate.socialbank.event.EventTestUtils;
+import me.integrate.socialbank.user.User;
+import me.integrate.socialbank.user.UserRepository;
+import me.integrate.socialbank.user.UserTestUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,6 +85,20 @@ public class EnrollmentRepositoryTest {
         List<Integer> retList = enrollmentRepository.getEnrollmentsOfUser(emailEnrolled);
         assertTrue(le.containsAll(retList));
         assertTrue(retList.containsAll(le));
+    }
+
+    @Test
+    void givenEnrollmentStoredInDatabaseWhenDeletedThenIsNoLongerStored() {
+        String creator = "email@email.tld";
+        String enrolled = "e@e.e";
+        userRepository.saveUser(UserTestUtils.createUser(creator));
+        userRepository.saveUser(UserTestUtils.createUser(enrolled));
+        int eventId = eventRepository.saveEvent(EventTestUtils.createEvent(creator)).getId();
+        Enrollment enrollment = new Enrollment(enrolled, eventId);
+        enrollmentRepository.saveEnrollment(enrollment);
+        enrollmentRepository.deleteEnrollment(eventId, enrolled);
+        enrollmentRepository.saveEnrollment(enrollment);
+        enrollmentRepository.deleteEnrollment(eventId, enrolled);
     }
 
 }

@@ -1,6 +1,5 @@
 package me.integrate.socialbank.enrollment;
 
-import me.integrate.socialbank.event.Event;
 import me.integrate.socialbank.event.EventService;
 import me.integrate.socialbank.event.EventTestUtils;
 import me.integrate.socialbank.user.User;
@@ -83,5 +82,19 @@ public class EnrollmentServiceTest {
         List<Integer> retList = enrollmentService.getEnrollmentsOfUser(emailEnrolled);
         assertTrue(le.containsAll(retList));
         assertTrue(retList.containsAll(le));
+    }
+
+    @Test
+    void givenEnrollmentStoredInDatabaseWhenDeletedThenIsNoLongerStored() {
+        String creator = "email@email.tld";
+        String enrolled = "e@e.e";
+        userService.saveUser(UserTestUtils.createUser(creator));
+        userService.saveUser(UserTestUtils.createUser(enrolled));
+        int eventId = eventService.saveEvent(EventTestUtils.createEvent(creator)).getId();
+        Enrollment enrollment = new Enrollment(enrolled, eventId);
+        enrollmentService.saveEnrollment(enrollment);
+        enrollmentService.deleteEnrollment(eventId, enrolled);
+        enrollmentService.saveEnrollment(enrollment);
+        enrollmentService.deleteEnrollment(eventId, enrolled);
     }
 }
