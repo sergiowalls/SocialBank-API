@@ -27,7 +27,7 @@ public class EnrollmentRepositoryImpl implements EnrollmentRepository{
     }
 
     @Override
-    public Enrollment enrollUserEvent(Enrollment enrollment) {
+    public Enrollment saveEnrollment(Enrollment enrollment) {
         try {
             jdbcTemplate.update("INSERT INTO " + ENROLLMENT_TABLE + " VALUES (?, ?)", enrollment.getUserEmail(),
                     enrollment.getEventId());

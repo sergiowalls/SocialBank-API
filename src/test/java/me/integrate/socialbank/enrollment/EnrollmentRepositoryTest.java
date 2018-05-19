@@ -36,6 +36,6 @@ public class EnrollmentRepositoryTest {
         int id = eventRepository.saveEvent(event).getId();
 
         Enrollment enrollment = new Enrollment(email, id);
-        assertEquals(enrollment, enrollmentRepository.enrollUserEvent(enrollment));
+        assertEquals(enrollment, enrollmentRepository.saveEnrollment(enrollment));
     }
 }

@@ -21,6 +21,6 @@ public class EnrollmentController {
     @ResponseStatus(HttpStatus.ACCEPTED)
     public Enrollment enrollEvent(@PathVariable int id, Authentication auth) {
         String email = auth.getName();
-        return enrollmentService.enrollUserEvent(new Enrollment(email, id));
+        return enrollmentService.saveEnrollment(new Enrollment(email, id));
     }
 }

@@ -13,7 +13,7 @@ public class EnrollmentService {
         this.enrollmentRepository = enrollmentRepository;
     }
 
-    public Enrollment enrollUserEvent(Enrollment enrollment) {
-        return enrollmentRepository.enrollUserEvent(enrollment);
+    public Enrollment saveEnrollment(Enrollment enrollment) {
+        return enrollmentRepository.saveEnrollment(enrollment);
     }
 }
