@@ -9,7 +9,11 @@ import me.integrate.socialbank.user.UserTestUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class EnrollmentServiceTest {
 
@@ -33,5 +37,45 @@ public class EnrollmentServiceTest {
 
         Enrollment enrollment = new Enrollment(email, id);
         assertEquals(enrollment, enrollmentService.saveEnrollment(enrollment));
+    }
+
+    @Test
+    void givenEnrollmentsStoredInDatabaseWhenRetrievedByEventReturnEnrollments() {
+        String emailCreator = "a@a.a", emailEnrolledOne = "b@b.b", emailEnrolledTwo = "c@c.c";
+
+        userService.saveUser(UserTestUtils.createUser(emailCreator));
+        userService.saveUser(UserTestUtils.createUser(emailEnrolledOne));
+        userService.saveUser(UserTestUtils.createUser(emailEnrolledTwo));
+
+        int id = eventService.saveEvent(EventTestUtils.createEvent(emailCreator)).getId();
+        List<String> le = new ArrayList<>();
+        le.add(emailEnrolledOne); le.add(emailEnrolledTwo);
+
+        enrollmentService.saveEnrollment(new Enrollment(emailEnrolledOne, id));
+        enrollmentService.saveEnrollment(new Enrollment(emailEnrolledTwo, id));
+
+        List<String> retList = enrollmentService.getEnrollmentsOfEvent(id);
+        assertTrue(le.containsAll(retList));
+        assertTrue(retList.containsAll(le));
+    }
+
+    @Test
+    void givenEnrollmentsStoredInDatabaseWhenRetrievedByUserReturnEnrollments() {
+        String emailCreator = "a@a.a", emailEnrolled = "b@b.b";
+
+        userService.saveUser(UserTestUtils.createUser(emailCreator));
+        userService.saveUser(UserTestUtils.createUser(emailEnrolled));
+
+        int idOne = eventService.saveEvent(EventTestUtils.createEvent(emailCreator)).getId();
+        int idTwo = eventService.saveEvent(EventTestUtils.createEvent(emailCreator)).getId();
+        List<Integer> le = new ArrayList<>();
+        le.add(idOne); le.add(idTwo);
+
+        enrollmentService.saveEnrollment(new Enrollment(emailEnrolled, idOne));
+        enrollmentService.saveEnrollment(new Enrollment(emailEnrolled, idTwo));
+
+        List<Integer> retList = enrollmentService.getEnrollmentsOfUser(emailEnrolled);
+        assertTrue(le.containsAll(retList));
+        assertTrue(retList.containsAll(le));
     }
 }
