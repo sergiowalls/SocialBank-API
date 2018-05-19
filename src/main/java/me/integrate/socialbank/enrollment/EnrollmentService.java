@@ -1,7 +1,5 @@
 package me.integrate.socialbank.enrollment;
 
-import me.integrate.socialbank.event.Event;
-import me.integrate.socialbank.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,5 +25,8 @@ public class EnrollmentService {
 
     public List<Integer> getEnrollmentsOfUser(String email) {
         return enrollmentRepository.getEnrollmentsOfUser(email);
+    }
+
+    public void deleteEnrollment(int id, String email) { enrollmentRepository.deleteEnrollment(id, email);
     }
 }

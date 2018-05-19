@@ -52,4 +52,9 @@ public class EnrollmentRepositoryImpl implements EnrollmentRepository{
                 new Object[]{email},Integer.class);
     }
 
+    @Override
+    public void deleteEnrollment(int id, String email) {
+        jdbcTemplate.update("DELETE FROM " + ENROLLMENT_TABLE + " WHERE " + USEREMAIL+ "=? AND "+EVENTID + "=?", email, id);
+    }
+
 }

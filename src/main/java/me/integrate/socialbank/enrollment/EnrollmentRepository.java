@@ -9,4 +9,6 @@ public interface EnrollmentRepository {
     List<String> getEnrollmentsOfEvent(int id);
 
     List<Integer> getEnrollmentsOfUser(String email);
+
+    void deleteEnrollment(int id, String email);
 }

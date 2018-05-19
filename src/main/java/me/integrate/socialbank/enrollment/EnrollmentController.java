@@ -48,4 +48,10 @@ public class EnrollmentController {
     List<Integer> getEnrollmentsOfUser(@PathVariable String email) {
         return enrollmentService.getEnrollmentsOfUser(email);
     }
+
+    @DeleteMapping("/events/{id}/enrollments/{email}")
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteEvent(@PathVariable int id, @PathVariable String email) {
+        enrollmentService.deleteEnrollment(id, email);
+    }
 }
