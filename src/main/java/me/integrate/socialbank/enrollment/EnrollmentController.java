@@ -1,7 +1,7 @@
 package me.integrate.socialbank.enrollment;
 
-import me.integrate.socialbank.enrollment.exceptions.EnrollmentAlreadyExistsException;
 import me.integrate.socialbank.enrollment.exceptions.TooLateException;
+import me.integrate.socialbank.enrollment.exceptions.UserIsTheCreatorException;
 import me.integrate.socialbank.event.Event;
 import me.integrate.socialbank.event.EventService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +31,7 @@ public class EnrollmentController {
         Event event = eventService.getEventById(id);
         if (event.getIniDate().before(new Date())) throw new TooLateException();
         String email = auth.getName();
-        if (event.getCreatorEmail().equals(email)) throw new EnrollmentAlreadyExistsException();
+        if (event.getCreatorEmail().equals(email)) throw new UserIsTheCreatorException();
         return enrollmentService.saveEnrollment(new Enrollment(email, id));
     }
 

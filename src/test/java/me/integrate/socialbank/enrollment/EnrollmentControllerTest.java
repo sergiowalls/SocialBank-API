@@ -2,8 +2,10 @@ package me.integrate.socialbank.enrollment;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import me.integrate.socialbank.event.Event;
+import me.integrate.socialbank.event.EventService;
 import me.integrate.socialbank.event.EventTestUtils;
 import me.integrate.socialbank.user.UserTestUtils;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,17 +13,19 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.core.IsCollectionContaining.hasItems;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -41,11 +45,17 @@ public class EnrollmentControllerTest {
     @MockBean
     private EnrollmentService enrollmentService;
 
+    @MockBean
+    private EventService eventService;
+
+    @MockBean
+    private Authentication auth;
+
     @Test
     @WithMockUser
     void shouldReturnCreatedStatus() throws Exception {
         int id = 123;
-
+        given(eventService.getEventById(id)).willReturn(EventTestUtils.createEvent());
         Enrollment enrollment = new Enrollment("a@a.a", id);
         given(enrollmentService.saveEnrollment(enrollment)).willReturn(enrollment);
 
@@ -54,6 +64,46 @@ public class EnrollmentControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(null)))
                 .andExpect(status().isCreated());
+    }
+
+    @Test
+    @WithMockUser
+    void whenDateIsNotValidShouldReturnConflictStatus() throws Exception {
+        String email = ("a@a.com");
+        Calendar cal = Calendar.getInstance();
+        cal.set(1999, 2, 2);
+        Date iniDate = cal.getTime();
+        cal.set(2099, 2, 2);
+        Event event = EventTestUtils.createEvent(email, iniDate, cal.getTime());
+        int id = event.getId();
+        given(eventService.getEventById(id)).willReturn(event);
+        Enrollment enrollment = new Enrollment(email, id);
+        given(enrollmentService.saveEnrollment(enrollment)).willReturn(enrollment);
+
+        this.mockMvc.perform(
+                post("/events/"+id+"/enroll")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(null)))
+                .andExpect(status().isConflict());
+}
+
+    @Test
+    @Disabled
+    @WithMockUser
+    void whenUserIsSameAsCreatorShouldReturnConflictStatus() throws Exception {
+        String email = auth.getName();
+        Event event = EventTestUtils.createEvent(email);
+        int id = event.getId();
+        //given(auth.getName()).willReturn(email);
+        given(eventService.getEventById(id)).willReturn(event);
+        Enrollment enrollment = new Enrollment(email, id);
+        given(enrollmentService.saveEnrollment(enrollment)).willReturn(enrollment);
+
+        this.mockMvc.perform(
+                post("/events/"+id+"/enroll")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(null)))
+                .andExpect(status().isConflict());
     }
 
     @Test
