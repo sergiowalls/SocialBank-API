@@ -4,12 +4,9 @@ import me.integrate.socialbank.enrollment.exceptions.EnrollmentAlreadyExistsExce
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
 
 @Repository
@@ -55,13 +52,4 @@ public class EnrollmentRepositoryImpl implements EnrollmentRepository{
                 new Object[]{email},Integer.class);
     }
 
-    private class EnrollmentRowMapper implements RowMapper<Enrollment> {
-        @Override
-        public Enrollment mapRow(ResultSet resultSet, int i) throws SQLException {
-            Enrollment enrollment = new Enrollment();
-            enrollment.setUserEmail(resultSet.getString(USEREMAIL));
-            enrollment.setEventId(resultSet.getInt(EVENTID));
-            return enrollment;
-        }
-    }
 }
