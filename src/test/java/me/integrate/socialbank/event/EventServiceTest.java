@@ -9,6 +9,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import static me.integrate.socialbank.event.EventTestUtils.createEvent;
@@ -117,6 +119,33 @@ public class EventServiceTest {
         assertEquals(eventTwo, eventService.getEventById(eventTwo.getId()));
         assertThrows(EventNotFoundException.class, () -> eventService.getEventById(eventOne.getId()));
     }
+
+    @Test
+    void givenStoredEventsWhenDeleteIsTooLateThenThrowException() {
+        String email = "pepito@pepito.com";
+        userRepository.saveUser(UserTestUtils.createUser(email));
+
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(new Date());
+        cal.add(Calendar.HOUR_OF_DAY, 1);
+        Date iniDate = cal.getTime();
+
+        Date endDate = cal.getTime();
+
+        final int EventIdOne = eventService.saveEvent(createEvent("pepito@pepito.com", iniDate, endDate)).getId();
+        assertThrows(TooLateException.class, () -> eventService.deleteEvent(EventIdOne));
+
+        cal.set(1999, 2, 3);
+        iniDate = cal.getTime();
+        cal.add(Calendar.HOUR_OF_DAY, 1);
+        endDate = cal.getTime();
+
+        final int EventIdTwo = eventService.saveEvent(createEvent("pepito@pepito.com", iniDate, endDate)).getId();
+        assertThrows(TooLateException.class, () -> eventService.deleteEvent(EventIdTwo));
+    }
+
+
+
 
 
 }
