@@ -6,7 +6,7 @@ public interface EnrollmentRepository {
 
     Enrollment saveEnrollment(Enrollment enrollment);
 
-    List<Enrollment> getEnrollmentsOfEvent(int id);
+    List<String> getEnrollmentsOfEvent(int id);
 
-    List<Enrollment> getEnrollmentsOfUser(String email);
+    List<Integer> getEnrollmentsOfUser(String email);
 }

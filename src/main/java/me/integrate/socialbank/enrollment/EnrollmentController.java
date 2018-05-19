@@ -24,14 +24,16 @@ public class EnrollmentController {
     }
 
     @GetMapping("/events/{id}/enrollments")
+    @ResponseStatus(HttpStatus.OK)
     public @ResponseBody
-    List<Enrollment> getEnrollmentsOfEvent(@PathVariable int id) {
+    List<String> getEnrollmentsOfEvent(@PathVariable int id) {
         return enrollmentService.getEnrollmentsOfEvent(id);
     }
 
     @GetMapping("/users/{email}/enrollments")
+    @ResponseStatus(HttpStatus.OK)
     public @ResponseBody
-    List<Enrollment> getEnrollmentsOfUser(@PathVariable String email) {
+    List<Integer> getEnrollmentsOfUser(@PathVariable String email) {
         return enrollmentService.getEnrollmentsOfUser(email);
     }
 }

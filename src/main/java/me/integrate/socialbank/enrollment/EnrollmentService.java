@@ -21,11 +21,11 @@ public class EnrollmentService {
         return enrollmentRepository.saveEnrollment(enrollment);
     }
 
-    public List<Enrollment> getEnrollmentsOfEvent(int id) {
+    public List<String> getEnrollmentsOfEvent(int id) {
         return enrollmentRepository.getEnrollmentsOfEvent(id);
     }
 
-    public List<Enrollment> getEnrollmentsOfUser(String email) {
+    public List<Integer> getEnrollmentsOfUser(String email) {
         return enrollmentRepository.getEnrollmentsOfUser(email);
     }
 }

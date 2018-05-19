@@ -44,15 +44,15 @@ public class EnrollmentRepositoryImpl implements EnrollmentRepository{
     }
 
     @Override
-    public List<Enrollment> getEnrollmentsOfEvent(int id) {
-        return jdbcTemplate.query("SELECT * FROM " + ENROLLMENT_TABLE + " WHERE " + EVENTID + "= ?",
-                new Object[]{id}, new EnrollmentRepositoryImpl.EnrollmentRowMapper());
+    public List<String> getEnrollmentsOfEvent(int id) {
+        return jdbcTemplate.queryForList("SELECT " + USEREMAIL + " FROM " + ENROLLMENT_TABLE + " WHERE " + EVENTID + "= ?",
+                new Object[]{id}, String.class);
     }
 
     @Override
-    public List<Enrollment> getEnrollmentsOfUser(String email) {
-        return jdbcTemplate.query("SELECT * FROM " + ENROLLMENT_TABLE + " WHERE " + USEREMAIL + "= ?",
-                new Object[]{email}, new EnrollmentRepositoryImpl.EnrollmentRowMapper());
+    public List<Integer> getEnrollmentsOfUser(String email) {
+        return jdbcTemplate.queryForList("SELECT " + EVENTID + " FROM " + ENROLLMENT_TABLE + " WHERE " + USEREMAIL + "= ?",
+                new Object[]{email},Integer.class);
     }
 
     private class EnrollmentRowMapper implements RowMapper<Enrollment> {
