@@ -98,6 +98,7 @@ public class EventRepositoryImpl implements EventRepository {
 
     public void deleteEvent(int id) {
         jdbcTemplate.update("DELETE FROM " + EVENT_TABLE + " WHERE " + ID + "=?", id);
+        jdbcTemplate.execute("DROP TABLE posts_"+id);
     }
 
     private class EventRowMapper implements RowMapper<Event> {
