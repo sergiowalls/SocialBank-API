@@ -37,8 +37,8 @@ public class PostRepositoryImpl implements PostRepository {
     public Post getPostById(int event_id, int id) {
         Post post;
         try {
-            post = jdbcTemplate.queryForObject("SELECT * FROM " + POST_TABLE + event_id + " WHERE " + ID + "= ?",
-                    new Object[]{id}, new PostRowMapper());
+            final String sql = "SELECT * FROM " + POST_TABLE + event_id + " WHERE " + ID + "= ?";
+            post = jdbcTemplate.queryForObject(sql, new Object[]{id}, new PostRowMapper());
         } catch (EmptyResultDataAccessException e) {
             throw new PostNotFoundException();
         }
