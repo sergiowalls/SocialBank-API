@@ -58,6 +58,11 @@ public class EventRepositoryImpl implements EventRepository {
         params.put(CATEGORY, event.getCategory().name());
         Number id = this.simpleJdbcInsert.executeAndReturnKey(params);
         event.setId(id.intValue());
+
+        final String POSTS_TABLE = "posts_"+id;
+        this.jdbcTemplate.execute("CREATE TABLE "+POSTS_TABLE+" (id serial PRIMARY KEY, creatorEmail varchar(255) NOT NULL," +
+                "createdAt timestamp NOT NULL, updatedAt timestamp NOT NULL, answerTo integer, content text)");
+
         return event;
     }
 
