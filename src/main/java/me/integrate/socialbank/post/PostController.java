@@ -41,7 +41,7 @@ public class PostController {
     }
 
 
-    @DeleteMapping("/events/{event_id}")
+    @DeleteMapping("/events/{event_id}/posts/{id}")
     @ResponseStatus(HttpStatus.OK)
     public void deletePost(@PathVariable int event_id, @PathVariable int id) {
         postService.deletePost(event_id, id);
