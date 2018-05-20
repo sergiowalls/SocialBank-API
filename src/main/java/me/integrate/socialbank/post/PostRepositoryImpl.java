@@ -78,7 +78,8 @@ public class PostRepositoryImpl implements PostRepository {
 
     @Override
     public void deletePost(int event_id, int id) {
-
+        final String POSTS_TABLE = "posts_"+event_id;
+        jdbcTemplate.update("DELETE FROM " + POSTS_TABLE + " WHERE " + ID + "=?", id);
     }
 
     private class PostRowMapper implements RowMapper<Post> {
