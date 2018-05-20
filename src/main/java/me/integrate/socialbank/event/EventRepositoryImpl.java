@@ -60,8 +60,10 @@ public class EventRepositoryImpl implements EventRepository {
         event.setId(id.intValue());
 
         final String POSTS_TABLE = "posts_"+id;
-        this.jdbcTemplate.execute("CREATE TABLE "+POSTS_TABLE+" (id serial PRIMARY KEY, creatorEmail varchar(255) NOT NULL," +
-                "createdAt timestamp NOT NULL, updatedAt timestamp NOT NULL, answerTo integer, content text)");
+        final String TABLE_COLUMNS = "(id serial PRIMARY KEY, creator_email varchar(255) NOT NULL, " +
+        "created_at timestamp NOT NULL, updated_at timestamp NOT NULL, answer_to integer REFERENCES "+POSTS_TABLE+
+                " (id) ON DELETE CASCADE, content text)";
+        this.jdbcTemplate.execute("CREATE TABLE "+POSTS_TABLE+" "+TABLE_COLUMNS);
 
         return event;
     }
