@@ -11,6 +11,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
@@ -35,9 +37,14 @@ class PostRepositoryTest {
         int eventId = eventRepository.saveEvent(EventTestUtils.createEvent(email)).getId();
         Post post = new Post();
         post.setEventId(eventId);
+        post.setCreatorEmail(email);
         post.setContent(CONTENT);
+        Date date = new Date();
+        post.setCreatedAt(date);
+        post.setUpdatedAt(date);
         post = postRepository.savePost(post);
-        assertEquals(post, postRepository.getPostById(eventId, post.getId()));
+        Post retrievedPost = postRepository.getPostById(eventId, post.getId());
+        assertEquals(post, retrievedPost);
     }
 
 }
