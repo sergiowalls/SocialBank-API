@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,8 +47,10 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
-    public Post updateContent(int event_id, int id, String content) {
-        return null;
+    public void updateContent(int event_id, int id, String content) {
+        final String POSTS_TABLE = "posts_"+event_id;
+        String sql = "UPDATE " + POSTS_TABLE + " SET " + CONTENT + " = ?, " + UPDATED_AT + " = ? WHERE " + ID + " = ?";
+        jdbcTemplate.update(sql, content, new Date(), id);
     }
 
     @Override

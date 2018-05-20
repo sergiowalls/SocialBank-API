@@ -5,7 +5,7 @@ import java.util.List;
 public interface PostRepository {
     Post getPostById(int event_id, int id);
 
-    Post updateContent(int event_id, int id, String content);
+    void updateContent(int event_id, int id, String content);
 
     Post savePost(Post post);
 

@@ -18,8 +18,8 @@ public class PostService {
         return postRepository.getPostById(event_id, id);
     }
 
-    public Post updatePost(int event_id, int id, String content) {
-        return postRepository.updateContent(event_id, id, content);
+    public void updatePost(int event_id, int id, String content) {
+        postRepository.updateContent(event_id, id, content);
     }
 
     public Post savePost(Post post) {

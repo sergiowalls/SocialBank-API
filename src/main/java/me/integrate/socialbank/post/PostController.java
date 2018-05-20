@@ -22,8 +22,8 @@ public class PostController {
     }
 
     @PutMapping("/events/{event_id}/posts/{id}")
-    public Post updatePostContent(@PathVariable int event_id, @PathVariable int id, @RequestParam String content) {
-        return postService.updatePost(event_id, id, content);
+    public void updatePostContent(@PathVariable int event_id, @PathVariable int id, @RequestParam String content) {
+        postService.updatePost(event_id, id, content);
     }
 
     @PostMapping("/events/{event_id}/posts")
