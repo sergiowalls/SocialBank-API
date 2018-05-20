@@ -57,10 +57,11 @@ public class EnrollmentControllerTest {
     @Test
     @WithMockUser
     void shouldReturnCreatedStatus() throws Exception {
-        int id = 123;
+        final int id = 123;
         given(eventService.getEventById(id)).willReturn(EventTestUtils.createEvent());
-        Enrollment enrollment = new Enrollment("a@a.a", id);
-        given(enrollmentService.saveEnrollment(enrollment)).willReturn(enrollment);
+        final String email = "a@a.a";
+        Enrollment enrollment = new Enrollment(email, id);
+        given(enrollmentService.saveEnrollment(email, id)).willReturn(enrollment);
 
         this.mockMvc.perform(
                 post("/events/" + id + "/enroll")
@@ -81,7 +82,7 @@ public class EnrollmentControllerTest {
         int id = event.getId();
         given(eventService.getEventById(id)).willReturn(event);
         Enrollment enrollment = new Enrollment(email, id);
-        given(enrollmentService.saveEnrollment(enrollment)).willReturn(enrollment);
+        given(enrollmentService.saveEnrollment(email, id)).willReturn(enrollment);
 
         this.mockMvc.perform(
                 post("/events/" + id + "/enroll")
@@ -100,7 +101,7 @@ public class EnrollmentControllerTest {
         //given(auth.getName()).willReturn(email);
         given(eventService.getEventById(id)).willReturn(event);
         Enrollment enrollment = new Enrollment(email, id);
-        given(enrollmentService.saveEnrollment(enrollment)).willReturn(enrollment);
+        given(enrollmentService.saveEnrollment(email, id)).willReturn(enrollment);
 
         this.mockMvc.perform(
                 post("/events/" + id + "/enroll")

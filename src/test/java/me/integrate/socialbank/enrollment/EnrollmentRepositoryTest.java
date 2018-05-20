@@ -44,7 +44,7 @@ public class EnrollmentRepositoryTest {
         int id = eventRepository.saveEvent(event).getId();
 
         Enrollment enrollment = new Enrollment(email, id);
-        assertEquals(enrollment, enrollmentRepository.saveEnrollment(enrollment));
+        assertEquals(enrollment, enrollmentRepository.saveEnrollment(email, id));
     }
 
     @Test
@@ -59,8 +59,8 @@ public class EnrollmentRepositoryTest {
         List<String> le = new ArrayList<>();
         le.add(emailEnrolledOne); le.add(emailEnrolledTwo);
 
-        enrollmentRepository.saveEnrollment(new Enrollment(emailEnrolledOne, id));
-        enrollmentRepository.saveEnrollment(new Enrollment(emailEnrolledTwo, id));
+        enrollmentRepository.saveEnrollment(emailEnrolledOne, id);
+        enrollmentRepository.saveEnrollment(emailEnrolledTwo, id);
 
         List<String> retList = enrollmentRepository.getEnrollmentsOfEvent(id);
         assertTrue(le.containsAll(retList));
@@ -79,8 +79,8 @@ public class EnrollmentRepositoryTest {
         List<Integer> le = new ArrayList<>();
         le.add(idOne); le.add(idTwo);
 
-        enrollmentRepository.saveEnrollment(new Enrollment(emailEnrolled, idOne));
-        enrollmentRepository.saveEnrollment(new Enrollment(emailEnrolled, idTwo));
+        enrollmentRepository.saveEnrollment(emailEnrolled, idOne);
+        enrollmentRepository.saveEnrollment(emailEnrolled, idTwo);
 
         List<Integer> retList = enrollmentRepository.getEnrollmentsOfUser(emailEnrolled);
         assertTrue(le.containsAll(retList));
@@ -89,16 +89,15 @@ public class EnrollmentRepositoryTest {
 
     @Test
     void givenEnrollmentStoredInDatabaseWhenDeletedThenIsNoLongerStored() {
-        String creator = "email@email.tld";
-        String enrolled = "e@e.e";
-        userRepository.saveUser(UserTestUtils.createUser(creator));
-        userRepository.saveUser(UserTestUtils.createUser(enrolled));
-        int eventId = eventRepository.saveEvent(EventTestUtils.createEvent(creator)).getId();
-        Enrollment enrollment = new Enrollment(enrolled, eventId);
-        enrollmentRepository.saveEnrollment(enrollment);
-        enrollmentRepository.deleteEnrollment(eventId, enrolled);
-        enrollmentRepository.saveEnrollment(enrollment);
-        enrollmentRepository.deleteEnrollment(eventId, enrolled);
+        String creatorEmail = "email@email.tld";
+        String enrolledEmail = "e@e.e";
+        userRepository.saveUser(UserTestUtils.createUser(creatorEmail));
+        userRepository.saveUser(UserTestUtils.createUser(enrolledEmail));
+        int eventId = eventRepository.saveEvent(EventTestUtils.createEvent(creatorEmail)).getId();
+        enrollmentRepository.saveEnrollment(enrolledEmail, eventId);
+        enrollmentRepository.deleteEnrollment(eventId, enrolledEmail);
+        enrollmentRepository.saveEnrollment(enrolledEmail, eventId);
+        enrollmentRepository.deleteEnrollment(eventId, enrolledEmail);
     }
 
 }
