@@ -73,7 +73,8 @@ public class PostRepositoryImpl implements PostRepository {
 
     @Override
     public List<Post> getAllPosts(int event_id) {
-        return null;
+        final String POSTS_TABLE = "posts_"+event_id;
+        return jdbcTemplate.query("SELECT * FROM " + POSTS_TABLE, new PostRowMapper());
     }
 
     @Override
