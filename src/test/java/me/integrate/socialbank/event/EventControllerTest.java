@@ -1,6 +1,8 @@
 package me.integrate.socialbank.event;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import me.integrate.socialbank.user.User;
+import me.integrate.socialbank.user.UserService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,11 +43,17 @@ class EventControllerTest {
     @MockBean
     private EventService eventService;
 
+    @MockBean
+    private UserService userService;
+
     @Test
     @WithMockUser
     void shouldReturnCreatedStatus() throws Exception {
         Event event = EventTestUtils.createEvent();
         given(eventService.saveEvent(any())).willReturn(event);
+        User user = new User();
+        user.setBalance(999999999);
+        given(userService.getUserByEmail(any())).willReturn(user);
         this.mockMvc.perform(
                 post("/events")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -65,7 +73,7 @@ class EventControllerTest {
                 "  \"iniDate\": \"2019-04-25T15:12:44.865Z\",\n" +
                 "  \"location\": \"string\",\n" +
                 "  \"title\": \"string\",\n" +
-                "  \"demand\": \"true\"" +
+                "  \"demand\": \"false\"" +
                 "}";
         Event event = EventTestUtils.createEvent();
         given(eventService.saveEvent(any())).willReturn(event);
@@ -109,7 +117,8 @@ class EventControllerTest {
                 "  \"image\": \"string\",\n" +
                 "  \"iniDate\": \"\",\n" +
                 "  \"location\": \"string\",\n" +
-                "  \"title\": \"string\"\n" +
+                "  \"title\": \"string\",\n" +
+                "  \"demand\": \"false\"" +
                 "}";
         Event event = EventTestUtils.createEvent();
         given(eventService.saveEvent(any())).willReturn(event);
@@ -118,6 +127,30 @@ class EventControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
                 .andExpect(status().isCreated());
+    }
+
+    @Test
+    @WithMockUser
+    void withUserWithNotEnoughHoursDateShouldReturnConflictStatus() throws Exception {
+        String json = "{\n" +
+                "  \"creatorEmail\": \"string\",\n" +
+                "  \"description\": \"string\",\n" +
+                "  \"endDate\": \"2020-04-25T15:12:44.865Z\",\n" +
+                "  \"id\": 0,\n" +
+                "  \"image\": \"string\",\n" +
+                "  \"iniDate\": \"2019-04-25T15:12:44.865Z\",\n" +
+                "  \"location\": \"string\",\n" +
+                "  \"title\": \"string\",\n" +
+                "  \"demand\": \"true\"" +
+                "}";
+        Event event = EventTestUtils.createEvent();
+        given(eventService.saveEvent(any())).willReturn(event);
+        given(userService.getUserByEmail(any())).willReturn(new User());
+        this.mockMvc.perform(
+                post("/events")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpect(status().isConflict());
     }
 
     @Test
