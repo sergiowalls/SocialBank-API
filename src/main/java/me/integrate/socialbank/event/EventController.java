@@ -1,5 +1,7 @@
 package me.integrate.socialbank.event;
 
+import me.integrate.socialbank.user.User;
+import me.integrate.socialbank.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
@@ -11,9 +13,13 @@ import java.util.List;
 @RestController
 public class EventController {
     private EventService eventService;
+    private UserService userService;
 
     @Autowired
-    public EventController(EventService eventService) { this.eventService = eventService; }
+    public EventController(EventService eventService, UserService userService) {
+        this.eventService = eventService;
+        this.userService = userService;
+    }
 
     @GetMapping("/events/{id}")
     public Event getEventById(@PathVariable int id) {
@@ -30,6 +36,12 @@ public class EventController {
     public Event saveEvent(@RequestBody Event event, Authentication authentication) {
         event.setCreatorEmail(authentication.getName());
         if (event.getIniDate() != null && event.getEndDate() != null && (event.getIniDate().after(event.getEndDate()) || event.getIniDate().before(new Date()))) throw new EventWithIncorrectDateException();
+        if (event.isDemand()) {
+            long diff = Math.abs(event.getIniDate().getTime() - event.getEndDate().getTime());
+            diff = diff / (60 * 60 * 1000);
+            User user = userService.getUserByEmail(authentication.getName());
+            if (diff > user.getBalance()) throw new UserNotEnoughHoursException();
+        }
         return eventService.saveEvent(event);
     }
 
