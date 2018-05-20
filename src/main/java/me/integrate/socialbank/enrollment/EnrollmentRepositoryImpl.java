@@ -29,15 +29,14 @@ public class EnrollmentRepositoryImpl implements EnrollmentRepository{
     }
 
     @Override
-    public Enrollment saveEnrollment(Enrollment enrollment) {
+    public Enrollment saveEnrollment(String email, int id) {
         try {
-            jdbcTemplate.update("INSERT INTO " + ENROLLMENT_TABLE + " VALUES (?, ?)", enrollment.getUserEmail(),
-                    enrollment.getEventId());
+            jdbcTemplate.update("INSERT INTO " + ENROLLMENT_TABLE + " VALUES (?, ?)", email, id);
         } catch (DuplicateKeyException ex) {
             throw new EnrollmentAlreadyExistsException();
         }
 
-        return enrollment;
+        return new Enrollment(email, id);
     }
 
     @Override

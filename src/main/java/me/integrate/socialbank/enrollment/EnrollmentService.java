@@ -15,8 +15,8 @@ public class EnrollmentService {
         this.enrollmentRepository = enrollmentRepository;
     }
 
-    public Enrollment saveEnrollment(Enrollment enrollment) {
-        return enrollmentRepository.saveEnrollment(enrollment);
+    public Enrollment saveEnrollment(String email, int id) {
+        return enrollmentRepository.saveEnrollment(email, id);
     }
 
     public List<String> getEnrollmentsOfEvent(int id) {

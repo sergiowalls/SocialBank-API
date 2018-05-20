@@ -32,7 +32,7 @@ public class EnrollmentController {
         if (event.getIniDate().before(new Date())) throw new TooLateException();
         String email = auth.getName();
         if (event.getCreatorEmail().equals(email)) throw new UserIsTheCreatorException();
-        return enrollmentService.saveEnrollment(new Enrollment(email, id));
+        return enrollmentService.saveEnrollment(email, id);
     }
 
     @GetMapping("/events/{id}/enrollments")
