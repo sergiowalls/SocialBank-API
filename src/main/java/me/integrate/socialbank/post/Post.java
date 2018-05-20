@@ -4,22 +4,21 @@ import java.util.Date;
 
 public class Post {
     private int id;
+    private int eventId;
     private String creatorEmail;
     private Date createdAt;
     private Date updatedAt;
     private int answerTo;
     private String content;
 
-    public Post() {
-        createdAt = new Date();
-        updatedAt = new Date();
-    }
-
-
     private void update() {
         this.updatedAt = new Date();
     }
 
+    public Post() {
+        createdAt = new Date();
+        updatedAt = new Date();
+    }
 
     public int getId() {
         return id;
@@ -61,5 +60,13 @@ public class Post {
     public void setContent(String content) {
         this.content = content;
         update();
+    }
+
+    public int getEventId() {
+        return eventId;
+    }
+
+    public void setEventId(int eventId) {
+        this.eventId = eventId;
     }
 }
