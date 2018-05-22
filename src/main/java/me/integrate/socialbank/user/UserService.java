@@ -39,6 +39,11 @@ public class UserService {
         return userRepository.getUsers();
     }
 
+    public void reportUser(String reporter, String reported) {
+        getUserByEmail(reported);
+        userRepository.reportUser(reporter, reported);
+    }
+
     public void requestAccountVerification(String email, String message) {
         userRepository.saveRequestAccountVerification(email, message);
     }

@@ -50,6 +50,12 @@ public class UserController {
             userService.updateUser(email, user);
     }
 
+    @PostMapping("/users/{email}/report")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void reportUser(Principal principal, @PathVariable String email) {
+        userService.reportUser(principal.getName(), email);
+    }
+
     @PostMapping("/users/{email}/verified")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void requestAccountVerification(Principal principal, @PathVariable String email, @RequestBody String message) {

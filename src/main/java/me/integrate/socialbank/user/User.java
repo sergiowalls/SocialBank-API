@@ -26,6 +26,8 @@ public class User {
     private String image; //base 64
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private boolean verified;
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    private boolean enabled;
 
 
     public String getEmail() {
@@ -62,6 +64,10 @@ public class User {
 
     public String getImage() {
         return image;
+    }
+
+    public boolean getEnabled() {
+        return enabled;
     }
 
     public void setEmail(String email) {
@@ -107,6 +113,10 @@ public class User {
     // TODO: encapsulate boolean attribute
     public void setVerified(boolean verified) {
         this.verified = verified;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 
     @Override
