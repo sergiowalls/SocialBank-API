@@ -5,7 +5,7 @@ import org.springframework.lang.Nullable;
 import java.util.Date;
 import java.util.Objects;
 
-public class Post {
+public class Comment {
     private int id;
     private int eventId;
     private String creatorEmail;
@@ -19,7 +19,7 @@ public class Post {
         this.updatedAt = new Date();
     }
 
-    public Post() {
+    public Comment() {
         createdAt = updatedAt = new Date();
     }
 
@@ -35,7 +35,7 @@ public class Post {
     public String getCreatorEmail() {
         return creatorEmail;
     }
-
+//test
 
     public String getContent() {
         return content;
@@ -86,14 +86,14 @@ public class Post {
     {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Post post = (Post) o;
-        return  id == post.id &&
-                Objects.equals(creatorEmail, post.creatorEmail) &&
-                Objects.equals(creatorEmail, post.creatorEmail) &&
-                Objects.equals(createdAt, post.createdAt) &&
-                Objects.equals(updatedAt, post.updatedAt) &&
-                Objects.equals(answerTo, post.answerTo) &&
-                Objects.equals(content, post.content);
+        Comment comment = (Comment) o;
+        return  id == comment.id &&
+                Objects.equals(creatorEmail, comment.creatorEmail) &&
+                Objects.equals(creatorEmail, comment.creatorEmail) &&
+                Objects.equals(createdAt, comment.createdAt) &&
+                Objects.equals(updatedAt, comment.updatedAt) &&
+                Objects.equals(answerTo, comment.answerTo) &&
+                Objects.equals(content, comment.content);
     }
 
     @Override

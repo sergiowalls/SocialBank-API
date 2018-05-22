@@ -59,7 +59,7 @@ public class EventRepositoryImpl implements EventRepository {
         Number id = this.simpleJdbcInsert.executeAndReturnKey(params);
         event.setId(id.intValue());
 
-        final String POSTS_TABLE = "posts_"+id;
+        final String POSTS_TABLE = "comments_"+id;
         final String TABLE_COLUMNS = "(id serial PRIMARY KEY, creator_email varchar(255) NOT NULL, " +
         "created_at timestamp NOT NULL, updated_at timestamp NOT NULL, answer_to integer REFERENCES "+POSTS_TABLE+
                 " (id) ON DELETE CASCADE, content text)";
@@ -100,7 +100,7 @@ public class EventRepositoryImpl implements EventRepository {
 
     public void deleteEvent(int id) {
         jdbcTemplate.update("DELETE FROM " + EVENT_TABLE + " WHERE " + ID + "=?", id);
-        final String POST_TABLE =  "posts_"+id;
+        final String POST_TABLE =  "comments_"+id;
         jdbcTemplate.execute("DROP TABLE " + POST_TABLE);
     }
 

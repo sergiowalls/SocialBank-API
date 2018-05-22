@@ -1,6 +1,6 @@
 package me.integrate.socialbank.comment;
 
-import me.integrate.socialbank.comment.exception.PostNotFoundException;
+import me.integrate.socialbank.comment.exception.CommentNotFoundException;
 import me.integrate.socialbank.event.EventRepositoryImpl;
 import me.integrate.socialbank.event.EventTestUtils;
 import me.integrate.socialbank.user.UserRepository;
@@ -21,9 +21,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @SpringBootTest
 @Transactional
 @ExtendWith(SpringExtension.class)
-class PostRepositoryTest {
+class CommentRepositoryTest {
     @Autowired
-    private PostRepositoryImpl postRepository;
+    private CommentRepositoryImpl commentRepository;
 
     @Autowired
     private EventRepositoryImpl eventRepository;
@@ -38,16 +38,16 @@ class PostRepositoryTest {
         String email = "pepito@pepito.com";
         userRepository.saveUser(UserTestUtils.createUser(email));
         int eventId = eventRepository.saveEvent(EventTestUtils.createEvent(email)).getId();
-        Post post = new Post();
-        post.setEventId(eventId);
-        post.setCreatorEmail(email);
-        post.setContent(CONTENT);
+        Comment comment = new Comment();
+        comment.setEventId(eventId);
+        comment.setCreatorEmail(email);
+        comment.setContent(CONTENT);
         Date date = new Date();
-        post.setCreatedAt(date);
-        post.setUpdatedAt(date);
-        post = postRepository.savePost(post);
-        Post retrievedPost = postRepository.getPostById(eventId, post.getId());
-        assertEquals(post, retrievedPost);
+        comment.setCreatedAt(date);
+        comment.setUpdatedAt(date);
+        comment = commentRepository.savePost(comment);
+        Comment retrievedComment = commentRepository.getPostById(eventId, comment.getId());
+        assertEquals(comment, retrievedComment);
     }
 
     @Test
@@ -56,17 +56,17 @@ class PostRepositoryTest {
         userRepository.saveUser(UserTestUtils.createUser(email));
         int eventId = eventRepository.saveEvent(EventTestUtils.createEvent(email)).getId();
 
-        Post post = new Post();
-        post.setEventId(eventId);
-        post.setCreatorEmail(email);
-        post.setContent(CONTENT);
+        Comment comment = new Comment();
+        comment.setEventId(eventId);
+        comment.setCreatorEmail(email);
+        comment.setContent(CONTENT);
         Date date = new Date();
-        post.setCreatedAt(date);
-        post.setUpdatedAt(date);
-        int id = postRepository.savePost(post).getId();
-        postRepository.deletePost(eventId, id);
+        comment.setCreatedAt(date);
+        comment.setUpdatedAt(date);
+        int id = commentRepository.savePost(comment).getId();
+        commentRepository.deletePost(eventId, id);
 
-        Assertions.assertThrows(PostNotFoundException.class, () -> postRepository.getPostById(eventId, id));
+        Assertions.assertThrows(CommentNotFoundException.class, () -> commentRepository.getPostById(eventId, id));
     }
 
     @Test
@@ -75,17 +75,17 @@ class PostRepositoryTest {
         userRepository.saveUser(UserTestUtils.createUser(email));
         int eventId = eventRepository.saveEvent(EventTestUtils.createEvent(email)).getId();
 
-        Post post = new Post();
-        post.setEventId(eventId);
-        post.setCreatorEmail(email);
-        post.setContent(CONTENT);
+        Comment comment = new Comment();
+        comment.setEventId(eventId);
+        comment.setCreatorEmail(email);
+        comment.setContent(CONTENT);
         Date date = new Date();
-        post.setCreatedAt(date);
-        post.setUpdatedAt(date);
-        int id = postRepository.savePost(post).getId();
+        comment.setCreatedAt(date);
+        comment.setUpdatedAt(date);
+        int id = commentRepository.savePost(comment).getId();
         eventRepository.deleteEvent(eventId);
 
-        Assertions.assertThrows(InvalidDataAccessResourceUsageException.class, () -> postRepository.getPostById(eventId, id));
+        Assertions.assertThrows(InvalidDataAccessResourceUsageException.class, () -> commentRepository.getPostById(eventId, id));
     }
 
 }
