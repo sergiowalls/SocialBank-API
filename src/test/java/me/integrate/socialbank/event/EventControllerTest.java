@@ -1,6 +1,7 @@
 package me.integrate.socialbank.event;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import me.integrate.socialbank.user.User;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +14,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -46,6 +46,8 @@ class EventControllerTest {
     void shouldReturnCreatedStatus() throws Exception {
         Event event = EventTestUtils.createEvent();
         given(eventService.saveEvent(any())).willReturn(event);
+        User user = new User();
+        user.setBalance(999999999);
         this.mockMvc.perform(
                 post("/events")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -65,7 +67,7 @@ class EventControllerTest {
                 "  \"iniDate\": \"2019-04-25T15:12:44.865Z\",\n" +
                 "  \"location\": \"string\",\n" +
                 "  \"title\": \"string\",\n" +
-                "  \"demand\": \"true\"" +
+                "  \"demand\": \"false\"" +
                 "}";
         Event event = EventTestUtils.createEvent();
         given(eventService.saveEvent(any())).willReturn(event);
@@ -89,8 +91,7 @@ class EventControllerTest {
                 "  \"location\": \"string\",\n" +
                 "  \"title\": \"string\"\n" +
                 "}";
-        Event event = EventTestUtils.createEvent();
-        given(eventService.saveEvent(any())).willReturn(event);
+        given(eventService.saveEvent(any())).willThrow(new EventWithIncorrectDateException());
         this.mockMvc.perform(
                 post("/events")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -109,7 +110,8 @@ class EventControllerTest {
                 "  \"image\": \"string\",\n" +
                 "  \"iniDate\": \"\",\n" +
                 "  \"location\": \"string\",\n" +
-                "  \"title\": \"string\"\n" +
+                "  \"title\": \"string\",\n" +
+                "  \"demand\": \"false\"" +
                 "}";
         Event event = EventTestUtils.createEvent();
         given(eventService.saveEvent(any())).willReturn(event);
@@ -118,6 +120,28 @@ class EventControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
                 .andExpect(status().isCreated());
+    }
+
+    @Test
+    @WithMockUser
+    void withUserWithNotEnoughHoursDateShouldReturnConflictStatus() throws Exception {
+        String json = "{\n" +
+                "  \"creatorEmail\": \"string\",\n" +
+                "  \"description\": \"string\",\n" +
+                "  \"endDate\": \"2020-04-25T15:12:44.865Z\",\n" +
+                "  \"id\": 0,\n" +
+                "  \"image\": \"string\",\n" +
+                "  \"iniDate\": \"2019-04-25T15:12:44.865Z\",\n" +
+                "  \"location\": \"string\",\n" +
+                "  \"title\": \"string\",\n" +
+                "  \"demand\": \"true\"" +
+                "}";
+        given(eventService.saveEvent(any())).willThrow(new UserNotEnoughHoursException());
+        this.mockMvc.perform(
+                post("/events")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpect(status().isConflict());
     }
 
     @Test
@@ -191,21 +215,14 @@ class EventControllerTest {
 
     @Test
     @WithMockUser
-    void givenEventPostWithIniDateNotLesThanEndDateShouldReturnBadRequestStatus() throws Exception {
+    void givenEventPostWithIniDateNotLessThanEndDateShouldReturnBadRequestStatus() throws Exception {
         Date iniDate, endDate;
-        iniDate = endDate = new Date();
-        try {
-            iniDate = new SimpleDateFormat("yyyy-MM-dd").parse("2020-03-03");
-        } catch (ParseException ex) {
-            ex.printStackTrace();
-        }
-        try {
-            endDate = new SimpleDateFormat("yyyy-MM-dd").parse("2019-03-03");
-        } catch (ParseException ex) {
-            ex.printStackTrace();
-        }
+        iniDate = new SimpleDateFormat("yyyy-MM-dd").parse("2020-03-03");
+        endDate = new SimpleDateFormat("yyyy-MM-dd").parse("2019-03-03");
 
         Event event = EventTestUtils.createEvent(iniDate, endDate);
+        given(eventService.saveEvent(any())).willThrow(new EventWithIncorrectDateException());
+
         this.mockMvc.perform(
                 post("/events")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -218,22 +235,38 @@ class EventControllerTest {
     @WithMockUser
     void givenEventPostWithIniDateLessThanCurrentDateShouldReturnBadRequestStatus() throws Exception {
         Date iniDate, endDate;
-        iniDate = endDate = new Date();
-        try {
-            iniDate = new SimpleDateFormat("yyyy-MM-dd").parse("1990-03-03");
-        } catch (ParseException ex) {
-            ex.printStackTrace();
-        }
-        try {
-            endDate = new SimpleDateFormat("yyyy-MM-dd").parse("2019-03-03");
-        } catch (ParseException ex) {
-            ex.printStackTrace();
-        }
+        iniDate = new SimpleDateFormat("yyyy-MM-dd").parse("1990-03-03");
+        endDate = new SimpleDateFormat("yyyy-MM-dd").parse("2019-03-03");
+
         Event event = EventTestUtils.createEvent(iniDate, endDate);
+        given(eventService.saveEvent(any())).willThrow(new EventWithIncorrectDateException());
         this.mockMvc.perform(
                 post("/events")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(event)))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @WithMockUser
+    void WhenDeleteEventShouldReturnOkStatus() throws Exception {
+        this.mockMvc.perform(delete("/events/123").contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
+    }
+
+    @Test
+    @WithMockUser
+    void WhenDeleteNotExistentEventShouldReturnNotFoundStatus() throws Exception {
+        int id = 123;
+        given(eventService.deleteEvent(id)).willThrow(EventNotFoundException.class);
+        this.mockMvc.perform(delete("/events/" + id).contentType(MediaType.APPLICATION_JSON)).andExpect(status()
+                .isNotFound());
+    }
+
+    @Test
+    @WithMockUser
+    void WhenDeleteIsTooLateShouldReturnForbiddenStatus() throws Exception {
+        int id = 123;
+        given(eventService.deleteEvent(id)).willThrow(TooLateException.class);
+        this.mockMvc.perform(delete("/events/" + id).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isConflict());
     }
 }

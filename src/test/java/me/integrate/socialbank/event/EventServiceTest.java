@@ -9,6 +9,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import static me.integrate.socialbank.event.EventTestUtils.createEvent;
@@ -96,7 +98,48 @@ public class EventServiceTest {
         Event savedEvent = eventService.saveEvent(event);
 
         assertEquals(event, savedEvent);
+    }
 
+    @Test
+    void givenStoredEventWhenDeletedThenIsNoLongerStored() {
+        String email = "pepito@pepito.com";
+        userRepository.saveUser(UserTestUtils.createUser(email));
+        int savedEventId = eventService.saveEvent(createEvent(email)).getId();
+        eventService.deleteEvent(savedEventId);
+        assertThrows(EventNotFoundException.class, () -> eventService.getEventById(savedEventId));
+    }
+
+    @Test
+    void givenDifferentEventsStoredInDatabaseWhenDeletedOneThenTheOtherIsStillStored() {
+        String email = "email@email.tld";
+        userRepository.saveUser(UserTestUtils.createUser(email));
+        Event eventOne = eventService.saveEvent(EventTestUtils.createEvent(email));
+        Event eventTwo = eventService.saveEvent(EventTestUtils.createEvent(email));
+        eventService.deleteEvent(eventOne.getId());
+        assertEquals(eventTwo, eventService.getEventById(eventTwo.getId()));
+        assertThrows(EventNotFoundException.class, () -> eventService.getEventById(eventOne.getId()));
+    }
+
+    @Test
+    void givenStoredEventsWhenDeleteIsTooLateThenThrowException() {
+        String email = "pepito@pepito.com";
+        userRepository.saveUser(UserTestUtils.createUser(email));
+
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(new Date());
+        cal.add(Calendar.HOUR_OF_DAY, 1);
+        Date iniDate = cal.getTime();
+
+        Date endDate = cal.getTime();
+
+        final int EventIdOne = eventService.saveEvent(createEvent("pepito@pepito.com", iniDate, endDate)).getId();
+        assertThrows(TooLateException.class, () -> eventService.deleteEvent(EventIdOne));
+
+        iniDate = new Date(cal.getTimeInMillis() + (4 * 60000));
+        endDate = new Date(cal.getTimeInMillis() + (5 * 60000));
+
+        final int EventIdTwo = eventService.saveEvent(createEvent("pepito@pepito.com", iniDate, endDate)).getId();
+        assertThrows(TooLateException.class, () -> eventService.deleteEvent(EventIdTwo));
     }
 
 

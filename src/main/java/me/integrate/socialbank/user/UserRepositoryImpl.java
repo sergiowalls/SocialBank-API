@@ -16,6 +16,7 @@ import java.util.*;
 public class UserRepositoryImpl implements UserRepository {
     private final static String USER_TABLE = "\"user\"";
     private final static String REPORT_TABLE = "report";
+    private final static String REQUEST_ACCOUNT_VERIFICATION_TABLE = "request_account_verification";
     private final static String EMAIL = "email";
     private final static String NAME = "name";
     private final static String SURNAME = "surname";
@@ -27,6 +28,7 @@ public class UserRepositoryImpl implements UserRepository {
     private final static String RECOVERY = "recovery";
     private final static String IMAGE = "image";
     private static final String ENABLED = "enabled";
+    private final static String VERIFIED = "verified_account";
 
     private JdbcTemplate jdbcTemplate;
 
@@ -95,6 +97,14 @@ public class UserRepositoryImpl implements UserRepository {
         return new HashSet<>(jdbcTemplate.query("SELECT * FROM " + USER_TABLE, new UserRowMapper()));
     }
 
+    public void saveRequestAccountVerification(String email, String message) {
+        try {
+            jdbcTemplate.update("INSERT INTO " + REQUEST_ACCOUNT_VERIFICATION_TABLE + " VALUES (?, ?)", email, message);
+        } catch (DuplicateKeyException e) {
+            throw new PendingAccountVerification();
+        }
+    }
+
     public void updateRecoveryToken(String email, String recoveryToken) {
         jdbcTemplate.update("UPDATE " + USER_TABLE + " SET " + RECOVERY + " = ? WHERE " + EMAIL + " = ?",
                 recoveryToken, email);
@@ -135,6 +145,7 @@ public class UserRepositoryImpl implements UserRepository {
             user.setDescription(resultSet.getString(DESCRIPTION));
             user.setImage(resultSet.getString(IMAGE));
             user.setEnabled(resultSet.getBoolean(ENABLED));
+            user.setVerified(resultSet.getBoolean(VERIFIED));
             return user;
         }
     }

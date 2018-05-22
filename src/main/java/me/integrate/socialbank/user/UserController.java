@@ -55,4 +55,13 @@ public class UserController {
     public void reportUser(Principal principal, @PathVariable String email) {
         userService.reportUser(principal.getName(), email);
     }
+
+    @PostMapping("/users/{email}/verified")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void requestAccountVerification(Principal principal, @PathVariable String email, @RequestBody String message) {
+        if (!email.equals(principal.getName()))
+            throw new UnauthorizedUserException();
+        else
+            userService.requestAccountVerification(email, message);
+    }
 }

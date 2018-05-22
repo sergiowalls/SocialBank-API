@@ -22,6 +22,7 @@ public class UserService {
     }
 
     public User saveUser(User user) {
+        user.setVerified(false);
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         return userRepository.saveUser(user);
     }
@@ -41,5 +42,9 @@ public class UserService {
     public void reportUser(String reporter, String reported) {
         getUserByEmail(reported);
         userRepository.reportUser(reporter, reported);
+    }
+
+    public void requestAccountVerification(String email, String message) {
+        userRepository.saveRequestAccountVerification(email, message);
     }
 }

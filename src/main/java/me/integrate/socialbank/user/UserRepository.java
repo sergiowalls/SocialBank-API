@@ -18,4 +18,6 @@ public interface UserRepository {
     Set<User> getUsers();
 
     void reportUser(String reporter, String reported);
+
+    void saveRequestAccountVerification(String email, String message);
 }
