@@ -135,17 +135,12 @@ public class EventServiceTest {
         final int EventIdOne = eventService.saveEvent(createEvent("pepito@pepito.com", iniDate, endDate)).getId();
         assertThrows(TooLateException.class, () -> eventService.deleteEvent(EventIdOne));
 
-        cal.set(1999, 2, 3);
-        iniDate = cal.getTime();
-        cal.add(Calendar.HOUR_OF_DAY, 1);
-        endDate = cal.getTime();
+        iniDate = new Date(cal.getTimeInMillis() + (4 * 60000));
+        endDate = new Date(cal.getTimeInMillis() + (5 * 60000));
 
         final int EventIdTwo = eventService.saveEvent(createEvent("pepito@pepito.com", iniDate, endDate)).getId();
         assertThrows(TooLateException.class, () -> eventService.deleteEvent(EventIdTwo));
     }
-
-
-
 
 
 }

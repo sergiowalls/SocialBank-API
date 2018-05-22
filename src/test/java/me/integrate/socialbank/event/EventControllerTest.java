@@ -2,7 +2,6 @@ package me.integrate.socialbank.event;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import me.integrate.socialbank.user.User;
-import me.integrate.socialbank.user.UserService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +14,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -43,9 +41,6 @@ class EventControllerTest {
     @MockBean
     private EventService eventService;
 
-    @MockBean
-    private UserService userService;
-
     @Test
     @WithMockUser
     void shouldReturnCreatedStatus() throws Exception {
@@ -53,7 +48,6 @@ class EventControllerTest {
         given(eventService.saveEvent(any())).willReturn(event);
         User user = new User();
         user.setBalance(999999999);
-        given(userService.getUserByEmail(any())).willReturn(user);
         this.mockMvc.perform(
                 post("/events")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -97,8 +91,7 @@ class EventControllerTest {
                 "  \"location\": \"string\",\n" +
                 "  \"title\": \"string\"\n" +
                 "}";
-        Event event = EventTestUtils.createEvent();
-        given(eventService.saveEvent(any())).willReturn(event);
+        given(eventService.saveEvent(any())).willThrow(new EventWithIncorrectDateException());
         this.mockMvc.perform(
                 post("/events")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -143,9 +136,7 @@ class EventControllerTest {
                 "  \"title\": \"string\",\n" +
                 "  \"demand\": \"true\"" +
                 "}";
-        Event event = EventTestUtils.createEvent();
-        given(eventService.saveEvent(any())).willReturn(event);
-        given(userService.getUserByEmail(any())).willReturn(new User());
+        given(eventService.saveEvent(any())).willThrow(new UserNotEnoughHoursException());
         this.mockMvc.perform(
                 post("/events")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -190,7 +181,8 @@ class EventControllerTest {
         Event e1 = EventTestUtils.createEvent(email);
         Event e2 = EventTestUtils.createEvent(email);
         List<Event> le = new ArrayList<>();
-        le.add(e1); le.add(e2);
+        le.add(e1);
+        le.add(e2);
 
         when(eventService.getAllEvents()).thenReturn(le);
         this.mockMvc.perform(get("/events/"))
@@ -223,21 +215,14 @@ class EventControllerTest {
 
     @Test
     @WithMockUser
-    void givenEventPostWithIniDateNotLesThanEndDateShouldReturnBadRequestStatus() throws Exception {
+    void givenEventPostWithIniDateNotLessThanEndDateShouldReturnBadRequestStatus() throws Exception {
         Date iniDate, endDate;
-        iniDate = endDate = new Date();
-        try {
-            iniDate = new SimpleDateFormat("yyyy-MM-dd").parse("2020-03-03");
-        } catch (ParseException ex) {
-            ex.printStackTrace();
-        }
-        try {
-            endDate = new SimpleDateFormat("yyyy-MM-dd").parse("2019-03-03");
-        } catch (ParseException ex) {
-            ex.printStackTrace();
-        }
+        iniDate = new SimpleDateFormat("yyyy-MM-dd").parse("2020-03-03");
+        endDate = new SimpleDateFormat("yyyy-MM-dd").parse("2019-03-03");
 
         Event event = EventTestUtils.createEvent(iniDate, endDate);
+        given(eventService.saveEvent(any())).willThrow(new EventWithIncorrectDateException());
+
         this.mockMvc.perform(
                 post("/events")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -250,18 +235,11 @@ class EventControllerTest {
     @WithMockUser
     void givenEventPostWithIniDateLessThanCurrentDateShouldReturnBadRequestStatus() throws Exception {
         Date iniDate, endDate;
-        iniDate = endDate = new Date();
-        try {
-            iniDate = new SimpleDateFormat("yyyy-MM-dd").parse("1990-03-03");
-        } catch (ParseException ex) {
-            ex.printStackTrace();
-        }
-        try {
-            endDate = new SimpleDateFormat("yyyy-MM-dd").parse("2019-03-03");
-        } catch (ParseException ex) {
-            ex.printStackTrace();
-        }
+        iniDate = new SimpleDateFormat("yyyy-MM-dd").parse("1990-03-03");
+        endDate = new SimpleDateFormat("yyyy-MM-dd").parse("2019-03-03");
+
         Event event = EventTestUtils.createEvent(iniDate, endDate);
+        given(eventService.saveEvent(any())).willThrow(new EventWithIncorrectDateException());
         this.mockMvc.perform(
                 post("/events")
                         .contentType(MediaType.APPLICATION_JSON)

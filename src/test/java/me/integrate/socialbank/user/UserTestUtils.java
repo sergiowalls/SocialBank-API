@@ -23,6 +23,7 @@ public class UserTestUtils {
         user.setSurname("Del Campo");
         user.setPassword(password);
         user.setImage("123");
+        user.setBalance(10000f);
         return user;
     }
 }
