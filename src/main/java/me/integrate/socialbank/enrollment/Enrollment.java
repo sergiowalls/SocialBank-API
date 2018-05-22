@@ -20,10 +20,10 @@ public class Enrollment {
         Enrollment enrollment = (Enrollment) o;
         return  eventId == enrollment.eventId && Objects.equals(userEmail, enrollment.userEmail);
     }
-
+    /*
     @Override
     public int hashCode()
     {
         return Objects.hash(userEmail, eventId);
-    }
+    }*/
 }
