@@ -1,6 +1,6 @@
-package me.integrate.socialbank.post;
+package me.integrate.socialbank.comment;
 
-import me.integrate.socialbank.post.exception.PostNotFoundException;
+import me.integrate.socialbank.comment.exception.PostNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;

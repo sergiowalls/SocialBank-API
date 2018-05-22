@@ -1,4 +1,4 @@
-package me.integrate.socialbank.post;
+package me.integrate.socialbank.comment;
 
 import java.util.List;
 

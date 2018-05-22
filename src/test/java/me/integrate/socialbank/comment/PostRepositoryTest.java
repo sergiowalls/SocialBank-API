@@ -1,8 +1,8 @@
-package me.integrate.socialbank.post;
+package me.integrate.socialbank.comment;
 
+import me.integrate.socialbank.comment.exception.PostNotFoundException;
 import me.integrate.socialbank.event.EventRepositoryImpl;
 import me.integrate.socialbank.event.EventTestUtils;
-import me.integrate.socialbank.post.exception.PostNotFoundException;
 import me.integrate.socialbank.user.UserRepository;
 import me.integrate.socialbank.user.UserTestUtils;
 import org.junit.jupiter.api.Assertions;
