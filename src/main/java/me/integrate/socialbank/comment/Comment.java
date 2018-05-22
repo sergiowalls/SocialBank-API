@@ -35,7 +35,6 @@ public class Comment {
     public String getCreatorEmail() {
         return creatorEmail;
     }
-//test
 
     public String getContent() {
         return content;
