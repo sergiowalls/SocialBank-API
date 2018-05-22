@@ -1,6 +1,7 @@
 package me.integrate.socialbank.enrollment;
 
 
+import me.integrate.socialbank.enrollment.exceptions.EnrollmentAlreadyExistsException;
 import me.integrate.socialbank.event.Event;
 import me.integrate.socialbank.event.EventRepository;
 import me.integrate.socialbank.event.EventTestUtils;
@@ -17,8 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
@@ -85,6 +85,20 @@ public class EnrollmentRepositoryTest {
         List<Integer> retList = enrollmentRepository.getEnrollmentsOfUser(emailEnrolled);
         assertTrue(le.containsAll(retList));
         assertTrue(retList.containsAll(le));
+    }
+
+    @Test
+    void givenEnrollmentsStoredInDatabaseWhenSaveSameEnrollmentThenThrowException() {
+        String emailCreator = "a@a.a", emailEnrolled = "b@b.b";
+
+        userRepository.saveUser(UserTestUtils.createUser(emailCreator));
+        userRepository.saveUser(UserTestUtils.createUser(emailEnrolled));
+
+        int id = eventRepository.saveEvent(EventTestUtils.createEvent(emailCreator)).getId();
+
+        enrollmentRepository.saveEnrollment(emailEnrolled, id);
+        assertThrows(EnrollmentAlreadyExistsException.class, () -> enrollmentRepository.saveEnrollment(emailEnrolled,
+                id));
     }
 
     @Test
