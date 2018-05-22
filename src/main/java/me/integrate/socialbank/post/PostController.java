@@ -28,7 +28,7 @@ public class PostController {
 
     @PostMapping("/events/{event_id}/posts")
     @ResponseStatus(HttpStatus.CREATED)
-    public Post saveEvent(@RequestBody Post post, @PathVariable int event_id, Authentication authentication) {
+    public Post savePost(@RequestBody Post post, @PathVariable int event_id, Authentication authentication) {
         post.setCreatorEmail(authentication.getName());
         post.setEventId(event_id);
         return postService.savePost(post);
