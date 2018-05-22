@@ -27,8 +27,8 @@ public class UserRepositoryImpl implements UserRepository {
     private final static String DESCRIPTION = "description";
     private final static String RECOVERY = "recovery";
     private final static String IMAGE = "image";
-    private static final String ENABLED = "enabled";
     private final static String VERIFIED = "verified_account";
+    private static final String ENABLED = "enabled";
 
     private JdbcTemplate jdbcTemplate;
 
@@ -49,9 +49,10 @@ public class UserRepositoryImpl implements UserRepository {
 
     public User saveUser(User user) {
         try {
-            jdbcTemplate.update("INSERT INTO " + USER_TABLE + " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            jdbcTemplate.update("INSERT INTO " + USER_TABLE + " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                     user.getEmail(), user.getName(), user.getSurname(), user.getPassword(), user.getBirthdate(),
-                    user.getGender().toString(), user.getBalance(), user.getDescription(), null, user.getImage(), true);
+                    user.getGender().toString(), user.getBalance(), user.getDescription(), null, user.getImage(),
+                    false, true);
         } catch (DuplicateKeyException ex) {
             throw new EmailAlreadyExistsException();
         }
