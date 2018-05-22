@@ -77,4 +77,15 @@ class UserRepositoryTest {
         assertEquals(user, userRepository.getUserByEmail(email));
 
     }
+
+    @Test
+    void givenTwoEqualReportsReturnException() {
+        String email = "swaggaaa@integrate.me";
+        String email2 = "sergio@integrate.me";
+        userRepository.saveUser(UserTestUtils.createUser(email));
+        userRepository.saveUser(UserTestUtils.createUser(email2));
+
+        userRepository.reportUser(email, email2);
+        assertThrows(ReportAlreadyExistsException.class, () -> userRepository.reportUser(email, email2));
+    }
 }

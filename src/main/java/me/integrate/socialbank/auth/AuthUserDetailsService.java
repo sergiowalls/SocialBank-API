@@ -21,7 +21,7 @@ public class AuthUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) {
         me.integrate.socialbank.user.User userByEmail = userService.getUserByEmail(username);
-        return new User(username, userByEmail.getPassword(), userByEmail.getName(), new ArrayList<>());
+        return new User(username, userByEmail.getPassword(), userByEmail.getName(), userByEmail.getEnabled(), new ArrayList<>());
     }
 
 }

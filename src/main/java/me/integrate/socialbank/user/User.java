@@ -24,6 +24,8 @@ public class User {
     private float balance;
     private String description;
     private String image; //base 64
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    private boolean enabled;
 
 
     public String getEmail() {
@@ -62,6 +64,10 @@ public class User {
         return image;
     }
 
+    public boolean getEnabled() {
+        return enabled;
+    }
+
     public void setEmail(String email) {
         this.email = email;
     }
@@ -96,6 +102,10 @@ public class User {
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 
     @Override

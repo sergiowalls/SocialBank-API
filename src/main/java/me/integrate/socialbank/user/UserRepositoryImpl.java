@@ -1,6 +1,7 @@
 package me.integrate.socialbank.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -14,6 +15,7 @@ import java.util.*;
 @Repository
 public class UserRepositoryImpl implements UserRepository {
     private final static String USER_TABLE = "\"user\"";
+    private final static String REPORT_TABLE = "report";
     private final static String EMAIL = "email";
     private final static String NAME = "name";
     private final static String SURNAME = "surname";
@@ -24,6 +26,7 @@ public class UserRepositoryImpl implements UserRepository {
     private final static String DESCRIPTION = "description";
     private final static String RECOVERY = "recovery";
     private final static String IMAGE = "image";
+    private static final String ENABLED = "enabled";
 
     private JdbcTemplate jdbcTemplate;
 
@@ -44,9 +47,9 @@ public class UserRepositoryImpl implements UserRepository {
 
     public User saveUser(User user) {
         try {
-            jdbcTemplate.update("INSERT INTO " + USER_TABLE + " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            jdbcTemplate.update("INSERT INTO " + USER_TABLE + " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                     user.getEmail(), user.getName(), user.getSurname(), user.getPassword(), user.getBirthdate(),
-                    user.getGender().toString(), user.getBalance(), user.getDescription(), null, user.getImage());
+                    user.getGender().toString(), user.getBalance(), user.getDescription(), null, user.getImage(), true);
         } catch (DuplicateKeyException ex) {
             throw new EmailAlreadyExistsException();
         }
@@ -109,6 +112,14 @@ public class UserRepositoryImpl implements UserRepository {
         return email;
     }
 
+    public void reportUser(String reporter, String reported) {
+        try {
+            jdbcTemplate.execute("INSERT INTO " + REPORT_TABLE + " VALUES ('" + reporter + "', '" + reported + "');");
+        } catch (DataIntegrityViolationException ex) {
+            throw new ReportAlreadyExistsException();
+        }
+    }
+
     private class UserRowMapper implements RowMapper<User> {
 
         @Override
@@ -123,7 +134,7 @@ public class UserRepositoryImpl implements UserRepository {
             user.setBalance(resultSet.getFloat(BALANCE));
             user.setDescription(resultSet.getString(DESCRIPTION));
             user.setImage(resultSet.getString(IMAGE));
-
+            user.setEnabled(resultSet.getBoolean(ENABLED));
             return user;
         }
     }

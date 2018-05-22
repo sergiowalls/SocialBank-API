@@ -49,4 +49,10 @@ public class UserController {
         else
             userService.updateUser(email, user);
     }
+
+    @PostMapping("/users/{email}/report")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void reportUser(Principal principal, @PathVariable String email) {
+        userService.reportUser(principal.getName(), email);
+    }
 }

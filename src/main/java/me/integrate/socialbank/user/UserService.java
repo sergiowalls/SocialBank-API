@@ -37,4 +37,9 @@ public class UserService {
     public Set<User> getUsers() {
         return userRepository.getUsers();
     }
+
+    public void reportUser(String reporter, String reported) {
+        getUserByEmail(reported);
+        userRepository.reportUser(reporter, reported);
+    }
 }
