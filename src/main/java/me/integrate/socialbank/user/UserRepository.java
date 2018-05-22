@@ -16,4 +16,6 @@ public interface UserRepository {
     void updateUser(String email, User user);
 
     Set<User> getUsers();
+
+    void saveRequestAccountVerification(String email, String message);
 }

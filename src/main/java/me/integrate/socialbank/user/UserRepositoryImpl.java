@@ -14,6 +14,7 @@ import java.util.*;
 @Repository
 public class UserRepositoryImpl implements UserRepository {
     private final static String USER_TABLE = "\"user\"";
+    private final static String REQUEST_ACCOUNT_VERIFICATION_TABLE = "request_account_verification";
     private final static String EMAIL = "email";
     private final static String NAME = "name";
     private final static String SURNAME = "surname";
@@ -91,6 +92,14 @@ public class UserRepositoryImpl implements UserRepository {
 
     public Set<User> getUsers() {
         return new HashSet<>(jdbcTemplate.query("SELECT * FROM " + USER_TABLE, new UserRowMapper()));
+    }
+
+    public void saveRequestAccountVerification(String email, String message) {
+        try {
+            jdbcTemplate.update("INSERT INTO " + REQUEST_ACCOUNT_VERIFICATION_TABLE + " VALUES (?, ?)", email, message);
+        } catch (DuplicateKeyException e) {
+            throw new PendingAccountVerification();
+        }
     }
 
     public void updateRecoveryToken(String email, String recoveryToken) {

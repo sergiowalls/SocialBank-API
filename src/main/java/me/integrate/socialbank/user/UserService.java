@@ -38,4 +38,8 @@ public class UserService {
     public Set<User> getUsers() {
         return userRepository.getUsers();
     }
+
+    public void requestAccountVerification(String email, String message) {
+        userRepository.saveRequestAccountVerification(email, message);
+    }
 }
