@@ -102,7 +102,7 @@ public class UserRepositoryImpl implements UserRepository {
         try {
             jdbcTemplate.update("INSERT INTO " + REQUEST_ACCOUNT_VERIFICATION_TABLE + " VALUES (?, ?)", email, message);
         } catch (DuplicateKeyException e) {
-            throw new PendingAccountVerification();
+            throw new PendingAccountVerificationException();
         }
     }
 
