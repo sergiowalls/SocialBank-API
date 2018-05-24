@@ -18,6 +18,7 @@ import java.util.Map;
 @Repository
 public class CommentRepositoryImpl implements CommentRepository {
 
+    private static String EVENT_ID = "event_id";
     private static String COMMENT_TABLE = "comment";
     private static String ID = "id";
     private static String CREATOR = "creator_email";
@@ -59,6 +60,7 @@ public class CommentRepositoryImpl implements CommentRepository {
                 .usingGeneratedKeyColumns(ID);
 
         Map<String, Object> params = new HashMap<>();
+        params.put(EVENT_ID, comment.getEventId());
         params.put(CREATOR, comment.getCreatorEmail());
         params.put(CREATED_AT, comment.getCreatedAt());
         params.put(UPDATED_AT, comment.getUpdatedAt());
@@ -73,8 +75,8 @@ public class CommentRepositoryImpl implements CommentRepository {
 
     @Override
     public List<Comment> getAllComments(int event_id) {
-        final String COMMENTS_TABLE = "comments_"+event_id;
-        return jdbcTemplate.query("SELECT * FROM " + COMMENTS_TABLE, new CommentRowMapper());
+        String sql = "SELECT * FROM " + COMMENT_TABLE + " WHERE " + EVENT_ID + "=?";
+        return jdbcTemplate.query(sql, new Object[]{event_id}, new CommentRowMapper());
     }
 
     @Override
@@ -87,6 +89,7 @@ public class CommentRepositoryImpl implements CommentRepository {
         public Comment mapRow(ResultSet resultSet, int i) throws SQLException {
             Comment comment = new Comment();
             comment.setId(resultSet.getInt(ID));
+            comment.setEventId(resultSet.getInt(EVENT_ID));
             comment.setCreatorEmail(resultSet.getString(CREATOR));
             comment.setCreatedAt(resultSet.getTimestamp(CREATED_AT));
             comment.setUpdatedAt(resultSet.getTimestamp(UPDATED_AT));

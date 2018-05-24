@@ -30,7 +30,7 @@ public class CommentService {
         return commentRepository.getAllComments(event_id);
     }
 
-    public void deleteComment(int event_id, int id) {
+    public void deleteComment(int id) {
         commentRepository.deleteComment(id);
     }
 }
