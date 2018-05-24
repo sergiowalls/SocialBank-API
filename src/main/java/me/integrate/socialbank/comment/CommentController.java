@@ -17,13 +17,13 @@ public class CommentController {
     public CommentController(CommentService commentService) { this.commentService = commentService; }
 
     @GetMapping("/events/{event_id}/comments/{id}")
-    public Comment getCommentById(@PathVariable int event_id, @PathVariable int id) {
-        return commentService.getCommentById(event_id, id);
+    public Comment getCommentById(@PathVariable int id) {
+        return commentService.getCommentById(id);
     }
 
     @PutMapping("/events/{event_id}/comments/{id}")
-    public void updateCommentContent(@PathVariable int event_id, @PathVariable int id, @RequestParam String content) {
-        commentService.updateComment(event_id, id, content);
+    public void updateCommentContent(@PathVariable int id, @RequestParam String content) {
+        commentService.updateComment(id, content);
     }
 
     @PostMapping("/events/{event_id}/comments")
@@ -43,8 +43,8 @@ public class CommentController {
 
     @DeleteMapping("/events/{event_id}/comments/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteComment(@PathVariable int event_id, @PathVariable int id) {
-        commentService.deleteComment(event_id, id);
+    public void deleteComment(@PathVariable int id) {
+        commentService.deleteComment(id);
     }
 
 }

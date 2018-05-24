@@ -14,12 +14,12 @@ public class CommentService {
         this.commentRepository = commentRepository;
     }
 
-    public Comment getCommentById(int event_id, int id) {
-        return commentRepository.getCommentById(event_id, id);
+    public Comment getCommentById(int id) {
+        return commentRepository.getCommentById(id);
     }
 
-    public void updateComment(int event_id, int id, String content) {
-        commentRepository.updateContent(event_id, id, content);
+    public void updateComment(int id, String content) {
+        commentRepository.updateContent(id, content);
     }
 
     public Comment saveComment(Comment comment) {
@@ -31,6 +31,6 @@ public class CommentService {
     }
 
     public void deleteComment(int event_id, int id) {
-        commentRepository.deleteComment(event_id, id);
+        commentRepository.deleteComment(id);
     }
 }
