@@ -32,7 +32,6 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -62,8 +61,7 @@ public class EnrollmentControllerTest {
         Enrollment enrollment = new Enrollment(id, email);
         given(enrollmentService.saveEnrollment(id, email)).willReturn(enrollment);
 
-        this.mockMvc.perform(
-                post("/events/" + id + "/enroll")
+        this.mockMvc.perform(post("/events/" + id + "/enrollments")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(null)))
                 .andExpect(status().isCreated());
@@ -112,11 +110,8 @@ public class EnrollmentControllerTest {
 
         when(enrollmentService.getEnrollmentsOfUser(emailEnrolled)).thenReturn(le);
         this.mockMvc.perform(get("/users/" + emailEnrolled + "/enrollments"))
-                .andDo(print())
                 .andExpect(jsonPath("$", hasSize(le.size())))
-                .andExpect(jsonPath("$.[*]", hasItems(e1.getId(), e2.getId())))
-                .andExpect(status().isOk())
-                .andReturn();
+                .andExpect(jsonPath("$.[*]", hasItems(e1.getId(), e2.getId()))).andExpect(status().isOk());
     }
 
     @Test
@@ -133,11 +128,8 @@ public class EnrollmentControllerTest {
 
         when(enrollmentService.getEnrollmentsOfEvent(id)).thenReturn(le);
         this.mockMvc.perform(get("/events/" + id + "/enrollments"))
-                .andDo(print())
                 .andExpect(jsonPath("$", hasSize(le.size())))
-                .andExpect(jsonPath("$.[*]", hasItems(emailEnrolledOne, emailEnrolledTwo)))
-                .andExpect(status().isOk())
-                .andReturn();
+                .andExpect(jsonPath("$.[*]", hasItems(emailEnrolledOne, emailEnrolledTwo))).andExpect(status().isOk());
     }
 
     @Test
