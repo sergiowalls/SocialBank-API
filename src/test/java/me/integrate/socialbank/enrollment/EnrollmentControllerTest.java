@@ -70,7 +70,7 @@ public class EnrollmentControllerTest {
     }
 
     @Test
-    @Disabled
+    @Disabled     // <----------------------------------------- test does not work
     @WithMockUser
     void whenDateIsNotValidShouldReturnConflictStatus() throws Exception {
         given(auth.getName()).willReturn("a@a.a");
@@ -83,7 +83,7 @@ public class EnrollmentControllerTest {
     }
 
     @Test
-    @Disabled
+    @Disabled  // <----------------------------------------- test does not work
     @WithMockUser
     void whenUserIsSameAsCreatorShouldReturnConflictStatus() throws Exception {
         String email = "b@b.b";
