@@ -46,7 +46,7 @@ class CommentRepositoryTest {
         comment.setCreatedAt(date);
         comment.setUpdatedAt(date);
         comment = commentRepository.saveComment(comment);
-        Comment retrievedComment = commentRepository.getCommentById(eventId, comment.getId());
+        Comment retrievedComment = commentRepository.getCommentById(comment.getId());
         assertEquals(comment, retrievedComment);
     }
 
@@ -64,9 +64,9 @@ class CommentRepositoryTest {
         comment.setCreatedAt(date);
         comment.setUpdatedAt(date);
         int id = commentRepository.saveComment(comment).getId();
-        commentRepository.deleteComment(eventId, id);
+        commentRepository.deleteComment(id);
 
-        Assertions.assertThrows(CommentNotFoundException.class, () -> commentRepository.getCommentById(eventId, id));
+        Assertions.assertThrows(CommentNotFoundException.class, () -> commentRepository.getCommentById(id));
     }
 
     @Test
@@ -85,8 +85,7 @@ class CommentRepositoryTest {
         int id = commentRepository.saveComment(comment).getId();
         eventRepository.deleteEvent(eventId);
 
-        Assertions.assertThrows(InvalidDataAccessResourceUsageException.class, () -> commentRepository.getCommentById
-                (eventId, id));
+        Assertions.assertThrows(InvalidDataAccessResourceUsageException.class, () -> commentRepository.getCommentById(id));
     }
 
 }
