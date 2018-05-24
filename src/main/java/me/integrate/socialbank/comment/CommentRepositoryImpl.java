@@ -18,7 +18,7 @@ import java.util.Map;
 @Repository
 public class CommentRepositoryImpl implements CommentRepository {
 
-    private static String COMMENT_TABLE = "comments_";
+    private static String COMMENTS_TABLE = "comments";
     private static String ID = "id";
     private static String CREATOR = "creator_email";
     private static String CREATED_AT = "created_at";
@@ -34,28 +34,25 @@ public class CommentRepositoryImpl implements CommentRepository {
     }
 
     @Override
-    public Comment getCommentById(int event_id, int id) {
+    public Comment getCommentById(int id) {
         Comment comment;
         try {
-            final String sql = "SELECT * FROM " + COMMENT_TABLE + event_id + " WHERE " + ID + "= ?";
+            final String sql = "SELECT * FROM " + COMMENTS_TABLE + " WHERE " + ID + "= ?";
             comment = jdbcTemplate.queryForObject(sql, new Object[]{id}, new CommentRowMapper());
         } catch (EmptyResultDataAccessException e) {
             throw new CommentNotFoundException();
         }
-        comment.setEventId(event_id);
         return comment;
     }
 
     @Override
-    public void updateContent(int event_id, int id, String content) {
-        final String COMMENTS_TABLE = "comments_"+event_id;
+    public void updateContent(int id, String content) {
         String sql = "UPDATE " + COMMENTS_TABLE + " SET " + CONTENT + " = ?, " + UPDATED_AT + " = ? WHERE " + ID + " = ?";
         jdbcTemplate.update(sql, content, new Date(), id);
     }
 
     @Override
     public Comment saveComment(Comment comment) {
-        final String COMMENTS_TABLE = "comments_"+ comment.getEventId();
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(this.jdbcTemplate)
                 .withTableName(COMMENTS_TABLE)
                 .usingColumns(CREATOR, CREATED_AT, UPDATED_AT, ANSWER_TO, CONTENT)
@@ -81,8 +78,7 @@ public class CommentRepositoryImpl implements CommentRepository {
     }
 
     @Override
-    public void deleteComment(int event_id, int id) {
-        final String COMMENTS_TABLE = "comments_"+event_id;
+    public void deleteComment(int id) {
         jdbcTemplate.update("DELETE FROM " + COMMENTS_TABLE + " WHERE " + ID + "=?", id);
     }
 
