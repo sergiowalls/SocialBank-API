@@ -34,7 +34,7 @@ class CommentRepositoryTest {
     private static final String CONTENT = "This is a test content.";
 
     @Test
-    void givenPostStoredInDatabaseWhenRetrievedByIdThenReturnsSamePost() {
+    void givenCommentStoredInDatabaseWhenRetrievedByIdThenReturnsSameComment() {
         String email = "pepito@pepito.com";
         userRepository.saveUser(UserTestUtils.createUser(email));
         int eventId = eventRepository.saveEvent(EventTestUtils.createEvent(email)).getId();
@@ -45,13 +45,13 @@ class CommentRepositoryTest {
         Date date = new Date();
         comment.setCreatedAt(date);
         comment.setUpdatedAt(date);
-        comment = commentRepository.savePost(comment);
-        Comment retrievedComment = commentRepository.getPostById(eventId, comment.getId());
+        comment = commentRepository.saveComment(comment);
+        Comment retrievedComment = commentRepository.getCommentById(eventId, comment.getId());
         assertEquals(comment, retrievedComment);
     }
 
     @Test
-    void givenPostStoredInDatabaseWhenDeletedThenIsNoLongerStored() {
+    void givenCommentStoredInDatabaseWhenDeletedThenIsNoLongerStored() {
         String email = "email@email.tld";
         userRepository.saveUser(UserTestUtils.createUser(email));
         int eventId = eventRepository.saveEvent(EventTestUtils.createEvent(email)).getId();
@@ -63,14 +63,14 @@ class CommentRepositoryTest {
         Date date = new Date();
         comment.setCreatedAt(date);
         comment.setUpdatedAt(date);
-        int id = commentRepository.savePost(comment).getId();
-        commentRepository.deletePost(eventId, id);
+        int id = commentRepository.saveComment(comment).getId();
+        commentRepository.deleteComment(eventId, id);
 
-        Assertions.assertThrows(CommentNotFoundException.class, () -> commentRepository.getPostById(eventId, id));
+        Assertions.assertThrows(CommentNotFoundException.class, () -> commentRepository.getCommentById(eventId, id));
     }
 
     @Test
-    void givenPostStoredInDatabaseWhenEventIsDeletedThenPostsNoLongerStored() {
+    void givenCommentStoredInDatabaseWhenEventIsDeletedThenCommentsNoLongerStored() {
         String email = "email@email.tld";
         userRepository.saveUser(UserTestUtils.createUser(email));
         int eventId = eventRepository.saveEvent(EventTestUtils.createEvent(email)).getId();
@@ -82,10 +82,11 @@ class CommentRepositoryTest {
         Date date = new Date();
         comment.setCreatedAt(date);
         comment.setUpdatedAt(date);
-        int id = commentRepository.savePost(comment).getId();
+        int id = commentRepository.saveComment(comment).getId();
         eventRepository.deleteEvent(eventId);
 
-        Assertions.assertThrows(InvalidDataAccessResourceUsageException.class, () -> commentRepository.getPostById(eventId, id));
+        Assertions.assertThrows(InvalidDataAccessResourceUsageException.class, () -> commentRepository.getCommentById
+                (eventId, id));
     }
 
 }
