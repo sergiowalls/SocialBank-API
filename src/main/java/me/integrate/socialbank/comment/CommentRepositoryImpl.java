@@ -26,7 +26,7 @@ public class CommentRepositoryImpl implements CommentRepository {
     private static String CREATOR = "creator_email";
     private static String CREATED_AT = "created_at";
     private static String UPDATED_AT = "updated_at";
-    private static String ANSWER_TO = "answer_to";
+    private static String ANSWER_TO = "reply_to";
     private static String CONTENT = "content";
 
     private JdbcTemplate jdbcTemplate;
