@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +21,9 @@ import static org.junit.jupiter.api.Assertions.*;
 class UserServiceTest {
     @Autowired
     UserService userService;
+
+    @Autowired
+    JdbcTemplate jdbcTemplate;
 
     @Autowired
     BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -97,5 +101,40 @@ class UserServiceTest {
         Set<User> users = userService.getUsers();
         assertTrue(users.contains(user));
         assertTrue(users.contains(user1));
+    }
+
+    @Test
+    void givenUserWhenRequestAccountVerificationThenUserHasPendingVerification() {
+        User user = createUser("aaa@aaa.aaa");
+        userService.saveUser(user);
+
+        userService.requestAccountVerification("aaa@aaa.aaa", "Please");
+
+        String sql = "SELECT COUNT(*) FROM request_account_verification WHERE \"user\" = ?";
+        int res = jdbcTemplate.queryForObject(sql, Integer.class, "aaa@aaa.aaa");
+        assertEquals(1, res);
+    }
+
+    @Test
+    void givenUserWhenRequestAccountVerificationThenMessageIsSaved() {
+        User user = createUser("aaa@aaa.aaa");
+        userService.saveUser(user);
+
+        userService.requestAccountVerification("aaa@aaa.aaa", "Please verify me");
+
+        String sql = "SELECT message FROM request_account_verification WHERE \"user\" = ?";
+        String message = jdbcTemplate.queryForObject(sql, String.class, "aaa@aaa.aaa");
+        assertEquals("Please verify me", message);
+    }
+
+    @Test
+    void givenUserWithPendingAccountVerificationWhenRequestAccountVerificationThenThrowsException() {
+        User user = createUser("aaa@aaa.aaa");
+        userService.saveUser(user);
+
+        userService.requestAccountVerification("aaa@aaa.aaa", "Please");
+
+        assertThrows(PendingAccountVerificationException.class,
+                () -> userService.requestAccountVerification("aaa@aaa.aaa", "Please"));
     }
 }
