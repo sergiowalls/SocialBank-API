@@ -1,15 +1,10 @@
 package me.integrate.socialbank.enrollment;
 
-import me.integrate.socialbank.enrollment.exceptions.TooLateException;
-import me.integrate.socialbank.enrollment.exceptions.UserIsTheCreatorException;
-import me.integrate.socialbank.event.Event;
-import me.integrate.socialbank.event.EventService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -17,22 +12,16 @@ public class EnrollmentController {
 
     private EnrollmentService enrollmentService;
 
-    private EventService eventService;
 
     @Autowired
-    public EnrollmentController(EnrollmentService enrollmentService, EventService eventService) {
+    public EnrollmentController(EnrollmentService enrollmentService) {
         this.enrollmentService = enrollmentService;
-        this.eventService = eventService;
     }
 
     @PostMapping("/events/{id}/enroll")
     @ResponseStatus(HttpStatus.CREATED)
     public Enrollment enrollEvent(@PathVariable int id, Authentication auth) {
-        Event event = eventService.getEventById(id);
-        if (event.getIniDate().before(new Date())) throw new TooLateException();
-        String email = auth.getName();
-        if (event.getCreatorEmail().equals(email)) throw new UserIsTheCreatorException();
-        return enrollmentService.saveEnrollment(email, id);
+        return enrollmentService.saveEnrollment(id, auth.getName());
     }
 
     @GetMapping("/events/{id}/enrollments")

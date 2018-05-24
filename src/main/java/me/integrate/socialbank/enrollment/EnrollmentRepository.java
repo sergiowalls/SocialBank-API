@@ -4,7 +4,7 @@ import java.util.List;
 
 public interface EnrollmentRepository {
 
-    Enrollment saveEnrollment(String email, int id);
+    Enrollment saveEnrollment(int id, String email);
 
     List<String> getEnrollmentsOfEvent(int id);
 

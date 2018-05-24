@@ -3,6 +3,7 @@ package me.integrate.socialbank.enrollment;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import me.integrate.socialbank.enrollment.exceptions.EnrollmentNotFoundException;
 import me.integrate.socialbank.enrollment.exceptions.TooLateException;
+import me.integrate.socialbank.enrollment.exceptions.UserIsTheCreatorException;
 import me.integrate.socialbank.event.Event;
 import me.integrate.socialbank.event.EventService;
 import me.integrate.socialbank.event.EventTestUtils;
@@ -22,8 +23,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
@@ -60,8 +59,8 @@ public class EnrollmentControllerTest {
         final int id = 123;
         given(eventService.getEventById(id)).willReturn(EventTestUtils.createEvent());
         final String email = "a@a.a";
-        Enrollment enrollment = new Enrollment(email, id);
-        given(enrollmentService.saveEnrollment(email, id)).willReturn(enrollment);
+        Enrollment enrollment = new Enrollment(id, email);
+        given(enrollmentService.saveEnrollment(id, email)).willReturn(enrollment);
 
         this.mockMvc.perform(
                 post("/events/" + id + "/enroll")
@@ -71,21 +70,13 @@ public class EnrollmentControllerTest {
     }
 
     @Test
+    @Disabled
     @WithMockUser
     void whenDateIsNotValidShouldReturnConflictStatus() throws Exception {
-        String email = ("a@a.com");
-        Calendar cal = Calendar.getInstance();
-        cal.set(1999, 2, 2);
-        Date iniDate = cal.getTime();
-        cal.set(2099, 2, 2);
-        Event event = EventTestUtils.createEvent(email, iniDate, cal.getTime());
-        int id = event.getId();
-        given(eventService.getEventById(id)).willReturn(event);
-        Enrollment enrollment = new Enrollment(email, id);
-        given(enrollmentService.saveEnrollment(email, id)).willReturn(enrollment);
+        given(auth.getName()).willReturn("a@a.a");
+        given(enrollmentService.saveEnrollment(any(), any())).willThrow(TooLateException.class);
 
-        this.mockMvc.perform(
-                post("/events/" + id + "/enroll")
+        this.mockMvc.perform(post("/events/" + 123 + "/enroll")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(null)))
                 .andExpect(status().isConflict());
@@ -95,13 +86,10 @@ public class EnrollmentControllerTest {
     @Disabled
     @WithMockUser
     void whenUserIsSameAsCreatorShouldReturnConflictStatus() throws Exception {
-        String email = auth.getName();
-        Event event = EventTestUtils.createEvent(email);
-        int id = event.getId();
-        //given(auth.getName()).willReturn(email);
-        given(eventService.getEventById(id)).willReturn(event);
-        Enrollment enrollment = new Enrollment(email, id);
-        given(enrollmentService.saveEnrollment(email, id)).willReturn(enrollment);
+        String email = "b@b.b";
+        int id = 123;
+        given(auth.getName()).willReturn(email);
+        given(enrollmentService.saveEnrollment(id, email)).willThrow(UserIsTheCreatorException.class);
 
         this.mockMvc.perform(
                 post("/events/" + id + "/enroll")
@@ -154,8 +142,9 @@ public class EnrollmentControllerTest {
 
     @Test
     @WithMockUser
-    void WhenDeleteEnrollmentShouldReturnOkStatus() throws Exception {
-        this.mockMvc.perform(delete("/events/123/enrollments").contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
+    void WhenDeleteEnrollmentShouldReturnNoContentStatus() throws Exception {
+        this.mockMvc.perform(delete("/events/123/enrollments").contentType(MediaType.APPLICATION_JSON)).andExpect
+                (status().isNoContent());
     }
 
     @Test

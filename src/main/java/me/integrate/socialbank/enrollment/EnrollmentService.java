@@ -1,22 +1,32 @@
 package me.integrate.socialbank.enrollment;
 
+import me.integrate.socialbank.enrollment.exceptions.TooLateException;
+import me.integrate.socialbank.enrollment.exceptions.UserIsTheCreatorException;
+import me.integrate.socialbank.event.Event;
+import me.integrate.socialbank.event.EventService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
 public class EnrollmentService {
 
     private EnrollmentRepository enrollmentRepository;
+    private EventService eventService;
 
     @Autowired
-    public EnrollmentService(EnrollmentRepository enrollmentRepository)  {
+    public EnrollmentService(EnrollmentRepository enrollmentRepository, EventService eventService) {
         this.enrollmentRepository = enrollmentRepository;
+        this.eventService = eventService;
     }
 
-    public Enrollment saveEnrollment(String email, int id) {
-        return enrollmentRepository.saveEnrollment(email, id);
+    public Enrollment saveEnrollment(int id, String email) {
+        Event event = eventService.getEventById(id);
+        if (event.getIniDate().before(new Date())) throw new TooLateException();
+        if (event.getCreatorEmail().equals(email)) throw new UserIsTheCreatorException();
+        return enrollmentRepository.saveEnrollment(id, email);
     }
 
     public List<String> getEnrollmentsOfEvent(int id) {
@@ -29,6 +39,6 @@ public class EnrollmentService {
 
     public Enrollment deleteEnrollment(int id, String email) {
         enrollmentRepository.deleteEnrollment(id, email);
-        return new Enrollment(email, id); //necessary for tests
+        return new Enrollment(id, email); //necessary for tests
     }
 }

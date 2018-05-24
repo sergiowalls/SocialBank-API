@@ -1,5 +1,7 @@
 package me.integrate.socialbank.enrollment;
 
+import me.integrate.socialbank.enrollment.exceptions.TooLateException;
+import me.integrate.socialbank.event.Event;
 import me.integrate.socialbank.event.EventService;
 import me.integrate.socialbank.event.EventTestUtils;
 import me.integrate.socialbank.user.User;
@@ -13,10 +15,11 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
@@ -35,14 +38,18 @@ public class EnrollmentServiceTest {
 
     @Test
     void givenEnrollmentThenIsStoredCorrectly() {
-        String email = "a@a.com";
-        User user = UserTestUtils.createUser(email);
-        userService.saveUser(user);
+        String emailCreator = "a@a.com";
+        String emailEnrolled = "b@b.b";
+        User userCreator = UserTestUtils.createUser(emailCreator);
+        User userEnrolled = UserTestUtils.createUser(emailEnrolled);
+        userService.saveUser(userCreator);
+        userService.saveUser(userEnrolled);
 
-        int id = eventService.saveEvent(EventTestUtils.createEvent(email)).getId();
+        int id = eventService.saveEvent(EventTestUtils.createEvent(emailCreator)).getId();
 
-        Enrollment enrollment = new Enrollment(email, id);
-        assertEquals(enrollment, enrollmentService.saveEnrollment(email, id));
+        Enrollment enrollment = new Enrollment(id, emailEnrolled);
+        Enrollment enrollment2 = enrollmentService.saveEnrollment(id, emailEnrolled);
+        assertEquals(enrollment, enrollment2);
     }
 
     @Test
@@ -56,8 +63,8 @@ public class EnrollmentServiceTest {
         List<String> le = new ArrayList<>();
         le.add(emailEnrolledOne); le.add(emailEnrolledTwo);
 
-        enrollmentService.saveEnrollment(emailEnrolledOne, id);
-        enrollmentService.saveEnrollment(emailEnrolledTwo, id);
+        enrollmentService.saveEnrollment(id, emailEnrolledOne);
+        enrollmentService.saveEnrollment(id, emailEnrolledTwo);
 
         List<String> retList = enrollmentService.getEnrollmentsOfEvent(id);
         assertTrue(le.containsAll(retList));
@@ -76,8 +83,8 @@ public class EnrollmentServiceTest {
         List<Integer> le = new ArrayList<>();
         le.add(idOne); le.add(idTwo);
 
-        enrollmentService.saveEnrollment(emailEnrolled, idOne);
-        enrollmentService.saveEnrollment(emailEnrolled, idTwo);
+        enrollmentService.saveEnrollment(idOne, emailEnrolled);
+        enrollmentService.saveEnrollment(idTwo, emailEnrolled);
 
         List<Integer> retList = enrollmentService.getEnrollmentsOfUser(emailEnrolled);
         assertTrue(le.containsAll(retList));
@@ -91,9 +98,24 @@ public class EnrollmentServiceTest {
         userService.saveUser(UserTestUtils.createUser(creatorEmail));
         userService.saveUser(UserTestUtils.createUser(enrolledEmail));
         int eventId = eventService.saveEvent(EventTestUtils.createEvent(creatorEmail)).getId();
-        enrollmentService.saveEnrollment(enrolledEmail, eventId);
+        enrollmentService.saveEnrollment(eventId, enrolledEmail);
         enrollmentService.deleteEnrollment(eventId, enrolledEmail);
         List<String> emailsEnrolled = enrollmentService.getEnrollmentsOfEvent(eventId);
         assert (!emailsEnrolled.contains(enrolledEmail));
+    }
+
+    @Test
+    void checkTooLate() {
+        String email = ("a@a.com");
+        userService.saveUser(UserTestUtils.createUser(email));
+
+        Calendar cal = Calendar.getInstance();
+        cal.set(1999, 2, 2);
+        Date iniDate = cal.getTime();
+        cal.set(2099, 2, 2);
+
+        Event event = eventService.saveEvent(EventTestUtils.createEvent(email, iniDate, cal.getTime()));
+
+        assertThrows(TooLateException.class, () -> enrollmentService.saveEnrollment(event.getId(), "b@b.b"));
     }
 }

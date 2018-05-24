@@ -43,8 +43,8 @@ public class EnrollmentRepositoryTest {
         Event event = EventTestUtils.createEvent(email);
         int id = eventRepository.saveEvent(event).getId();
 
-        Enrollment enrollment = new Enrollment(email, id);
-        assertEquals(enrollment, enrollmentRepository.saveEnrollment(email, id));
+        Enrollment enrollment = new Enrollment(id, email);
+        assertEquals(enrollment, enrollmentRepository.saveEnrollment(id, email));
     }
 
     @Test
@@ -59,8 +59,8 @@ public class EnrollmentRepositoryTest {
         List<String> le = new ArrayList<>();
         le.add(emailEnrolledOne); le.add(emailEnrolledTwo);
 
-        enrollmentRepository.saveEnrollment(emailEnrolledOne, id);
-        enrollmentRepository.saveEnrollment(emailEnrolledTwo, id);
+        enrollmentRepository.saveEnrollment(id, emailEnrolledOne);
+        enrollmentRepository.saveEnrollment(id, emailEnrolledTwo);
 
         List<String> retList = enrollmentRepository.getEnrollmentsOfEvent(id);
         assertTrue(le.containsAll(retList));
@@ -79,8 +79,8 @@ public class EnrollmentRepositoryTest {
         List<Integer> le = new ArrayList<>();
         le.add(idOne); le.add(idTwo);
 
-        enrollmentRepository.saveEnrollment(emailEnrolled, idOne);
-        enrollmentRepository.saveEnrollment(emailEnrolled, idTwo);
+        enrollmentRepository.saveEnrollment(idOne, emailEnrolled);
+        enrollmentRepository.saveEnrollment(idTwo, emailEnrolled);
 
         List<Integer> retList = enrollmentRepository.getEnrollmentsOfUser(emailEnrolled);
         assertTrue(le.containsAll(retList));
@@ -96,9 +96,9 @@ public class EnrollmentRepositoryTest {
 
         int id = eventRepository.saveEvent(EventTestUtils.createEvent(emailCreator)).getId();
 
-        enrollmentRepository.saveEnrollment(emailEnrolled, id);
-        assertThrows(EnrollmentAlreadyExistsException.class, () -> enrollmentRepository.saveEnrollment(emailEnrolled,
-                id));
+        enrollmentRepository.saveEnrollment(id, emailEnrolled);
+        assertThrows(EnrollmentAlreadyExistsException.class, () -> enrollmentRepository.saveEnrollment(id,
+                emailEnrolled));
     }
 
     @Test
@@ -108,7 +108,7 @@ public class EnrollmentRepositoryTest {
         userRepository.saveUser(UserTestUtils.createUser(creatorEmail));
         userRepository.saveUser(UserTestUtils.createUser(enrolledEmail));
         int eventId = eventRepository.saveEvent(EventTestUtils.createEvent(creatorEmail)).getId();
-        enrollmentRepository.saveEnrollment(enrolledEmail, eventId);
+        enrollmentRepository.saveEnrollment(eventId, enrolledEmail);
         enrollmentRepository.deleteEnrollment(eventId, enrolledEmail);
         List<String> emailsEnrolled = enrollmentRepository.getEnrollmentsOfEvent(eventId);
         assert (!emailsEnrolled.contains(enrolledEmail));

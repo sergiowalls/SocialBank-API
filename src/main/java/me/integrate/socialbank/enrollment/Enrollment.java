@@ -7,7 +7,7 @@ public class Enrollment {
     private int eventId;
 
 
-    public Enrollment(String userEmail, int eventId) {
+    public Enrollment(int eventId, String userEmail) {
         this.userEmail = userEmail;
         this.eventId = eventId;
     }
@@ -20,10 +20,4 @@ public class Enrollment {
         Enrollment enrollment = (Enrollment) o;
         return  eventId == enrollment.eventId && Objects.equals(userEmail, enrollment.userEmail);
     }
-    /*
-    @Override
-    public int hashCode()
-    {
-        return Objects.hash(userEmail, eventId);
-    }*/
 }
