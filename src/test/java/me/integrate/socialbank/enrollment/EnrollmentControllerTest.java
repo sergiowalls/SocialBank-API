@@ -142,14 +142,14 @@ public class EnrollmentControllerTest {
 
     @Test
     @WithMockUser
-    void WhenDeleteEnrollmentShouldReturnNoContentStatus() throws Exception {
+    void whenDeleteEnrollmentShouldReturnNoContentStatus() throws Exception {
         this.mockMvc.perform(delete("/events/123/enrollments").contentType(MediaType.APPLICATION_JSON)).andExpect
                 (status().isNoContent());
     }
 
     @Test
     @WithMockUser
-    void WhenDeleteNotExistentEnrollmentShouldReturnNotFoundStatus() throws Exception {
+    void whenDeleteNotExistentEnrollmentShouldReturnNotFoundStatus() throws Exception {
         int id = 123;
         given(enrollmentService.deleteEnrollment(anyInt(), any())).willThrow(EnrollmentNotFoundException.class);
         this.mockMvc.perform(delete("/events/" + id + "/enrollments").contentType(MediaType.APPLICATION_JSON)).andExpect(status()
@@ -158,7 +158,7 @@ public class EnrollmentControllerTest {
 
     @Test
     @WithMockUser
-    void WhenDeleteIsTooLateShouldReturnConflictStatus() throws Exception {
+    void whenDeleteIsTooLateShouldReturnConflictStatus() throws Exception {
         int id = 123;
         given(enrollmentService.deleteEnrollment(anyInt(), any())).willThrow(TooLateException.class);
         this.mockMvc.perform(delete("/events/" + id+"/enrollments").contentType(MediaType.APPLICATION_JSON)).andExpect(status().isConflict());
