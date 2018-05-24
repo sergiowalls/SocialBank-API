@@ -26,7 +26,7 @@ public class CommentRepositoryImpl implements CommentRepository {
     private static String CREATOR = "creator_email";
     private static String CREATED_AT = "created_at";
     private static String UPDATED_AT = "updated_at";
-    private static String ANSWER_TO = "reply_to";
+    private static String REPLY_TO = "reply_to";
     private static String CONTENT = "content";
 
     private JdbcTemplate jdbcTemplate;
@@ -35,8 +35,7 @@ public class CommentRepositoryImpl implements CommentRepository {
     @Autowired
     public CommentRepositoryImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        this.simpleJdbcInsert = new SimpleJdbcInsert(this.jdbcTemplate).withTableName(COMMENT_TABLE).usingColumns
-                (EVENT_ID, CREATOR, CREATED_AT, UPDATED_AT, ANSWER_TO, CONTENT).usingGeneratedKeyColumns(ID);
+        this.simpleJdbcInsert = new SimpleJdbcInsert(this.jdbcTemplate).withTableName(COMMENT_TABLE).usingColumns(EVENT_ID, CREATOR, CREATED_AT, UPDATED_AT, REPLY_TO, CONTENT).usingGeneratedKeyColumns(ID);
     }
 
     @Override
@@ -65,7 +64,7 @@ public class CommentRepositoryImpl implements CommentRepository {
         params.put(CREATOR, comment.getCreatorEmail());
         params.put(CREATED_AT, comment.getCreatedAt());
         params.put(UPDATED_AT, comment.getUpdatedAt());
-        params.put(ANSWER_TO, comment.getAnswerTo());
+        params.put(REPLY_TO, comment.getAnswerTo());
         params.put(CONTENT, comment.getContent());
 
         try {
@@ -98,7 +97,7 @@ public class CommentRepositoryImpl implements CommentRepository {
             comment.setCreatorEmail(resultSet.getString(CREATOR));
             comment.setCreatedAt(resultSet.getTimestamp(CREATED_AT));
             comment.setUpdatedAt(resultSet.getTimestamp(UPDATED_AT));
-            Integer answerTo = resultSet.getInt(ANSWER_TO);
+            Integer answerTo = resultSet.getInt(REPLY_TO);
             if(!resultSet.wasNull()) comment.setAnswerTo(answerTo);
             comment.setContent(resultSet.getString(CONTENT));
             return comment;
