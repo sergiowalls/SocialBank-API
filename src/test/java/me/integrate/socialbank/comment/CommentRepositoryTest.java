@@ -85,7 +85,7 @@ class CommentRepositoryTest {
         comment.setCreatedAt(date);
         comment.setUpdatedAt(date);
 
-        comment.setAnswerTo(123);
+        comment.setReplyTo(123);
 
         assertThrows(ReferenceNotFoundException.class, () -> commentRepository.saveComment(comment));
     }
@@ -123,6 +123,5 @@ class CommentRepositoryTest {
 
         Assertions.assertThrows(CommentNotFoundException.class, () -> commentRepository.getCommentById(id));
     }
-
 }
 

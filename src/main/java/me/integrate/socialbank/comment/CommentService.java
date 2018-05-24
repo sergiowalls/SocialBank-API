@@ -1,5 +1,6 @@
 package me.integrate.socialbank.comment;
 
+import me.integrate.socialbank.comment.exception.InvalidReferenceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +24,9 @@ public class CommentService {
     }
 
     public Comment saveComment(Comment comment) {
+        Integer repliedId = comment.getReplyTo();
+        if (repliedId != null && commentRepository.getCommentById(repliedId).getEventId() != comment.getEventId())
+            throw new InvalidReferenceException();
         return commentRepository.saveComment(comment);
     }
 
