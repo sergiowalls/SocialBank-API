@@ -12,7 +12,7 @@ public class Comment {
     private Date createdAt;
     private Date updatedAt;
     @Nullable
-    private Integer answerTo;
+    private Integer replyTo;
     private String content;
 
     public Comment() {
@@ -24,8 +24,8 @@ public class Comment {
     }
 
 
-    public Integer getAnswerTo() {
-        return answerTo;
+    public Integer getReplyTo() {
+        return replyTo;
     }
 
     public String getCreatorEmail() {
@@ -44,8 +44,8 @@ public class Comment {
         this.creatorEmail = creatorEmail;
     }
 
-    public void setAnswerTo(Integer answerTo) {
-        this.answerTo = answerTo;
+    public void setReplyTo(Integer replyTo) {
+        this.replyTo = replyTo;
     }
 
     public void setContent(String content) {
@@ -86,14 +86,13 @@ public class Comment {
                 Objects.equals(creatorEmail, comment.creatorEmail) &&
                 Objects.equals(creatorEmail, comment.creatorEmail) &&
                 Objects.equals(createdAt, comment.createdAt) &&
-                Objects.equals(updatedAt, comment.updatedAt) &&
-                Objects.equals(answerTo, comment.answerTo) &&
+                Objects.equals(updatedAt, comment.updatedAt) && Objects.equals(replyTo, comment.replyTo) &&
                 Objects.equals(content, comment.content);
     }
 
     @Override
     public int hashCode()
     {
-        return Objects.hash(id, creatorEmail, createdAt, updatedAt, answerTo, content);
+        return Objects.hash(id, creatorEmail, createdAt, updatedAt, replyTo, content);
     }
 }
