@@ -18,7 +18,7 @@ public class EnrollmentController {
         this.enrollmentService = enrollmentService;
     }
 
-    @PostMapping("/events/{id}/enroll")
+    @PostMapping("/events/{id}/enrollments")
     @ResponseStatus(HttpStatus.CREATED)
     public Enrollment enrollEvent(@PathVariable int id, Authentication auth) {
         return enrollmentService.saveEnrollment(id, auth.getName());
