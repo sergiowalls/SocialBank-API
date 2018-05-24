@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Service
@@ -46,5 +47,14 @@ public class UserService {
 
     public void requestAccountVerification(String email, String message) {
         userRepository.saveRequestAccountVerification(email, message);
+    }
+
+    public Set<String> getUserAwards(String email) {
+        Set<Award> awards = userRepository.getUserAwards(email);
+        Set<String> awardNames = new HashSet<>();
+        for (Award award : awards) {
+            awardNames.add(award.name());
+        }
+        return awardNames;
     }
 }

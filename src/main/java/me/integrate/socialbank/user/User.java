@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Objects;
+import java.util.Set;
 
 public class User {
 
@@ -26,8 +27,9 @@ public class User {
     private String image; //base 64
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private boolean verified;
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private boolean enabled;
+    private Set<Award> awards;
 
 
     public String getEmail() {
