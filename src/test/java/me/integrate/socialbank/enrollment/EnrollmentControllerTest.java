@@ -55,13 +55,7 @@ public class EnrollmentControllerTest {
     @Test
     @WithMockUser
     void shouldReturnCreatedStatus() throws Exception {
-        final int id = 123;
-        given(eventService.getEventById(id)).willReturn(EventTestUtils.createEvent());
-        final String email = "a@a.a";
-        Enrollment enrollment = new Enrollment(id, email);
-        given(enrollmentService.saveEnrollment(id, email)).willReturn(enrollment);
-
-        this.mockMvc.perform(post("/events/" + id + "/enrollments")
+        this.mockMvc.perform(post("/events/" + 123 + "/enrollments")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(null)))
                 .andExpect(status().isCreated());
