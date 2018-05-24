@@ -50,7 +50,7 @@ public class EnrollmentController {
     }
 
     @DeleteMapping("/events/{id}/enrollments")
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteEvent(@PathVariable int id, Authentication auth) {
         String email = auth.getName();
         enrollmentService.deleteEnrollment(id, email);
