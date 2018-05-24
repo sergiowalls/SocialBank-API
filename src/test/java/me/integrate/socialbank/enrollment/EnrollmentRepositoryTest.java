@@ -110,8 +110,8 @@ public class EnrollmentRepositoryTest {
         int eventId = eventRepository.saveEvent(EventTestUtils.createEvent(creatorEmail)).getId();
         enrollmentRepository.saveEnrollment(enrolledEmail, eventId);
         enrollmentRepository.deleteEnrollment(eventId, enrolledEmail);
-        enrollmentRepository.saveEnrollment(enrolledEmail, eventId);
-        enrollmentRepository.deleteEnrollment(eventId, enrolledEmail);
+        List<String> emailsEnrolled = enrollmentRepository.getEnrollmentsOfEvent(eventId);
+        assert (!emailsEnrolled.contains(enrolledEmail));
     }
 
 }

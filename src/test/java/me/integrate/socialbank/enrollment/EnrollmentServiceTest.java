@@ -93,7 +93,7 @@ public class EnrollmentServiceTest {
         int eventId = eventService.saveEvent(EventTestUtils.createEvent(creatorEmail)).getId();
         enrollmentService.saveEnrollment(enrolledEmail, eventId);
         enrollmentService.deleteEnrollment(eventId, enrolledEmail);
-        enrollmentService.saveEnrollment(enrolledEmail, eventId);
-        enrollmentService.deleteEnrollment(eventId, enrolledEmail);
+        List<String> emailsEnrolled = enrollmentService.getEnrollmentsOfEvent(eventId);
+        assert (!emailsEnrolled.contains(enrolledEmail));
     }
 }
