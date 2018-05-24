@@ -15,10 +15,6 @@ public class Comment {
     private Integer answerTo;
     private String content;
 
-    public void update() {
-        this.updatedAt = new Date();
-    }
-
     public Comment() {
         createdAt = updatedAt = new Date();
     }
