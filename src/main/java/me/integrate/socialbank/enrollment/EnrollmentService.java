@@ -24,7 +24,8 @@ public class EnrollmentService {
 
     public Enrollment saveEnrollment(int id, String email) {
         Event event = eventService.getEventById(id);
-        if (event.getIniDate().before(new Date())) throw new TooLateException();
+        Date eventDate = event.getIniDate();
+        if (eventDate != null && eventDate.before(new Date())) throw new TooLateException();
         if (event.getCreatorEmail().equals(email)) throw new UserIsTheCreatorException();
         return enrollmentRepository.saveEnrollment(id, email);
     }
