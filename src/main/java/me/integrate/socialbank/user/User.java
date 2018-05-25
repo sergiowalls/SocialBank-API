@@ -72,6 +72,10 @@ public class User {
         return enabled;
     }
 
+    public Set<Award> getAwards() {
+        return awards;
+    }
+
     public void setEmail(String email) {
         this.email = email;
     }
@@ -121,6 +125,10 @@ public class User {
         this.enabled = enabled;
     }
 
+    public void setAwards(Set<Award> awards) {
+        this.awards = awards;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -135,7 +143,8 @@ public class User {
                 gender == user.gender &&
                 Objects.equals(description, user.description) &&
                 Objects.equals(image, user.image) &&
-                Objects.equals(verified, user.verified);
+                Objects.equals(verified, user.verified) &&
+                Objects.equals(awards, user.awards);
     }
 
     @Override

@@ -4,14 +4,22 @@ $BODY$
 BEGIN
   IF NEW.verified_account = TRUE
   THEN
-    INSERT INTO award VALUES (NEW.email, 'VERIFIED_USER')
-    ON CONFLICT DO NOTHING;
+    IF NOT EXISTS
+    (
+      SELECT *
+      FROM award
+      WHERE email = NEW.email AND award = 'VERIFIED_USER'
+    )
+    THEN
+      INSERT INTO award VALUES (NEW.email, 'VERIFIED_USER');
+    END IF;
   ELSE
     DELETE FROM award
     WHERE email = OLD.email AND award = 'VERIFIED_USER';
   END IF;
 END;
-$BODY$;
+$BODY$
+LANGUAGE plpgsql VOLATILE;
 
 CREATE OR REPLACE FUNCTION update_event_awards()
   RETURNS TRIGGER AS
@@ -27,12 +35,20 @@ BEGIN
 
   IF _num_events >= _required_events
   THEN
-    INSERT INTO award VALUES (NEW.creatoremail, 'TOP_ORGANIZER')
-    ON CONFLICT DO NOTHING;
+    IF NOT EXISTS
+    (
+        SELECT *
+        FROM award
+        WHERE email = NEW.creatoremail AND award = 'TOP_ORGANIZER'
+    )
+    THEN
+      INSERT INTO award VALUES (NEW.creatoremail, 'TOP_ORGANIZER');
+    END IF;
   END IF;
 
 END;
-$BODY$;
+$BODY$
+LANGUAGE plpgsql VOLATILE;
 
 CREATE OR REPLACE FUNCTION update_enrollment_awards()
   RETURNS TRIGGER AS
@@ -48,8 +64,34 @@ BEGIN
 
   IF _num_events >= _required_events
   THEN
-    INSERT INTO award VALUES (NEW.user_email, 'ACTIVE_USER')
-    ON CONFLICT DO NOTHING;
+    IF NOT EXISTS
+    (
+        SELECT *
+        FROM award
+        WHERE email = NEW.creatoremail AND award = 'ACTIVE_USER'
+    )
+    THEN
+      INSERT INTO award VALUES (NEW.user_email, 'ACTIVE_USER');
+    END IF;
   END IF;
 END;
 $BODY$
+LANGUAGE plpgsql VOLATILE;
+
+CREATE TRIGGER update_user_awards
+  AFTER UPDATE
+  ON "user"
+  FOR EACH ROW
+  EXECUTE PROCEDURE update_user_awards();
+
+CREATE TRIGGER update_event_awards
+  AFTER UPDATE
+  ON event
+  FOR EACH ROW
+EXECUTE PROCEDURE update_event_awards();
+
+CREATE TRIGGER update_enrollment_awards
+  AFTER UPDATE
+  ON enrollment
+  FOR EACH ROW
+EXECUTE PROCEDURE update_enrollment_awards();

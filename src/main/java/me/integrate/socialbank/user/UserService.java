@@ -19,7 +19,10 @@ public class UserService {
     }
 
     public User getUserByEmail(String email) {
-        return userRepository.getUserByEmail(email);
+        User user = userRepository.getUserByEmail(email);
+        Set<Award> awards = userRepository.getUserAwards(email);
+        user.setAwards(awards.isEmpty() ? null : awards);
+        return user;
     }
 
     public User saveUser(User user) {
@@ -47,14 +50,5 @@ public class UserService {
 
     public void requestAccountVerification(String email, String message) {
         userRepository.saveRequestAccountVerification(email, message);
-    }
-
-    public Set<String> getUserAwards(String email) {
-        Set<Award> awards = userRepository.getUserAwards(email);
-        Set<String> awardNames = new HashSet<>();
-        for (Award award : awards) {
-            awardNames.add(award.name());
-        }
-        return awardNames;
     }
 }

@@ -159,7 +159,7 @@ class UserServiceTest {
         jdbcTemplate.execute(sql);
         jdbcTemplate.execute(sql2);
 
-        assertTrue(userService.getUserAwards("aaa@aaa.aaa").contains(Award.ACTIVE_USER.name()));
-        assertTrue(userService.getUserAwards("aaa@aaa.aaa").contains(Award.DEVELOPER.name()));
+        assertTrue(userService.getUserByEmail("aaa@aaa.aaa").getAwards().contains(Award.ACTIVE_USER));
+        assertTrue(userService.getUserByEmail("aaa@aaa.aaa").getAwards().contains(Award.DEVELOPER));
     }
 }
