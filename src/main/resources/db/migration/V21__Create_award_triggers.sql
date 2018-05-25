@@ -17,6 +17,7 @@ BEGIN
     DELETE FROM award
     WHERE email = OLD.email AND award = 'VERIFIED_USER';
   END IF;
+  RETURN NEW;
 END;
 $BODY$
 LANGUAGE plpgsql VOLATILE;
@@ -45,7 +46,7 @@ BEGIN
       INSERT INTO award VALUES (NEW.creatoremail, 'TOP_ORGANIZER');
     END IF;
   END IF;
-
+  RETURN NEW;
 END;
 $BODY$
 LANGUAGE plpgsql VOLATILE;
@@ -68,12 +69,13 @@ BEGIN
     (
         SELECT *
         FROM award
-        WHERE email = NEW.creatoremail AND award = 'ACTIVE_USER'
+        WHERE email = NEW.user_email AND award = 'ACTIVE_USER'
     )
     THEN
       INSERT INTO award VALUES (NEW.user_email, 'ACTIVE_USER');
     END IF;
   END IF;
+  RETURN NEW;
 END;
 $BODY$
 LANGUAGE plpgsql VOLATILE;
@@ -85,13 +87,13 @@ CREATE TRIGGER update_user_awards
   EXECUTE PROCEDURE update_user_awards();
 
 CREATE TRIGGER update_event_awards
-  AFTER UPDATE
+  AFTER INSERT
   ON event
   FOR EACH ROW
 EXECUTE PROCEDURE update_event_awards();
 
 CREATE TRIGGER update_enrollment_awards
-  AFTER UPDATE
-  ON enrollment
+  AFTER INSERT
+  ON user_event_enrollment
   FOR EACH ROW
 EXECUTE PROCEDURE update_enrollment_awards();

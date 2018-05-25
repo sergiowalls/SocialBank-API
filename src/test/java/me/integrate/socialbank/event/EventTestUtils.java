@@ -4,7 +4,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-class EventTestUtils {
+public class EventTestUtils {
 
     private static String INI_DATE = "2019-03-03";
     private static String END_DATE = "2020-03-03";
@@ -21,25 +21,25 @@ class EventTestUtils {
         return date;
     }
 
-    static Event createEvent() {
+    public static Event createEvent() {
         return createEvent(EMAIL, getDate(INI_DATE), getDate(END_DATE));
     }
 
-    static Event createEvent(String email) {
+    public static Event createEvent(String email) {
         return createEvent(email, getDate(INI_DATE), getDate(END_DATE));
     }
 
-    static Event createEvent(String email, Category category) {
+    public static Event createEvent(String email, Category category) {
         Event event = createEvent(email, getDate(INI_DATE), getDate(END_DATE));
         event.setCategory(category);
         return event;
     }
 
-    static Event createEvent(Date iniDate, Date endDate) {
+    public static Event createEvent(Date iniDate, Date endDate) {
         return createEvent(EMAIL, iniDate, endDate);
     }
 
-    static Event createEvent(String email, Date iniDate, Date endDate) {
+    public static Event createEvent(String email, Date iniDate, Date endDate) {
         Event event = new Event();
         event.setCreatorEmail(email);
         event.setIniDate(iniDate);
