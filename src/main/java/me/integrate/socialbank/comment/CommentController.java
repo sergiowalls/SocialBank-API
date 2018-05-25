@@ -22,6 +22,7 @@ public class CommentController {
     }
 
     @PutMapping("/events/{event_id}/comments/{id}")
+    @ResponseStatus(HttpStatus.ACCEPTED)
     public Comment updateCommentContent(@PathVariable int id, @RequestParam String content) {
         return commentService.updateComment(id, content);
     }
