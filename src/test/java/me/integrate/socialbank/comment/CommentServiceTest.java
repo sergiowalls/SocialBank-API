@@ -16,6 +16,9 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -153,4 +156,71 @@ public class CommentServiceTest {
 
         Assertions.assertThrows(CommentNotFoundException.class, () -> commentService.getCommentById(id));
     }
+
+    @Test
+    void givenCommentStoredInDatabaseWhenContentIsUpdatedThenIsCorrectlyUpdated() {
+        String email = "email@email.tld";
+        userService.saveUser(UserTestUtils.createUser(email));
+        int eventId = eventService.saveEvent(EventTestUtils.createEvent(email)).getId();
+
+        Comment comment = new Comment();
+        comment.setEventId(eventId);
+        comment.setCreatorEmail(email);
+        comment.setContent(CONTENT);
+        Date date = new Date();
+        comment.setCreatedAt(date);
+        comment.setUpdatedAt(date);
+        int id = commentService.saveComment(comment).getId();
+
+        String newContent = "newContent";
+
+        assertEquals(newContent, commentService.updateComment(id, newContent).getContent());
+    }
+
+    @Test
+    void givenCommentsStoredInDatabaseWhenGetAllCommentsOfAnEventThenAllValidCommentsAreReturned() {
+        String email = "pepito@pepito.com";
+        userService.saveUser(UserTestUtils.createUser(email));
+        int eventIdOne = eventService.saveEvent(EventTestUtils.createEvent(email)).getId();
+        int eventIdTwo = eventService.saveEvent(EventTestUtils.createEvent(email)).getId();
+        Date date = new Date();
+
+        Comment comment = new Comment();
+        comment.setCreatorEmail(email);
+        comment.setCreatedAt(date);
+        comment.setUpdatedAt(date);
+        comment.setContent(CONTENT);
+
+        comment.setEventId(eventIdOne);
+        Integer commentOne = commentService.saveComment(comment).getId();
+
+        comment = new Comment();
+        comment.setCreatorEmail(email);
+        comment.setCreatedAt(date);
+        comment.setUpdatedAt(date);
+        comment.setContent(CONTENT);
+        comment.setEventId(eventIdOne);
+        Integer commentTwo = commentService.saveComment(comment).getId();
+
+        comment = new Comment();
+        comment.setCreatorEmail(email);
+        comment.setCreatedAt(date);
+        comment.setUpdatedAt(date);
+        comment.setContent(CONTENT);
+
+        comment.setEventId(eventIdTwo);
+        Integer commentThird = commentService.saveComment(comment).getId();
+
+        Set<Integer> cList = new HashSet<>();
+        cList.add(commentOne);
+        cList.add(commentTwo);
+
+        List<Comment> rList = commentService.getAllComments(eventIdOne);
+        for (Comment r : rList) {
+            Integer rId = r.getId();
+            assert (cList.contains(rId));
+            assert (!rId.equals(commentThird));
+        }
+    }
+    
 }

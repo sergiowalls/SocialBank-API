@@ -19,8 +19,9 @@ public class CommentService {
         return commentRepository.getCommentById(id);
     }
 
-    public void updateComment(int id, String content) {
+    public Comment updateComment(int id, String content) {
         commentRepository.updateContent(id, content);
+        return commentRepository.getCommentById(id);
     }
 
     public Comment saveComment(Comment comment) {

@@ -22,8 +22,8 @@ public class CommentController {
     }
 
     @PutMapping("/events/{event_id}/comments/{id}")
-    public void updateCommentContent(@PathVariable int id, @RequestParam String content) {
-        commentService.updateComment(id, content);
+    public Comment updateCommentContent(@PathVariable int id, @RequestParam String content) {
+        return commentService.updateComment(id, content);
     }
 
     @PostMapping("/events/{event_id}/comments")
