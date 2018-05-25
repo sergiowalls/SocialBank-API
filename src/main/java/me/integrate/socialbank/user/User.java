@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Objects;
+import java.util.Set;
 
 public class User {
 
@@ -24,6 +25,11 @@ public class User {
     private float balance;
     private String description;
     private String image; //base 64
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private boolean verified;
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private boolean enabled;
+    private Set<Award> awards;
 
 
     public String getEmail() {
@@ -62,6 +68,14 @@ public class User {
         return image;
     }
 
+    public boolean getEnabled() {
+        return enabled;
+    }
+
+    public Set<Award> getAwards() {
+        return awards;
+    }
+
     public void setEmail(String email) {
         this.email = email;
     }
@@ -98,6 +112,23 @@ public class User {
         this.image = image;
     }
 
+    public boolean getVerified() {
+        return verified;
+    }
+
+    // TODO: encapsulate boolean attribute
+    public void setVerified(boolean verified) {
+        this.verified = verified;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public void setAwards(Set<Award> awards) {
+        this.awards = awards;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -111,13 +142,14 @@ public class User {
                         new SimpleDateFormat("yyyyMMdd").format(user.birthdate)) &&
                 gender == user.gender &&
                 Objects.equals(description, user.description) &&
-                Objects.equals(image, user.image);
+                Objects.equals(image, user.image) &&
+                Objects.equals(verified, user.verified) &&
+                Objects.equals(awards, user.awards);
     }
 
     @Override
     public int hashCode() {
-
-        return Objects.hash(email, name, surname, birthdate, gender, balance, description);
+        return Objects.hash(email, name, surname, birthdate, gender, balance, description, verified);
     }
 
 }

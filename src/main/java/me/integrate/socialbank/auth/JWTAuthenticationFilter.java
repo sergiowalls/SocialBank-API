@@ -51,6 +51,13 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                                             FilterChain chain,
                                             Authentication auth) throws IOException {
 
+        User principal = (User) auth.getPrincipal();
+        if (!principal.getEnabled()) {
+            res.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            return;
+        }
+
+
         String token = Jwts.builder()
                 .setSubject(((org.springframework.security.core.userdetails.User) auth.getPrincipal()).getUsername())
                 .setExpiration(new Date(System.currentTimeMillis() + Constants.EXPIRATION_TIME))
@@ -59,7 +66,6 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         res.addHeader(Constants.HEADER_STRING, Constants.TOKEN_PREFIX + token);
 
         Map<String, String> user = new HashMap<>();
-        User principal = (User) auth.getPrincipal();
         user.put("email", principal.getUsername());
         user.put("name", principal.getName());
 

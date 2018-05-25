@@ -2,6 +2,9 @@ package me.integrate.socialbank.user;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
 
 public class UserTestUtils {
 
@@ -23,6 +26,7 @@ public class UserTestUtils {
         user.setSurname("Del Campo");
         user.setPassword(password);
         user.setImage("123");
+        user.setBalance(10000f);
         return user;
     }
 }

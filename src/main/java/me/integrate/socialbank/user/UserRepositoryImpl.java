@@ -1,6 +1,7 @@
 package me.integrate.socialbank.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -14,6 +15,8 @@ import java.util.*;
 @Repository
 public class UserRepositoryImpl implements UserRepository {
     private final static String USER_TABLE = "\"user\"";
+    private final static String REPORT_TABLE = "report";
+    private final static String REQUEST_ACCOUNT_VERIFICATION_TABLE = "request_account_verification";
     private final static String EMAIL = "email";
     private final static String NAME = "name";
     private final static String SURNAME = "surname";
@@ -24,6 +27,10 @@ public class UserRepositoryImpl implements UserRepository {
     private final static String DESCRIPTION = "description";
     private final static String RECOVERY = "recovery";
     private final static String IMAGE = "image";
+    private final static String VERIFIED = "verified_account";
+    private static final String ENABLED = "enabled";
+    private final static String AWARD = "award";
+    private final static String AWARD_TABLE = "award";
 
     private JdbcTemplate jdbcTemplate;
 
@@ -31,6 +38,7 @@ public class UserRepositoryImpl implements UserRepository {
     public UserRepositoryImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
+
 
     public User getUserByEmail(String email) {
         try {
@@ -43,9 +51,10 @@ public class UserRepositoryImpl implements UserRepository {
 
     public User saveUser(User user) {
         try {
-            jdbcTemplate.update("INSERT INTO " + USER_TABLE + " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            jdbcTemplate.update("INSERT INTO " + USER_TABLE + " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                     user.getEmail(), user.getName(), user.getSurname(), user.getPassword(), user.getBirthdate(),
-                    user.getGender().toString(), user.getBalance(), user.getDescription(), null, user.getImage());
+                    user.getGender().toString(), user.getBalance(), user.getDescription(), null, user.getImage(),
+                    false, true);
         } catch (DuplicateKeyException ex) {
             throw new EmailAlreadyExistsException();
         }
@@ -87,6 +96,18 @@ public class UserRepositoryImpl implements UserRepository {
         jdbcTemplate.update(sql.toString(), fields.values().toArray());
     }
 
+    public Set<User> getUsers() {
+        return new HashSet<>(jdbcTemplate.query("SELECT * FROM " + USER_TABLE, new UserRowMapper()));
+    }
+
+    public void saveRequestAccountVerification(String email, String message) {
+        try {
+            jdbcTemplate.update("INSERT INTO " + REQUEST_ACCOUNT_VERIFICATION_TABLE + " VALUES (?, ?)", email, message);
+        } catch (DuplicateKeyException e) {
+            throw new PendingAccountVerificationException();
+        }
+    }
+
     public void updateRecoveryToken(String email, String recoveryToken) {
         jdbcTemplate.update("UPDATE " + USER_TABLE + " SET " + RECOVERY + " = ? WHERE " + EMAIL + " = ?",
                 recoveryToken, email);
@@ -104,6 +125,19 @@ public class UserRepositoryImpl implements UserRepository {
         return email;
     }
 
+    public void reportUser(String reporter, String reported) {
+        try {
+            jdbcTemplate.execute("INSERT INTO " + REPORT_TABLE + " VALUES ('" + reporter + "', '" + reported + "');");
+        } catch (DataIntegrityViolationException ex) {
+            throw new ReportAlreadyExistsException();
+        }
+    }
+
+    public Set<Award> getUserAwards(String email) {
+        return new HashSet<>(jdbcTemplate.queryForList("SELECT " + AWARD + " FROM " + AWARD_TABLE + " WHERE " + EMAIL + " = '" + email + "'",
+                Award.class));
+    }
+
     private class UserRowMapper implements RowMapper<User> {
 
         @Override
@@ -118,7 +152,8 @@ public class UserRepositoryImpl implements UserRepository {
             user.setBalance(resultSet.getFloat(BALANCE));
             user.setDescription(resultSet.getString(DESCRIPTION));
             user.setImage(resultSet.getString(IMAGE));
-
+            user.setEnabled(resultSet.getBoolean(ENABLED));
+            user.setVerified(resultSet.getBoolean(VERIFIED));
             return user;
         }
     }

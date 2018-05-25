@@ -3,9 +3,8 @@ package me.integrate.socialbank.event;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Objects;
 
-class EventTestUtils {
+public class EventTestUtils {
 
     private static String INI_DATE = "2019-03-03";
     private static String END_DATE = "2020-03-03";
@@ -22,19 +21,25 @@ class EventTestUtils {
         return date;
     }
 
-    static Event createEvent() {
-        return createEvent(EMAIL,getDate(INI_DATE),  getDate(END_DATE));
+    public static Event createEvent() {
+        return createEvent(EMAIL, getDate(INI_DATE), getDate(END_DATE));
     }
 
-    static Event createEvent(String email) {
-        return createEvent(email,getDate(INI_DATE), getDate(END_DATE));
+    public static Event createEvent(String email) {
+        return createEvent(email, getDate(INI_DATE), getDate(END_DATE));
     }
 
-    static Event createEvent(Date iniDate, Date endDate) {
-        return createEvent(EMAIL,iniDate, endDate);
+    public static Event createEvent(String email, Category category) {
+        Event event = createEvent(email, getDate(INI_DATE), getDate(END_DATE));
+        event.setCategory(category);
+        return event;
     }
 
-    static Event createEvent(String email, Date iniDate, Date endDate) {
+    public static Event createEvent(Date iniDate, Date endDate) {
+        return createEvent(EMAIL, iniDate, endDate);
+    }
+
+    public static Event createEvent(String email, Date iniDate, Date endDate) {
         Event event = new Event();
         event.setCreatorEmail(email);
         event.setIniDate(iniDate);
@@ -46,6 +51,7 @@ class EventTestUtils {
         event.setDemand(true);
         event.setLatitude(37.2);
         event.setLongitude(19.9);
+        event.setCategory(Category.OTHER);
         return event;
     }
 }

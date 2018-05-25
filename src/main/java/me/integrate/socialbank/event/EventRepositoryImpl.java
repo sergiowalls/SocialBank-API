@@ -1,6 +1,7 @@
 package me.integrate.socialbank.event;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -8,7 +9,6 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +28,7 @@ public class EventRepositoryImpl implements EventRepository {
     private static String ISDEMAND = "isDemand";
     private static String LATITUDE = "latitude";
     private static String LONGITUDE = "longitude";
+    private static String CATEGORY = "category";
     private final SimpleJdbcInsert simpleJdbcInsert;
 
     private JdbcTemplate jdbcTemplate;
@@ -37,7 +38,8 @@ public class EventRepositoryImpl implements EventRepository {
         this.jdbcTemplate = jdbcTemplate;
         this.simpleJdbcInsert = new SimpleJdbcInsert(this.jdbcTemplate)
                 .withTableName(EVENT_TABLE)
-                .usingColumns(CREATOR, INIDATE, ENDDATE, LOCATION, TITLE, DESCRIPTION, IMAGE, ISDEMAND, LATITUDE, LONGITUDE)
+                .usingColumns(CREATOR, INIDATE, ENDDATE, LOCATION, TITLE, DESCRIPTION, IMAGE, ISDEMAND, LATITUDE,
+                        LONGITUDE, CATEGORY)
                 .usingGeneratedKeyColumns(ID);
     }
 
@@ -53,14 +55,26 @@ public class EventRepositoryImpl implements EventRepository {
         params.put(ISDEMAND, event.isDemand());
         params.put(LATITUDE, event.getLatitude());
         params.put(LONGITUDE, event.getLongitude());
+        params.put(CATEGORY, event.getCategory().name());
         Number id = this.simpleJdbcInsert.executeAndReturnKey(params);
         event.setId(id.intValue());
         return event;
     }
 
     public Event getEventById(int id) {
-        return jdbcTemplate.queryForObject("SELECT * FROM " + EVENT_TABLE + " WHERE " + ID + "= ?",
-                new Object[]{id}, new EventRowMapper());
+        Event event;
+        try {
+            event = jdbcTemplate.queryForObject("SELECT * FROM " + EVENT_TABLE + " WHERE " + ID + "= ?",
+                    new Object[]{id}, new EventRowMapper());
+        } catch (EmptyResultDataAccessException e) {
+            throw new EventNotFoundException();
+        }
+        return event;
+    }
+
+    public void updateEvent(int id, Event event) {
+        String sql = "UPDATE " + EVENT_TABLE + " SET " + IMAGE + " = ?, " + DESCRIPTION + " = ? WHERE " + ID + " = ?";
+        jdbcTemplate.update(sql, event.getImage(), event.getDescription(), id);
     }
 
     public List<Event> getEventsByCreator(String email) {
@@ -68,8 +82,17 @@ public class EventRepositoryImpl implements EventRepository {
                 new Object[]{email}, new EventRowMapper());
     }
 
+    public List<Event> getEventsByCategory(Category category) {
+        return jdbcTemplate.query("SELECT * FROM " + EVENT_TABLE + " WHERE " + CATEGORY + "= ?",
+                new Object[]{category.name()}, new EventRowMapper());
+    }
+
     public List<Event> getAllEvents() {
         return jdbcTemplate.query("SELECT * FROM " + EVENT_TABLE, new EventRowMapper());
+    }
+
+    public void deleteEvent(int id) {
+        jdbcTemplate.update("DELETE FROM " + EVENT_TABLE + " WHERE " + ID + "=?", id);
     }
 
     private class EventRowMapper implements RowMapper<Event> {
@@ -88,6 +111,7 @@ public class EventRepositoryImpl implements EventRepository {
             event.setDemand(resultSet.getBoolean(ISDEMAND));
             event.setLatitude(resultSet.getDouble(LATITUDE));
             event.setLongitude(resultSet.getDouble(LONGITUDE));
+            event.setCategory(Category.valueOf(resultSet.getString(CATEGORY)));
             return event;
         }
     }
