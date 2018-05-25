@@ -93,6 +93,6 @@ public class Comment {
     @Override
     public int hashCode()
     {
-        return Objects.hash(id, creatorEmail, createdAt, updatedAt, replyTo, content);
+        return Objects.hash(id, eventId, creatorEmail, createdAt, updatedAt, replyTo, content);
     }
 }
