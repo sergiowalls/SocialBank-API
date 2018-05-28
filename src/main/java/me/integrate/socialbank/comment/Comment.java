@@ -14,6 +14,8 @@ public class Comment {
     @Nullable
     private Integer replyTo;
     private String content;
+    private String userName;
+    private String userSurname;
 
     public Comment() {
         createdAt = updatedAt = new Date();
@@ -94,5 +96,21 @@ public class Comment {
     public int hashCode()
     {
         return Objects.hash(id, eventId, creatorEmail, createdAt, updatedAt, replyTo, content);
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public void setUserSurname(String userSurname) {
+        this.userSurname = userSurname;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public String getUserSurname() {
+        return userSurname;
     }
 }
