@@ -6,6 +6,7 @@ import me.integrate.socialbank.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -18,6 +19,18 @@ public class CommentService {
         User creator = userService.getUserByEmail(comment.getCreatorEmail());
         comment.setUserName(creator.getName());
         comment.setUserSurname(creator.getSurname());
+    }
+
+    private Comment createStandardComment(String email, int eventId, String content, Integer replyto) {
+        Comment comment = new Comment();
+        comment.setEventId(eventId);
+        comment.setCreatorEmail(email);
+        comment.setContent(content);
+        comment.setReplyTo(replyto);
+        Date date = new Date();
+        comment.setCreatedAt(date);
+        comment.setUpdatedAt(date);
+        return comment;
     }
 
     @Autowired
@@ -38,15 +51,15 @@ public class CommentService {
         return commentRepository.getCommentById(id);
     }
 
-    public Comment saveComment(Comment comment) {
-        Integer repliedId = comment.getReplyTo();
-        if (repliedId != null && commentRepository.getCommentById(repliedId).getEventId() != comment.getEventId())
+    public Comment saveComment(int eventId, String email, String content, Integer replyTo) {
+        if (replyTo != null && commentRepository.getCommentById(replyTo).getEventId() != eventId)
             throw new InvalidReferenceException();
+        Comment comment = createStandardComment(email, eventId, content, replyTo);
         return commentRepository.saveComment(comment);
     }
 
-    public List<Comment> getAllComments(int event_id) {
-        List<Comment> comments = commentRepository.getAllComments(event_id);
+    public List<Comment> getAllComments(int eventId) {
+        List<Comment> comments = commentRepository.getAllComments(eventId);
         for (Comment comment : comments) {
             setUserInfo(comment);
         }

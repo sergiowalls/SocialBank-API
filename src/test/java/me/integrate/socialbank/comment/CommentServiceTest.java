@@ -16,7 +16,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -41,17 +40,6 @@ public class CommentServiceTest {
 
     private static final String CONTENT = "This is a test content.";
 
-    private Comment createStandardComment(String email, int eventId) {
-        Comment comment = new Comment();
-        comment.setEventId(eventId);
-        comment.setCreatorEmail(email);
-        comment.setContent(CONTENT);
-        Date date = new Date();
-        comment.setCreatedAt(date);
-        comment.setUpdatedAt(date);
-        return comment;
-    }
-
 
     @Test
     void givenCommentStoredInDatabaseWhenRetrievedByIdThenReturnsSameComment() {
@@ -59,7 +47,7 @@ public class CommentServiceTest {
         userService.saveUser(UserTestUtils.createUser(email));
         int eventId = eventService.saveEvent(EventTestUtils.createEvent(email)).getId();
 
-        Comment comment = commentService.saveComment(createStandardComment(email, eventId));
+        Comment comment = commentService.saveComment(eventId, email, CONTENT, null);
         Comment retrievedComment = commentService.getCommentById(comment.getId());
         assertEquals(comment, retrievedComment);
     }
@@ -70,7 +58,7 @@ public class CommentServiceTest {
         User user = userService.saveUser(UserTestUtils.createUser(email));
         int eventId = eventService.saveEvent(EventTestUtils.createEvent(email)).getId();
 
-        Comment comment = commentService.saveComment(createStandardComment(email, eventId));
+        Comment comment = commentService.saveComment(eventId, email, CONTENT, null);
         Comment retrievedComment = commentService.getCommentById(comment.getId());
         assertEquals(user.getName(), retrievedComment.getUserName());
         assertEquals(user.getSurname(), retrievedComment.getUserSurname());
@@ -82,7 +70,7 @@ public class CommentServiceTest {
         userService.saveUser(UserTestUtils.createUser(email));
         int eventId = eventService.saveEvent(EventTestUtils.createEvent(email)).getId();
 
-        int id = commentService.saveComment(createStandardComment(email, eventId)).getId();
+        int id = commentService.saveComment(eventId, email, CONTENT, null).getId();
         commentService.deleteComment(id);
 
         Assertions.assertThrows(CommentNotFoundException.class, () -> commentService.getCommentById(id));
@@ -95,10 +83,7 @@ public class CommentServiceTest {
         userService.saveUser(UserTestUtils.createUser(email));
         int eventId = eventService.saveEvent(EventTestUtils.createEvent(email)).getId();
 
-        Comment comment = createStandardComment(email, eventId);
-        comment.setReplyTo(123);
-
-        assertThrows(CommentNotFoundException.class, () -> commentService.saveComment(comment));
+        assertThrows(CommentNotFoundException.class, () -> commentService.saveComment(eventId, email, CONTENT, 123));
     }
 
     @Test
@@ -108,12 +93,9 @@ public class CommentServiceTest {
         int eventIdOne = eventService.saveEvent(EventTestUtils.createEvent(email)).getId();
         int eventIdTwo = eventService.saveEvent(EventTestUtils.createEvent(email)).getId();
 
-        Comment commentOne = createStandardComment(email, eventIdOne);
-        Comment commentTwo = createStandardComment(email, eventIdTwo);
-
-        int commentOneId = commentService.saveComment(commentOne).getId();
-        commentTwo.setReplyTo(commentOneId);
-        assertThrows(InvalidReferenceException.class, () -> commentService.saveComment(commentTwo));
+        int commentOneId = commentService.saveComment(eventIdOne, email, CONTENT, null).getId();
+        assertThrows(InvalidReferenceException.class, () -> commentService.saveComment(eventIdTwo, email, CONTENT,
+                commentOneId));
     }
 
 
@@ -121,8 +103,7 @@ public class CommentServiceTest {
     void givenCommentReferencingEventNotStoredInDatabaseWhenSavedThenReturnsNotFound() {
         String email = "pepito@pepito.com";
         userService.saveUser(UserTestUtils.createUser(email));
-        Comment comment = createStandardComment(email, 123);
-        assertThrows(ReferenceNotFoundException.class, () -> commentService.saveComment(comment));
+        assertThrows(ReferenceNotFoundException.class, () -> commentService.saveComment(123, email, CONTENT, null));
     }
 
     @Test
@@ -131,8 +112,7 @@ public class CommentServiceTest {
         userService.saveUser(UserTestUtils.createUser(email));
         int eventId = eventService.saveEvent(EventTestUtils.createEvent(email)).getId();
 
-        Comment comment = createStandardComment(email, eventId);
-        int id = commentService.saveComment(comment).getId();
+        int id = commentService.saveComment(eventId, email, CONTENT, null).getId();
         eventService.deleteEvent(eventId);
 
         Assertions.assertThrows(CommentNotFoundException.class, () -> commentService.getCommentById(id));
@@ -144,8 +124,7 @@ public class CommentServiceTest {
         userService.saveUser(UserTestUtils.createUser(email));
         int eventId = eventService.saveEvent(EventTestUtils.createEvent(email)).getId();
 
-        Comment comment = createStandardComment(email, eventId);
-        int id = commentService.saveComment(comment).getId();
+        int id = commentService.saveComment(eventId, email, CONTENT, null).getId();
 
         String newContent = "newContent";
 
@@ -158,16 +137,12 @@ public class CommentServiceTest {
         userService.saveUser(UserTestUtils.createUser(email));
         int eventIdOne = eventService.saveEvent(EventTestUtils.createEvent(email)).getId();
         int eventIdTwo = eventService.saveEvent(EventTestUtils.createEvent(email)).getId();
-        Date date = new Date();
 
-        Comment comment = createStandardComment(email, eventIdOne);
-        Integer commentOne = commentService.saveComment(comment).getId();
+        Integer commentOne = commentService.saveComment(eventIdOne, email, CONTENT, null).getId();
 
-        comment = createStandardComment(email, eventIdOne);
-        Integer commentTwo = commentService.saveComment(comment).getId();
+        Integer commentTwo = commentService.saveComment(eventIdOne, email, CONTENT, null).getId();
 
-        comment = createStandardComment(email, eventIdTwo);
-        Integer commentThird = commentService.saveComment(comment).getId();
+        Integer commentThird = commentService.saveComment(eventIdTwo, email, CONTENT, null).getId();
 
         Set<Integer> cList = new HashSet<>();
         cList.add(commentOne);

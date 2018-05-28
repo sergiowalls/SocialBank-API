@@ -48,7 +48,8 @@ public class CommentControllerTest {
     @Test
     @WithMockUser
     void shouldReturnCreatedStatus() throws Exception {
-        this.mockMvc.perform(post("/events/123/comments").contentType(MediaType.APPLICATION_JSON).content("{}"))
+        String json = "{\n" + "  \"content\": \"abc\"\n" + "}";
+        this.mockMvc.perform(post("/events/123/comments").contentType(MediaType.APPLICATION_JSON).content(json))
                 .andExpect(status().isCreated());
     }
 
