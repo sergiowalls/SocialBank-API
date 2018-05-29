@@ -57,6 +57,9 @@ public class EnrollmentService {
     }
 
     public Enrollment deleteEnrollment(int id, String email) {
+        Event event = eventService.getEventById(id);
+        if (event.isClosed()) throw new EventIsClosedException();
+        if (event.beginsInLessThan24h()) throw new TooLateException();
         try {
             enrollmentRepository.deleteEnrollment(id, email);
         } catch (DataAccessException e) {
