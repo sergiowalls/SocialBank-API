@@ -28,10 +28,8 @@ public class EventService {
             if (event.getIniDate().after(event.getEndDate()) || event.getIniDate().before(new Date()))
                 throw new EventWithIncorrectDateException();
             if (event.isDemand()) {
-                long diff = Math.abs(event.getIniDate().getTime() - event.getEndDate().getTime());
-                diff = diff / (60 * 60 * 1000);
                 User user = userService.getUserByEmail(event.getCreatorEmail());
-                if (diff > user.getBalance()) throw new UserNotEnoughHoursException();
+                if (event.getIntervalTime() > user.getBalance()) throw new UserNotEnoughHoursException();
             }
         }
         return eventRepository.saveEvent(event);

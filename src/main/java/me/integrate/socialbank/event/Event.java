@@ -153,4 +153,8 @@ public class Event {
         cal.add(Calendar.DAY_OF_MONTH, 1);
         return (iniDate.before(cal.getTime()));
     }
+
+    public float getIntervalTime() {
+        return endDate.getTime() - iniDate.getTime() / (60 * 60 * 1000);
+    }
 }
