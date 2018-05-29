@@ -16,4 +16,10 @@ public interface UserRepository {
     void updateUser(String email, User user);
 
     Set<User> getUsers();
+
+    void reportUser(String reporter, String reported);
+
+    void saveRequestAccountVerification(String email, String message);
+
+    Set<Award> getUserAwards(String email);
 }

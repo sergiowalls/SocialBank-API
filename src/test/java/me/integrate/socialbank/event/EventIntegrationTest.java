@@ -3,7 +3,6 @@ package me.integrate.socialbank.event;
 import me.integrate.socialbank.user.User;
 import me.integrate.socialbank.user.UserService;
 import me.integrate.socialbank.user.UserTestUtils;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,8 +41,9 @@ class EventIntegrationTest {
     @WithMockUser
     void whenUpdateEventShouldReturnUpdatedEvent() throws Exception {
         User user = UserTestUtils.createUser("aaa@aaa.aaa");
-        Event event = EventTestUtils.createEvent("aaa@aaa.aaa");
+        user.setBalance(10000f);
         userService.saveUser(user);
+        Event event = EventTestUtils.createEvent("aaa@aaa.aaa");
         eventService.saveEvent(event);
 
         String json = "{" +

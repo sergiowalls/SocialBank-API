@@ -29,13 +29,13 @@ public class EventTestUtils {
         return createEvent(email, getDate(INI_DATE), getDate(END_DATE));
     }
 
-    static Event createEvent(String email, Category category) {
+    public static Event createEvent(String email, Category category) {
         Event event = createEvent(email, getDate(INI_DATE), getDate(END_DATE));
         event.setCategory(category);
         return event;
     }
 
-    static Event createEvent(Date iniDate, Date endDate) {
+    public static Event createEvent(Date iniDate, Date endDate) {
         return createEvent(EMAIL, iniDate, endDate);
     }
 
