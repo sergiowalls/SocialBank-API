@@ -2,6 +2,7 @@ package me.integrate.socialbank.event;
 
 import org.springframework.lang.Nullable;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
 
@@ -144,5 +145,12 @@ public class Event {
 
     public boolean isClosed() {
         return false;
+    }
+
+    public boolean beginsInLessThan24h() {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(new Date());
+        cal.add(Calendar.DAY_OF_MONTH, 1);
+        return (iniDate.before(cal.getTime()));
     }
 }

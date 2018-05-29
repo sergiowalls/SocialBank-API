@@ -3,8 +3,6 @@ package me.integrate.socialbank.event;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 @Service
@@ -44,10 +42,7 @@ public class EventService {
 
         if (event == null) throw new EventNotFoundException();
 
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(new Date());
-        cal.add(Calendar.DAY_OF_MONTH, 1);
-        if (event.getIniDate().before(cal.getTime())) throw new TooLateException();
+        if (event.beginsInLessThan24h()) throw new TooLateException();
 
         eventRepository.deleteEvent(id);
         return event;
