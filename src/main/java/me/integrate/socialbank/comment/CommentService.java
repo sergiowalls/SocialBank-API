@@ -1,6 +1,7 @@
 package me.integrate.socialbank.comment;
 
 import me.integrate.socialbank.comment.exception.InvalidReferenceException;
+import me.integrate.socialbank.event.EventService;
 import me.integrate.socialbank.user.User;
 import me.integrate.socialbank.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,8 @@ public class CommentService {
     private CommentRepository commentRepository;
 
     private UserService userService;
+
+    private EventService eventService;
 
     private void setUserInfo(Comment comment) {
         User creator = userService.getUserByEmail(comment.getCreatorEmail());
@@ -34,9 +37,10 @@ public class CommentService {
     }
 
     @Autowired
-    public CommentService(CommentRepository commentRepository, UserService userService) {
+    public CommentService(CommentRepository commentRepository, UserService userService, EventService eventService) {
         this.commentRepository = commentRepository;
         this.userService = userService;
+        this.eventService = eventService;
     }
 
     public Comment getCommentById(int id) {
@@ -66,7 +70,9 @@ public class CommentService {
         return comments;
     }
 
-    public void deleteComment(int id) {
+    public void deleteComment(int eventId, int id) {
+        //if (eventService.getEventById(eventId).isClosed()) throw new EventAlreadyClosedException(); TODO
+        //needs feature/closeEvent to be implemented
         commentRepository.deleteComment(id);
     }
 }

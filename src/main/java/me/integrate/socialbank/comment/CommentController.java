@@ -43,8 +43,8 @@ public class CommentController {
 
     @DeleteMapping("/events/{event_id}/comments/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteComment(@PathVariable int id) {
-        commentService.deleteComment(id);
+    public void deleteComment(@PathVariable int event_id, @PathVariable int id) {
+        commentService.deleteComment(event_id, id);
     }
 
 }

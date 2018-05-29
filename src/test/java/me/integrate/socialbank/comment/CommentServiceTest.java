@@ -71,7 +71,7 @@ public class CommentServiceTest {
         int eventId = eventService.saveEvent(EventTestUtils.createEvent(email)).getId();
 
         int id = commentService.saveComment(eventId, email, CONTENT, null).getId();
-        commentService.deleteComment(id);
+        commentService.deleteComment(eventId, id);
 
         Assertions.assertThrows(CommentNotFoundException.class, () -> commentService.getCommentById(id));
     }
