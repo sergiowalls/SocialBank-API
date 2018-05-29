@@ -1,10 +1,13 @@
 package me.integrate.socialbank.enrollment;
 
+import me.integrate.socialbank.enrollment.exceptions.EventIsClosedException;
 import me.integrate.socialbank.enrollment.exceptions.TooLateException;
+import me.integrate.socialbank.enrollment.exceptions.UserIsNotEnrolledException;
 import me.integrate.socialbank.enrollment.exceptions.UserIsTheCreatorException;
 import me.integrate.socialbank.event.Event;
 import me.integrate.socialbank.event.EventService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -25,7 +28,12 @@ public class EnrollmentService {
     public Enrollment saveEnrollment(int id, String email) {
         Event event = eventService.getEventById(id);
         Date eventDate = event.getIniDate();
-        if (eventDate != null && eventDate.before(new Date())) throw new TooLateException();
+        if (eventDate != null) {
+            if (eventDate.before(new Date())) throw new TooLateException();
+        } else {
+            if (event.isClosed()) throw new EventIsClosedException();
+        }
+
         if (event.getCreatorEmail().equals(email)) throw new UserIsTheCreatorException();
         return enrollmentRepository.saveEnrollment(id, email);
     }
@@ -39,7 +47,11 @@ public class EnrollmentService {
     }
 
     public Enrollment deleteEnrollment(int id, String email) {
-        enrollmentRepository.deleteEnrollment(id, email);
+        try {
+            enrollmentRepository.deleteEnrollment(id, email);
+        } catch (DataAccessException e) {
+            throw new UserIsNotEnrolledException();
+        }
         return new Enrollment(id, email); //necessary for tests
     }
 }

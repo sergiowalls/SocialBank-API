@@ -141,4 +141,8 @@ public class Event {
     {
         return Objects.hash(id, creatorEmail, iniDate, endDate, /*hours,*/ location, title, description, category);
     }
+
+    public boolean isClosed() {
+        return false;
+    }
 }
