@@ -19,10 +19,6 @@ public class EnrollmentService {
     private EventService eventService;
     private UserService userService;
 
-    private float getTimDiff(Date iniDate, Date endDate) {
-        return (iniDate.getTime() - endDate.getTime()) / (60 * 60 * 1000); //convert from millisecond to hour
-    }
-
     @Autowired
     public EnrollmentService(EnrollmentRepository enrollmentRepository, EventService eventService, UserService
             userService) {
@@ -43,7 +39,7 @@ public class EnrollmentService {
             if (eventIniDate.before(new Date())) throw new TooLateException();
         }
         if (creatorEmail.equals(email)) throw new UserIsTheCreatorException();
-        if (user.getBalance() < getTimDiff(event.getIniDate(), event.getEndDate()))
+        if (user.getBalance() < event.getIntervalTime())
             throw new UserDoesNotHaveEnoughHours();
         return enrollmentRepository.saveEnrollment(id, email);
     }
