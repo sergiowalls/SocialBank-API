@@ -35,11 +35,12 @@ public class EnrollmentService {
         Event event = eventService.getEventById(id);
         String creatorEmail = event.getCreatorEmail();
         User user = userService.getUserByEmail(creatorEmail);
-        Date eventDate = event.getIniDate();
-        if (eventDate != null) {
-            if (eventDate.before(new Date())) throw new TooLateException();
-        } else {
+        Date eventIniDate = event.getIniDate();
+        if (eventIniDate == null) {
             if (event.isClosed()) throw new EventIsClosedException();
+
+        } else {
+            if (eventIniDate.before(new Date())) throw new TooLateException();
         }
         if (creatorEmail.equals(email)) throw new UserIsTheCreatorException();
         if (user.getBalance() < getTimDiff(event.getIniDate(), event.getEndDate()))
