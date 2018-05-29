@@ -44,7 +44,6 @@ public class CommentService {
     }
 
     public Comment getCommentById(int id) {
-
         Comment comment = commentRepository.getCommentById(id);
         setUserInfo(comment);
         return comment;
