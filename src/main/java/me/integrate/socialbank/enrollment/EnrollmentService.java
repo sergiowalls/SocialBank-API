@@ -37,6 +37,8 @@ public class EnrollmentService {
 
         } else {
             if (eventIniDate.before(new Date())) throw new TooLateException();
+            if (event.beginsInLessThan24h()) throw new TooLateException();
+
         }
         if (creatorEmail.equals(email)) throw new UserIsTheCreatorException();
         if (user.getBalance() < event.getIntervalTime())

@@ -155,6 +155,7 @@ public class Event {
     }
 
     public float getIntervalTime() {
-        return endDate.getTime() - iniDate.getTime() / (60 * 60 * 1000);
+        long difference = endDate.getTime() - iniDate.getTime();
+        return difference / (60 * 60 * 1000);
     }
 }

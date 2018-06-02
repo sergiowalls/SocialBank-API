@@ -105,17 +105,20 @@ public class EnrollmentServiceTest {
     }
 
     @Test
-    void checkTooLate() {
-        String email = ("a@a.com");
-        userService.saveUser(UserTestUtils.createUser(email));
+    void whenEnrollUnder24HourBeforeIniDateThenShouldReturnTooLateException() {
+        String emailCreator = ("a@a.com");
+        String emailEnrolled = ("b@b.b");
+        userService.saveUser(UserTestUtils.createUser(emailCreator));
+        userService.saveUser(UserTestUtils.createUser(emailEnrolled));
 
         Calendar cal = Calendar.getInstance();
-        cal.set(1999, 2, 2);
+        cal.setTime(new Date());
+        cal.add(Calendar.HOUR_OF_DAY, 23);
         Date iniDate = cal.getTime();
-        cal.set(2099, 2, 2);
+        cal.add(Calendar.HOUR_OF_DAY, 1); //endDate
 
-        Event event = eventService.saveEvent(EventTestUtils.createEvent(email, iniDate, cal.getTime()));
+        Event event = eventService.saveEvent(EventTestUtils.createEvent(emailCreator, iniDate, cal.getTime()));
 
-        assertThrows(TooLateException.class, () -> enrollmentService.saveEnrollment(event.getId(), "b@b.b"));
+        assertThrows(TooLateException.class, () -> enrollmentService.saveEnrollment(event.getId(), emailEnrolled));
     }
 }
