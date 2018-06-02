@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -136,5 +137,29 @@ class UserServiceTest {
 
         assertThrows(PendingAccountVerificationException.class,
                 () -> userService.requestAccountVerification("aaa@aaa.aaa", "Please"));
+    }
+
+    @Test
+    void givenUserWhenAddedAnAwardTwiceThrowsException() {
+        User user = createUser("aaa@aaa.aaa");
+        userService.saveUser(user);
+
+        String sql = "INSERT INTO award VALUES ('aaa@aaa.aaa', '" + Award.ACTIVE_USER.name() + "')";
+        jdbcTemplate.execute(sql);
+        assertThrows(DataIntegrityViolationException.class, () -> jdbcTemplate.execute(sql));
+    }
+
+    @Test
+    void givenUserWhenAddedAwardsReturnSameAwards() {
+        User user = createUser("aaa@aaa.aaa");
+        userService.saveUser(user);
+
+        String sql = "INSERT INTO award VALUES ('aaa@aaa.aaa', '" + Award.ACTIVE_USER.name() + "')";
+        String sql2 = "INSERT INTO award VALUES ('aaa@aaa.aaa', '" + Award.DEVELOPER.name() + "')";
+        jdbcTemplate.execute(sql);
+        jdbcTemplate.execute(sql2);
+
+        assertTrue(userService.getUserByEmail("aaa@aaa.aaa").getAwards().contains(Award.ACTIVE_USER));
+        assertTrue(userService.getUserByEmail("aaa@aaa.aaa").getAwards().contains(Award.DEVELOPER));
     }
 }

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Objects;
+import java.util.Set;
 
 public class User {
 
@@ -26,8 +27,9 @@ public class User {
     private String image; //base 64
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private boolean verified;
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private boolean enabled;
+    private Set<Award> awards;
 
 
     public String getEmail() {
@@ -68,6 +70,10 @@ public class User {
 
     public boolean getEnabled() {
         return enabled;
+    }
+
+    public Set<Award> getAwards() {
+        return awards;
     }
 
     public void setEmail(String email) {
@@ -119,6 +125,10 @@ public class User {
         this.enabled = enabled;
     }
 
+    public void setAwards(Set<Award> awards) {
+        this.awards = awards;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -133,7 +143,8 @@ public class User {
                 gender == user.gender &&
                 Objects.equals(description, user.description) &&
                 Objects.equals(image, user.image) &&
-                Objects.equals(verified, user.verified);
+                Objects.equals(verified, user.verified) &&
+                Objects.equals(awards, user.awards);
     }
 
     @Override

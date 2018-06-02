@@ -20,4 +20,6 @@ public interface UserRepository {
     void reportUser(String reporter, String reported);
 
     void saveRequestAccountVerification(String email, String message);
+
+    Set<Award> getUserAwards(String email);
 }

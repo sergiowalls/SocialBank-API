@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Service
@@ -18,7 +19,10 @@ public class UserService {
     }
 
     public User getUserByEmail(String email) {
-        return userRepository.getUserByEmail(email);
+        User user = userRepository.getUserByEmail(email);
+        Set<Award> awards = userRepository.getUserAwards(email);
+        user.setAwards(awards.isEmpty() ? null : awards);
+        return user;
     }
 
     public User saveUser(User user) {

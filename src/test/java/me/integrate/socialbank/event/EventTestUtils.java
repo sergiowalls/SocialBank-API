@@ -21,7 +21,7 @@ public class EventTestUtils {
         return date;
     }
 
-    static Event createEvent() {
+    public static Event createEvent() {
         return createEvent(EMAIL, getDate(INI_DATE), getDate(END_DATE));
     }
 
@@ -29,17 +29,17 @@ public class EventTestUtils {
         return createEvent(email, getDate(INI_DATE), getDate(END_DATE));
     }
 
-    static Event createEvent(String email, Category category) {
+    public static Event createEvent(String email, Category category) {
         Event event = createEvent(email, getDate(INI_DATE), getDate(END_DATE));
         event.setCategory(category);
         return event;
     }
 
-    static Event createEvent(Date iniDate, Date endDate) {
+    public static Event createEvent(Date iniDate, Date endDate) {
         return createEvent(EMAIL, iniDate, endDate);
     }
 
-    static Event createEvent(String email, Date iniDate, Date endDate) {
+    public static Event createEvent(String email, Date iniDate, Date endDate) {
         Event event = new Event();
         event.setCreatorEmail(email);
         event.setIniDate(iniDate);

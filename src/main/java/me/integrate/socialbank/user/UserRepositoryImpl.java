@@ -29,6 +29,8 @@ public class UserRepositoryImpl implements UserRepository {
     private final static String IMAGE = "image";
     private final static String VERIFIED = "verified_account";
     private static final String ENABLED = "enabled";
+    private final static String AWARD = "award";
+    private final static String AWARD_TABLE = "award";
 
     private JdbcTemplate jdbcTemplate;
 
@@ -129,6 +131,11 @@ public class UserRepositoryImpl implements UserRepository {
         } catch (DataIntegrityViolationException ex) {
             throw new ReportAlreadyExistsException();
         }
+    }
+
+    public Set<Award> getUserAwards(String email) {
+        return new HashSet<>(jdbcTemplate.queryForList("SELECT " + AWARD + " FROM " + AWARD_TABLE + " WHERE " + EMAIL + " = '" + email + "'",
+                Award.class));
     }
 
     private class UserRowMapper implements RowMapper<User> {
