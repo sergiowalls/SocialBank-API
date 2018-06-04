@@ -65,7 +65,9 @@ public class EventService {
         Calendar cal = Calendar.getInstance();
         cal.setTime(new Date());
         cal.add(Calendar.DAY_OF_MONTH, 1);
-        if (event.getIniDate().before(cal.getTime())) throw new TooLateException();
+        if (event.getIniDate() != null) {
+            event.getIniDate().before(cal.getTime())) throw new TooLateException();
+        }
 
         eventRepository.deleteEvent(id);
         return event;
