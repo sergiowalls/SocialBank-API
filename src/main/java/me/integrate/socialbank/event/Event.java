@@ -148,6 +148,7 @@ public class Event {
     }
 
     public boolean beginsInLessThan24h() {
+        if (iniDate == null) return false;
         Calendar cal = Calendar.getInstance();
         cal.setTime(new Date());
         cal.add(Calendar.DAY_OF_MONTH, 1);
