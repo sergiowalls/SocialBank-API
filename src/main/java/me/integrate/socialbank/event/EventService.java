@@ -5,7 +5,6 @@ import me.integrate.socialbank.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -29,10 +28,8 @@ public class EventService {
             if (event.getIniDate().after(event.getEndDate()) || event.getIniDate().before(new Date()))
                 throw new EventWithIncorrectDateException();
             if (event.isDemand()) {
-                long diff = Math.abs(event.getIniDate().getTime() - event.getEndDate().getTime());
-                diff = diff / (60 * 60 * 1000);
                 User user = userService.getUserByEmail(event.getCreatorEmail());
-                if (diff > user.getBalance()) throw new UserNotEnoughHoursException();
+                if (event.getIntervalTime() > user.getBalance()) throw new UserNotEnoughHoursException();
             }
         }
         return eventRepository.saveEvent(event);
@@ -62,12 +59,7 @@ public class EventService {
 
         if (event == null) throw new EventNotFoundException();
 
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(new Date());
-        cal.add(Calendar.DAY_OF_MONTH, 1);
-        if (event.getIniDate() != null) {
-            if (event.getIniDate().before(cal.getTime())) throw new TooLateException();
-        }
+        if (event.beginsInLessThan24h()) throw new TooLateException();
 
         eventRepository.deleteEvent(id);
         return event;
