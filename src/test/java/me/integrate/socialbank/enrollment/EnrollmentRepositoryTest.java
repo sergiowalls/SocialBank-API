@@ -49,7 +49,7 @@ public class EnrollmentRepositoryTest {
 
     @Test
     void givenEnrollmentsStoredInDatabaseWhenRetrievedByEventReturnEnrollments() {
-        String emailCreator = "a@a.a", emailEnrolledOne = "b@b.b", emailEnrolledTwo = "c@c.c";
+        String emailCreator = "a@a.a", emailEnrolledOne = "z@z.z", emailEnrolledTwo = "c@c.c";
 
         userRepository.saveUser(UserTestUtils.createUser(emailCreator));
         userRepository.saveUser(UserTestUtils.createUser(emailEnrolledOne));
@@ -69,7 +69,7 @@ public class EnrollmentRepositoryTest {
 
     @Test
     void givenEnrollmentsStoredInDatabaseWhenRetrievedByUserReturnEnrollments() {
-        String emailCreator = "a@a.a", emailEnrolled = "b@b.b";
+        String emailCreator = "a@a.a", emailEnrolled = "z@z.z";
 
         userRepository.saveUser(UserTestUtils.createUser(emailCreator));
         userRepository.saveUser(UserTestUtils.createUser(emailEnrolled));
@@ -89,7 +89,7 @@ public class EnrollmentRepositoryTest {
 
     @Test
     void givenEnrollmentsStoredInDatabaseWhenSaveSameEnrollmentThenThrowException() {
-        String emailCreator = "a@a.a", emailEnrolled = "b@b.b";
+        String emailCreator = "a@a.a", emailEnrolled = "z@z.z";
 
         userRepository.saveUser(UserTestUtils.createUser(emailCreator));
         userRepository.saveUser(UserTestUtils.createUser(emailEnrolled));

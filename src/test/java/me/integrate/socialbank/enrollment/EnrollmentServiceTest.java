@@ -39,7 +39,7 @@ public class EnrollmentServiceTest {
     @Test
     void givenEnrollmentThenIsStoredCorrectly() {
         String emailCreator = "a@a.com";
-        String emailEnrolled = "b@b.b";
+        String emailEnrolled = "z@z.z";
         User userCreator = UserTestUtils.createUser(emailCreator);
         User userEnrolled = UserTestUtils.createUser(emailEnrolled);
         userService.saveUser(userCreator);
@@ -54,7 +54,7 @@ public class EnrollmentServiceTest {
 
     @Test
     void givenEnrollmentsStoredInDatabaseWhenRetrievedByEventReturnEnrollments() {
-        String emailCreator = "a@a.a", emailEnrolledOne = "b@b.b", emailEnrolledTwo = "c@c.c";
+        String emailCreator = "a@a.a", emailEnrolledOne = "z@z.z", emailEnrolledTwo = "c@c.c";
         userService.saveUser(UserTestUtils.createUser(emailCreator));
         userService.saveUser(UserTestUtils.createUser(emailEnrolledOne));
         userService.saveUser(UserTestUtils.createUser(emailEnrolledTwo));
@@ -73,7 +73,7 @@ public class EnrollmentServiceTest {
 
     @Test
     void givenEnrollmentsStoredInDatabaseWhenRetrievedByUserReturnEnrollments() {
-        String emailCreator = "a@a.a", emailEnrolled = "b@b.b";
+        String emailCreator = "a@a.a", emailEnrolled = "z@z.z";
 
         userService.saveUser(UserTestUtils.createUser(emailCreator));
         userService.saveUser(UserTestUtils.createUser(emailEnrolled));
@@ -107,7 +107,7 @@ public class EnrollmentServiceTest {
     @Test
     void whenEnrollUnder24HourBeforeIniDateThenShouldReturnTooLateException() {
         String emailCreator = ("a@a.com");
-        String emailEnrolled = ("b@b.b");
+        String emailEnrolled = ("z@z.z");
         userService.saveUser(UserTestUtils.createUser(emailCreator));
         userService.saveUser(UserTestUtils.createUser(emailEnrolled));
 
