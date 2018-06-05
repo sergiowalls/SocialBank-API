@@ -103,7 +103,7 @@ public class CommentServiceTest {
     void givenCommentReferencingEventNotStoredInDatabaseWhenSavedThenReturnsNotFound() {
         String email = "pepito@pepito.com";
         userService.saveUser(UserTestUtils.createUser(email));
-        assertThrows(ReferenceNotFoundException.class, () -> commentService.saveComment(123, email, CONTENT, null));
+        assertThrows(ReferenceNotFoundException.class, () -> commentService.saveComment(99999, email, CONTENT, null));
     }
 
     @Test

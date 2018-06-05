@@ -99,7 +99,7 @@ class CommentRepositoryTest {
         String email = "pepito@pepito.com";
         userRepository.saveUser(UserTestUtils.createUser(email));
         Comment comment = new Comment();
-        comment.setEventId(123);
+        comment.setEventId(99999);
         comment.setCreatorEmail(email);
         comment.setContent(CONTENT);
         Date date = new Date();
