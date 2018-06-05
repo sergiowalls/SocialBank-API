@@ -158,10 +158,10 @@ public class Event {
     public float getIntervalTime() {
         long difference = 0;
         try {
-            difference = endDate.getTime() - iniDate.getTime();
+            if (iniDate != null && endDate != null) difference = endDate.getTime() - iniDate.getTime();
         }
         catch (Exception e) {
-            e.printStackTrace();
+            e.printStackTrace(); //should not get here, but just in case
         }
         return difference / (60 * 60 * 1000); //convert from millisecond to hour
     }
