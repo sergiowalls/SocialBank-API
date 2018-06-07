@@ -1,20 +1,29 @@
 package me.integrate.socialbank.comment;
 
+import io.swagger.annotations.ApiModelProperty;
 import org.springframework.lang.Nullable;
 
 import java.util.Date;
 import java.util.Objects;
 
 public class Comment {
+    @ApiModelProperty(readOnly = true)
     private int id;
+    @ApiModelProperty(readOnly = true)
     private int eventId;
+    @ApiModelProperty(readOnly = true)
     private String creatorEmail;
+    @ApiModelProperty(readOnly = true)
     private Date createdAt;
+    @ApiModelProperty(readOnly = true)
     private Date updatedAt;
     @Nullable
+    @ApiModelProperty(readOnly = true)
     private Integer replyTo;
     private String content;
+    @ApiModelProperty(readOnly = true)
     private String userName;
+    @ApiModelProperty(readOnly = true)
     private String userSurname;
 
     public Comment() {

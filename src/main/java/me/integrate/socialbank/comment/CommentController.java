@@ -29,9 +29,10 @@ public class CommentController {
 
     @PostMapping("/events/{event_id}/comments")
     @ResponseStatus(HttpStatus.CREATED)
-    public Comment saveComment(@RequestBody String content, @PathVariable int event_id, Authentication authentication) {
+    public Comment saveComment(@RequestBody Comment content, @PathVariable int event_id, Authentication
+            authentication) {
         String email = authentication.getName();
-        return commentService.saveComment(event_id, email, content, null);
+        return commentService.saveComment(event_id, email, content.getContent(), null);
     }
 
     @GetMapping("/events/{event_id}/comments")
