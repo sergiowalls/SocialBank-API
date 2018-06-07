@@ -42,7 +42,7 @@ public class CommentControllerTest {
     @Test
     @WithMockUser
     void shouldReturnNoContentStatus() throws Exception {
-        this.mockMvc.perform(delete("/events/123/comments/456")).andExpect(status().isNoContent());
+        this.mockMvc.perform(delete("/comments/456")).andExpect(status().isNoContent());
     }
 
     @Test
@@ -72,13 +72,13 @@ public class CommentControllerTest {
     @Test
     @WithMockUser
     void whenGetCommentByIdThenReturnOkStatus() throws Exception {
-        this.mockMvc.perform(get("/events/123/comments/456")).andExpect(status().isOk());
+        this.mockMvc.perform(get("/comments/456")).andExpect(status().isOk());
     }
 
     @Test
     @WithMockUser
     void whenUpdatedThenReturnAcceptedStatus() throws Exception {
-        this.mockMvc.perform(put("/events/123/comments/456").param("content", "newContent")).andExpect(status()
+        this.mockMvc.perform(put("/comments/456").param("content", "newContent")).andExpect(status()
                 .isAccepted());
     }
 

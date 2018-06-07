@@ -69,7 +69,7 @@ public class CommentService {
         return comments;
     }
 
-    public void deleteComment(int eventId, int id) {
+    public void deleteComment(int id) {
         //if (eventService.getEventById(eventId).isClosed()) throw new EventAlreadyClosedException(); TODO
         //needs feature/closeEvent to be implemented
         commentRepository.deleteComment(id);

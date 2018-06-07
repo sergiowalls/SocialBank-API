@@ -16,12 +16,12 @@ public class CommentController {
     @Autowired
     public CommentController(CommentService commentService) { this.commentService = commentService; }
 
-    @GetMapping("/events/{event_id}/comments/{id}")
+    @GetMapping("/comments/{id}")
     public Comment getCommentById(@PathVariable int id) {
         return commentService.getCommentById(id);
     }
 
-    @PutMapping("/events/{event_id}/comments/{id}")
+    @PutMapping("/comments/{id}")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public Comment updateCommentContent(@PathVariable int id, @RequestParam String content) {
         return commentService.updateComment(id, content);
@@ -42,10 +42,10 @@ public class CommentController {
     }
 
 
-    @DeleteMapping("/events/{event_id}/comments/{id}")
+    @DeleteMapping("/comments/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteComment(@PathVariable int event_id, @PathVariable int id) {
-        commentService.deleteComment(event_id, id);
+    public void deleteComment(@PathVariable int id) {
+        commentService.deleteComment(id);
     }
 
 }
