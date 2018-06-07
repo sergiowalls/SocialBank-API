@@ -1,5 +1,6 @@
 package me.integrate.socialbank.event;
 
+import io.swagger.annotations.ApiModelProperty;
 import org.springframework.lang.Nullable;
 
 import java.util.Calendar;
@@ -143,6 +144,7 @@ public class Event {
         return Objects.hash(id, creatorEmail, iniDate, endDate, /*hours,*/ location, title, description, category);
     }
 
+    @ApiModelProperty(hidden = true, readOnly = true)
     public boolean isClosed() {
         return false;
     }
