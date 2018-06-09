@@ -30,6 +30,7 @@ public class EventRepositoryImpl implements EventRepository {
     private static String LONGITUDE = "longitude";
     private static String CATEGORY = "category";
     private static String CAPACITY = "capacity";
+    private static String NUMBER_ENROLLED = "number_enrolled";
     private final SimpleJdbcInsert simpleJdbcInsert;
 
     private JdbcTemplate jdbcTemplate;
@@ -58,6 +59,7 @@ public class EventRepositoryImpl implements EventRepository {
         params.put(LONGITUDE, event.getLongitude());
         params.put(CATEGORY, event.getCategory().name());
         params.put(CAPACITY, event.getCapacity());
+        params.put(NUMBER_ENROLLED, 0);
         Number id = this.simpleJdbcInsert.executeAndReturnKey(params);
         event.setId(id.intValue());
         return event;
@@ -77,6 +79,20 @@ public class EventRepositoryImpl implements EventRepository {
     public void updateEvent(int id, Event event) {
         String sql = "UPDATE " + EVENT_TABLE + " SET " + IMAGE + " = ?, " + DESCRIPTION + " = ? WHERE " + ID + " = ?";
         jdbcTemplate.update(sql, event.getImage(), event.getDescription(), id);
+    }
+
+    @Override
+    public void incrementNumberEnrolled(int id) {
+        String sql = "UPDATE " + EVENT_TABLE + " SET " + NUMBER_ENROLLED + " = " + NUMBER_ENROLLED + " + 1 WHERE " +
+                ID + " = ?";
+        jdbcTemplate.update(sql, id);
+    }
+
+    @Override
+    public void decrementNumberEnrolled(int id) {
+        String sql = "UPDATE " + EVENT_TABLE + " SET " + NUMBER_ENROLLED + " = " + NUMBER_ENROLLED + " - 1 WHERE " +
+                ID + " = ?";
+        jdbcTemplate.update(sql, id);
     }
 
     public List<Event> getEventsByCreator(String email) {

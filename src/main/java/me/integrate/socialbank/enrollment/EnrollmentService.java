@@ -43,7 +43,14 @@ public class EnrollmentService {
         if (creatorEmail.equals(email)) throw new UserIsTheCreatorException();
         if (user.getBalance() < event.getIntervalTime())
             throw new UserDoesNotHaveEnoughHours();
-        return enrollmentRepository.saveEnrollment(id, email);
+        Enrollment enrollment = null;
+        try {
+            enrollment = enrollmentRepository.saveEnrollment(id, email);
+            eventService.incrementNumberEnrolled(id);
+        } catch (DataAccessException e) {
+            e.printStackTrace();
+        }
+        return enrollment;
     }
 
     public List<String> getEnrollmentsOfEvent(int id) {
@@ -54,16 +61,13 @@ public class EnrollmentService {
         return enrollmentRepository.getEnrollmentsOfUser(email);
     }
 
-    public int getNumberOfUsersEnrolledInEvent(int id) {
-        return enrollmentRepository.getNumberOfUsersEnrolledInEvent(id);
-    }
-
     public Enrollment deleteEnrollment(int id, String email) {
         Event event = eventService.getEventById(id);
         if (event.isClosed()) throw new EventIsClosedException();
         if (event.beginsInLessThan24h()) throw new TooLateException();
         try {
             enrollmentRepository.deleteEnrollment(id, email);
+            eventService.decrementNumberEnrolled(id);
         } catch (DataAccessException e) {
             throw new UserIsNotEnrolledException();
         }

@@ -1,6 +1,5 @@
 package me.integrate.socialbank.event;
 
-import me.integrate.socialbank.enrollment.EnrollmentService;
 import me.integrate.socialbank.user.User;
 import me.integrate.socialbank.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,19 +12,15 @@ import java.util.List;
 public class EventService {
     private EventRepository eventRepository;
     private UserService userService;
-    private EnrollmentService enrollmentService;
 
     @Autowired
-    public EventService(EventRepository eventRepository, UserService userService, EnrollmentService enrollmentService) {
+    public EventService(EventRepository eventRepository, UserService userService) {
         this.eventRepository = eventRepository;
         this.userService = userService;
-        this.enrollmentService = enrollmentService;
     }
 
     public Event getEventById(int id) {
-        Event eventById = eventRepository.getEventById(id);
-        eventById.setNumberEnrolled(enrollmentService.getNumberOfUsersEnrolledInEvent(id));
-        return eventById;
+        return eventRepository.getEventById(id);
     }
 
     public Event saveEvent(Event event) {
@@ -41,27 +36,31 @@ public class EventService {
     }
 
     public List<Event> getAllEvents() {
-        List<Event> events = eventRepository.getAllEvents();
-        setNumberEnrolled(events);
-        return events;
+        return eventRepository.getAllEvents();
     }
 
     public List<Event> getEventsByCreator(String email) {
-        List<Event> eventsByCreator = eventRepository.getEventsByCreator(email);
-        setNumberEnrolled(eventsByCreator);
-        return eventsByCreator;
+        return eventRepository.getEventsByCreator(email);
     }
 
     public List<Event> getEventsByCategory(Category category) {
-        List<Event> eventsByCategory = eventRepository.getEventsByCategory(category);
-        setNumberEnrolled(eventsByCategory);
-        return eventsByCategory;
+        return eventRepository.getEventsByCategory(category);
     }
 
     public Event updateEvent(int id, Event event) {
         Event eventById = eventRepository.getEventById(id);
         if (eventById == null) throw new EventNotFoundException();
         eventRepository.updateEvent(id, event);
+        return this.getEventById(id);
+    }
+
+    public Event incrementNumberEnrolled(int id) {
+        eventRepository.incrementNumberEnrolled(id);
+        return this.getEventById(id);
+    }
+
+    public Event decrementNumberEnrolled(int id) {
+        eventRepository.decrementNumberEnrolled(id);
         return this.getEventById(id);
     }
 
@@ -78,12 +77,5 @@ public class EventService {
 
     private boolean eventWithDates(Event event) {
         return event.getIniDate() != null && event.getEndDate() != null;
-    }
-
-    private void setNumberEnrolled(List<Event> events) {
-        for (Event event : events) {
-            int numberEnrolled = enrollmentService.getNumberOfUsersEnrolledInEvent(event.getId());
-            event.setNumberEnrolled(numberEnrolled);
-        }
     }
 }
