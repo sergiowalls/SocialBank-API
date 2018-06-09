@@ -54,6 +54,10 @@ public class EnrollmentService {
         return enrollmentRepository.getEnrollmentsOfUser(email);
     }
 
+    public int getNumberOfUsersEnrolledInEvent(int id) {
+        return enrollmentRepository.getNumberOfUsersEnrolledInEvent(id);
+    }
+
     public Enrollment deleteEnrollment(int id, String email) {
         Event event = eventService.getEventById(id);
         if (event.isClosed()) throw new EventIsClosedException();

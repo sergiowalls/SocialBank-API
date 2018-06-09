@@ -46,6 +46,12 @@ public class EnrollmentRepositoryImpl implements EnrollmentRepository{
     }
 
     @Override
+    public int getNumberOfUsersEnrolledInEvent(int id) {
+        return jdbcTemplate.queryForObject("SELECT COUNT(*) FROM " + ENROLLMENT_TABLE + " WHERE " + EVENTID + "= ?",
+                new Object[]{id}, Integer.class);
+    }
+
+    @Override
     public List<Integer> getEnrollmentsOfUser(String email) {
         return jdbcTemplate.queryForList("SELECT " + EVENTID + " FROM " + ENROLLMENT_TABLE + " WHERE " + USEREMAIL + "= ?",
                 new Object[]{email},Integer.class);

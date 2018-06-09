@@ -8,6 +8,8 @@ public interface EnrollmentRepository {
 
     List<String> getEnrollmentsOfEvent(int id);
 
+    int getNumberOfUsersEnrolledInEvent(int id);
+
     List<Integer> getEnrollmentsOfUser(String email);
 
     void deleteEnrollment(int id, String email);

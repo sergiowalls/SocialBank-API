@@ -21,6 +21,9 @@ public class Event {
     private Double latitude;
     private Double longitude;
     private Category category;
+    private Integer capacity;
+    @ApiModelProperty(readOnly = true)
+    private int numberEnrolled;
 
     public int getId() {
         return id;
@@ -166,5 +169,21 @@ public class Event {
             e.printStackTrace(); //should not get here, but just in case
         }
         return difference / (60 * 60 * 1000); //convert from millisecond to hour
+    }
+
+    public Integer getCapacity() {
+        return capacity;
+    }
+
+    public void setCapacity(Integer capacity) {
+        this.capacity = capacity;
+    }
+
+    public Integer getNumberEnrolled() {
+        return numberEnrolled;
+    }
+
+    public void setNumberEnrolled(Integer numberEnrolled) {
+        this.numberEnrolled = numberEnrolled;
     }
 }

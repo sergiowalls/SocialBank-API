@@ -29,6 +29,7 @@ public class EventRepositoryImpl implements EventRepository {
     private static String LATITUDE = "latitude";
     private static String LONGITUDE = "longitude";
     private static String CATEGORY = "category";
+    private static String CAPACITY = "capacity";
     private final SimpleJdbcInsert simpleJdbcInsert;
 
     private JdbcTemplate jdbcTemplate;
@@ -56,6 +57,7 @@ public class EventRepositoryImpl implements EventRepository {
         params.put(LATITUDE, event.getLatitude());
         params.put(LONGITUDE, event.getLongitude());
         params.put(CATEGORY, event.getCategory().name());
+        params.put(CAPACITY, event.getCapacity());
         Number id = this.simpleJdbcInsert.executeAndReturnKey(params);
         event.setId(id.intValue());
         return event;
