@@ -20,8 +20,8 @@ public class EnrollmentController {
 
     @PostMapping("/events/{id}/enrollments")
     @ResponseStatus(HttpStatus.CREATED)
-    public Enrollment enrollEvent(@PathVariable int id, Authentication auth) {
-        return enrollmentService.saveEnrollment(id, auth.getName());
+    public void enrollEvent(@PathVariable int id, Authentication auth) {
+        enrollmentService.saveEnrollment(id, auth.getName());
     }
 
     @GetMapping("/events/{id}/enrollments")
