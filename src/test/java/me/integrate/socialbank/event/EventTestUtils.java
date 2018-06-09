@@ -52,6 +52,7 @@ public class EventTestUtils {
         event.setLatitude(37.2);
         event.setLongitude(19.9);
         event.setCategory(Category.OTHER);
+        event.setCapacity(5);
         return event;
     }
 }

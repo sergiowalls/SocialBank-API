@@ -39,9 +39,8 @@ public class EventRepositoryImpl implements EventRepository {
     public EventRepositoryImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
         this.simpleJdbcInsert = new SimpleJdbcInsert(this.jdbcTemplate)
-                .withTableName(EVENT_TABLE)
-                .usingColumns(CREATOR, INIDATE, ENDDATE, LOCATION, TITLE, DESCRIPTION, IMAGE, ISDEMAND, LATITUDE,
-                        LONGITUDE, CATEGORY)
+                .withTableName(EVENT_TABLE).usingColumns(CREATOR, INIDATE, ENDDATE, LOCATION, TITLE, DESCRIPTION,
+                        IMAGE, ISDEMAND, LATITUDE, LONGITUDE, CATEGORY, CAPACITY, NUMBER_ENROLLED)
                 .usingGeneratedKeyColumns(ID);
     }
 
