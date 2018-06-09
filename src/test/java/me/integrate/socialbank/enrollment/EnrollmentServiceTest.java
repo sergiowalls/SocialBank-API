@@ -7,6 +7,7 @@ import me.integrate.socialbank.event.EventTestUtils;
 import me.integrate.socialbank.user.User;
 import me.integrate.socialbank.user.UserService;
 import me.integrate.socialbank.user.UserTestUtils;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -124,6 +125,8 @@ public class EnrollmentServiceTest {
     }
 
     @Test
+    @Disabled
+        //this goes against requirements
     void whenEnrollUnder24HourBeforeIniDateThenShouldReturnTooLateException() {
         String emailCreator = ("a@a.com");
         String emailEnrolled = ("z@z.z");
