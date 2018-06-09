@@ -22,6 +22,8 @@ public class Event {
     private Double longitude;
     private Category category;
     private Integer capacity;
+    @ApiModelProperty(readOnly = true)
+    private int numberEnrolled;
 
     public int getId() {
         return id;
@@ -175,5 +177,13 @@ public class Event {
 
     public void setCapacity(Integer capacity) {
         this.capacity = capacity;
+    }
+
+    public Integer getNumberEnrolled() {
+        return numberEnrolled;
+    }
+
+    public void setNumberEnrolled(Integer numberEnrolled) {
+        this.numberEnrolled = numberEnrolled;
     }
 }

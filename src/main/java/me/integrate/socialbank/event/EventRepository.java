@@ -17,4 +17,8 @@ public interface EventRepository {
     List<Event> getEventsByCategory(Category category);
 
     void updateEvent(int id, Event event);
+
+    void incrementNumberEnrolled(int id);
+
+    void decrementNumberEnrolled(int id);
 }

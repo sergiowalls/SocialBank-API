@@ -105,6 +105,25 @@ public class EnrollmentServiceTest {
     }
 
     @Test
+    void whenAddOrDeleteEnrollmentThenEventIsCorrectlyUpdated() {
+        String creatorEmail = "email@email.tld";
+        String enrolledEmail = "e@e.e";
+        userService.saveUser(UserTestUtils.createUser(creatorEmail));
+        userService.saveUser(UserTestUtils.createUser(enrolledEmail));
+        Event event = eventService.saveEvent(EventTestUtils.createEvent(creatorEmail));
+        assert (event.getNumberEnrolled() == 0);
+        int eventId = event.getId();
+
+        enrollmentService.saveEnrollment(eventId, enrolledEmail);
+        event = eventService.getEventById(eventId);
+        assert (event.getNumberEnrolled() == 1);
+
+        enrollmentService.deleteEnrollment(eventId, enrolledEmail);
+        event = eventService.getEventById(eventId);
+        assert (event.getNumberEnrolled() == 0);
+    }
+
+    @Test
     void whenEnrollUnder24HourBeforeIniDateThenShouldReturnTooLateException() {
         String emailCreator = ("a@a.com");
         String emailEnrolled = ("z@z.z");

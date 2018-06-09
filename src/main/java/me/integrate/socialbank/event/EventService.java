@@ -51,7 +51,17 @@ public class EventService {
         Event eventById = eventRepository.getEventById(id);
         if (eventById == null) throw new EventNotFoundException();
         eventRepository.updateEvent(id, event);
-        return eventRepository.getEventById(id);
+        return this.getEventById(id);
+    }
+
+    public Event incrementNumberEnrolled(int id) {
+        eventRepository.incrementNumberEnrolled(id);
+        return this.getEventById(id);
+    }
+
+    public Event decrementNumberEnrolled(int id) {
+        eventRepository.decrementNumberEnrolled(id);
+        return this.getEventById(id);
     }
 
     public Event deleteEvent(int id) {
