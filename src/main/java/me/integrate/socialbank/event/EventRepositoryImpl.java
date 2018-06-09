@@ -83,16 +83,18 @@ public class EventRepositoryImpl implements EventRepository {
 
     @Override
     public void incrementNumberEnrolled(int id) {
-        String sql = "UPDATE " + EVENT_TABLE + " SET " + NUMBER_ENROLLED + " = " + NUMBER_ENROLLED + " + 1 WHERE " +
-                ID + " = ?";
-        jdbcTemplate.update(sql, id);
+        Event event = jdbcTemplate.queryForObject("SELECT * FROM " + EVENT_TABLE + " WHERE " + ID + "= ?", new
+                Object[]{id}, new EventRowMapper());
+        String sql = "UPDATE " + EVENT_TABLE + " SET " + NUMBER_ENROLLED + " = ? WHERE " + ID + " = ?";
+        jdbcTemplate.update(sql, event.getNumberEnrolled() + 1, id);
     }
 
     @Override
     public void decrementNumberEnrolled(int id) {
-        String sql = "UPDATE " + EVENT_TABLE + " SET " + NUMBER_ENROLLED + " = " + NUMBER_ENROLLED + " - 1 WHERE " +
-                ID + " = ?";
-        jdbcTemplate.update(sql, id);
+        Event event = jdbcTemplate.queryForObject("SELECT * FROM " + EVENT_TABLE + " WHERE " + ID + "= ?", new
+                Object[]{id}, new EventRowMapper());
+        String sql = "UPDATE " + EVENT_TABLE + " SET " + NUMBER_ENROLLED + " = ? WHERE " + ID + " = ?";
+        jdbcTemplate.update(sql, event.getNumberEnrolled() - 1, id);
     }
 
     public List<Event> getEventsByCreator(String email) {
@@ -130,6 +132,8 @@ public class EventRepositoryImpl implements EventRepository {
             event.setLatitude(resultSet.getDouble(LATITUDE));
             event.setLongitude(resultSet.getDouble(LONGITUDE));
             event.setCategory(Category.valueOf(resultSet.getString(CATEGORY)));
+            event.setCapacity((Integer) resultSet.getObject(CAPACITY));
+            event.setNumberEnrolled(resultSet.getInt(NUMBER_ENROLLED));
             return event;
         }
     }

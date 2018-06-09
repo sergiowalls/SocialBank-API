@@ -113,9 +113,13 @@ public class EnrollmentServiceTest {
         Event event = eventService.saveEvent(EventTestUtils.createEvent(creatorEmail));
         assert (event.getNumberEnrolled() == 0);
         int eventId = event.getId();
+
         enrollmentService.saveEnrollment(eventId, enrolledEmail);
+        event = eventService.getEventById(eventId);
         assert (event.getNumberEnrolled() == 1);
+
         enrollmentService.deleteEnrollment(eventId, enrolledEmail);
+        event = eventService.getEventById(eventId);
         assert (event.getNumberEnrolled() == 0);
     }
 
