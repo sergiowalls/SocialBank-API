@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -59,6 +60,13 @@ public class EnrollmentService {
 
     public List<Integer> getEnrollmentsOfUser(String email) {
         return enrollmentRepository.getEnrollmentsOfUser(email);
+    }
+
+    public List<Event> getEventsUsersIsEnrolled(String email) {
+        List<Integer> ids = enrollmentRepository.getEnrollmentsOfUser(email);
+        List<Event> events = new ArrayList<>();
+        for (Integer id : ids) events.add(eventService.getEventById(id));
+        return events;
     }
 
     public Enrollment deleteEnrollment(int id, String email) {

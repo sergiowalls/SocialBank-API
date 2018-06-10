@@ -1,5 +1,6 @@
 package me.integrate.socialbank.enrollment;
 
+import me.integrate.socialbank.event.Event;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
@@ -34,8 +35,8 @@ public class EnrollmentController {
     @GetMapping("/users/{email}/enrollments")
     @ResponseStatus(HttpStatus.OK)
     public @ResponseBody
-    List<Integer> getEnrollmentsOfUser(@PathVariable String email) {
-        return enrollmentService.getEnrollmentsOfUser(email);
+    List<Event> getEnrollmentsOfUser(@PathVariable String email) {
+        return enrollmentService.getEventsUsersIsEnrolled(email);
     }
 
     @DeleteMapping("/events/{id}/enrollments")
