@@ -36,7 +36,7 @@ public class EnrollmentController {
     @ResponseStatus(HttpStatus.OK)
     public @ResponseBody
     List<Event> getEnrollmentsOfUser(@PathVariable String email) {
-        return enrollmentService.getEventsUsersIsEnrolled(email);
+        return enrollmentService.getEventsUserIsEnrolled(email);
     }
 
     @DeleteMapping("/events/{id}/enrollments")

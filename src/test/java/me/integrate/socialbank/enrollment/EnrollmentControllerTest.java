@@ -102,7 +102,7 @@ public class EnrollmentControllerTest {
         le.add(e1);
         le.add(e2);
 
-        when(enrollmentService.getEventsUsersIsEnrolled(emailEnrolled)).thenReturn(le);
+        when(enrollmentService.getEventsUserIsEnrolled(emailEnrolled)).thenReturn(le);
         this.mockMvc.perform(get("/users/" + emailEnrolled + "/enrollments")).andExpect(jsonPath("$", hasSize(le.size
                 ()))).andExpect(status().isOk());
     }

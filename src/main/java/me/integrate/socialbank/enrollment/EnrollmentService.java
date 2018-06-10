@@ -62,7 +62,7 @@ public class EnrollmentService {
         return enrollmentRepository.getEnrollmentsOfUser(email);
     }
 
-    public List<Event> getEventsUsersIsEnrolled(String email) {
+    public List<Event> getEventsUserIsEnrolled(String email) {
         List<Integer> ids = enrollmentRepository.getEnrollmentsOfUser(email);
         List<Event> events = new ArrayList<>();
         for (Integer id : ids) events.add(eventService.getEventById(id));
