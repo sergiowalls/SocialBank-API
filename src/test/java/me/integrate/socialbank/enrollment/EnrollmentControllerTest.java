@@ -98,14 +98,13 @@ public class EnrollmentControllerTest {
         UserTestUtils.createUser(emailEnrolled);
         Event e1 = EventTestUtils.createEvent(emailCreator);
         Event e2 = EventTestUtils.createEvent(emailCreator);
-        List<Integer> le = new ArrayList<>();
-        le.add(e1.getId());
-        le.add(e2.getId());
+        List<Event> le = new ArrayList<>();
+        le.add(e1);
+        le.add(e2);
 
-        when(enrollmentService.getEnrollmentsOfUser(emailEnrolled)).thenReturn(le);
-        this.mockMvc.perform(get("/users/" + emailEnrolled + "/enrollments"))
-                .andExpect(jsonPath("$", hasSize(le.size())))
-                .andExpect(jsonPath("$.[*]", hasItems(e1.getId(), e2.getId()))).andExpect(status().isOk());
+        when(enrollmentService.getEventsUsersIsEnrolled(emailEnrolled)).thenReturn(le);
+        this.mockMvc.perform(get("/users/" + emailEnrolled + "/enrollments")).andExpect(jsonPath("$", hasSize(le.size
+                ()))).andExpect(status().isOk());
     }
 
     @Test
