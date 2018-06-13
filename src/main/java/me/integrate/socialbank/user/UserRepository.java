@@ -22,4 +22,6 @@ public interface UserRepository {
     void saveRequestAccountVerification(String email, String message);
 
     Set<Award> getUserAwards(String email);
+
+    void incrementHours(String email, int hours);
 }

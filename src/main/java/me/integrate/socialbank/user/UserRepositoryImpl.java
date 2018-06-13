@@ -84,7 +84,7 @@ public class UserRepositoryImpl implements UserRepository {
         if (user.getImage() != null)
             fields.put(IMAGE, user.getImage());
 
-        for (Iterator<String> it = fields.keySet().iterator(); it.hasNext();) {
+        for (Iterator<String> it = fields.keySet().iterator(); it.hasNext(); ) {
             sql.append(" ").append(it.next()).append(" = ?");
 
             if (it.hasNext()) {
@@ -136,6 +136,11 @@ public class UserRepositoryImpl implements UserRepository {
     public Set<Award> getUserAwards(String email) {
         return new HashSet<>(jdbcTemplate.queryForList("SELECT " + AWARD + " FROM " + AWARD_TABLE + " WHERE " + EMAIL + " = '" + email + "'",
                 Award.class));
+    }
+
+    public void incrementHours(String email, int hoursToIncrement) {
+        jdbcTemplate.update("UPDATE " + USER_TABLE + " SET " + BALANCE + " = " + BALANCE + " + ? WHERE " + EMAIL + " = ?",
+                hoursToIncrement, email);
     }
 
     private class UserRowMapper implements RowMapper<User> {

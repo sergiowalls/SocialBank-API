@@ -207,7 +207,7 @@ class EventControllerTest {
     }
 
     @Test
-    void shouldReturnUnauthorizedStatus() throws Exception {
+    void shouldReturnForbiddenStatus() throws Exception {
         this.mockMvc.perform(
                 get("/events/1"))
                 .andExpect(status().isForbidden());

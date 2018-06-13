@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @ExtendWith(SpringExtension.class)
 class UserRepositoryTest {
     @Autowired
-    private UserRepositoryImpl userRepository;
+    private UserRepository userRepository;
 
     @Test
     void givenUserStoredInDatabaseWhenRetrievedByEmailThenReturnsSameUser() {
@@ -87,5 +87,15 @@ class UserRepositoryTest {
 
         userRepository.reportUser(email, email2);
         assertThrows(ReportAlreadyExistsException.class, () -> userRepository.reportUser(email, email2));
+    }
+
+    @Test
+    void givenUserWhenIncrementedHoursReturnIncrementedBalance() {
+        String email = "swaggaaa@integrate.me";
+        User user = userRepository.saveUser(UserTestUtils.createUser(email));
+
+        userRepository.incrementHours(user.getEmail(), 123);
+        User updatedUser = userRepository.getUserByEmail(email);
+        assertEquals(user.getBalance() + 123, updatedUser.getBalance());
     }
 }
