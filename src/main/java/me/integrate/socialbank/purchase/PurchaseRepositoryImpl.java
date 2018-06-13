@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Date;
 
 @Repository
 public class PurchaseRepositoryImpl implements PurchaseRepository {
@@ -20,6 +21,7 @@ public class PurchaseRepositoryImpl implements PurchaseRepository {
     private final static String PACKAGE_NAME = "package_name";
     private final static String USER_EMAIL = "user_email";
     private final static String TRANSACTION_ID = "transaction_id";
+    private final static String PURCHASE_DATE = "purchase_date";
 
     private JdbcTemplate jdbcTemplate;
 
@@ -41,8 +43,8 @@ public class PurchaseRepositoryImpl implements PurchaseRepository {
     @Override
     public void storePurchase(HoursPackage hoursPackage, String email, String transactionID) {
         try {
-            jdbcTemplate.update("INSERT INTO " + PURCHASE_TABLE + " VALUES (?, ?, ?)",
-                    transactionID, email, hoursPackage.getName());
+            jdbcTemplate.update("INSERT INTO " + PURCHASE_TABLE + " VALUES (?, ?, ?, ?)",
+                    transactionID, email, hoursPackage.getName(), new Date());
         } catch (DuplicateKeyException ex) {
             throw new TransactionAlreadyExistsException();
         }
