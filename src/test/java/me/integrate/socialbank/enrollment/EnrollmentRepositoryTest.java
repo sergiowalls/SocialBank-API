@@ -36,7 +36,7 @@ public class EnrollmentRepositoryTest {
 
     @Test
     void givenEnrollmentThenIsStoredCorrectly() {
-        String email = "a@a.com";
+        String email = "amador@arribas.alf";
         User user = UserTestUtils.createUser(email);
         userRepository.saveUser(user);
 
@@ -49,7 +49,7 @@ public class EnrollmentRepositoryTest {
 
     @Test
     void givenEnrollmentsStoredInDatabaseWhenRetrievedByEventReturnEnrollments() {
-        String emailCreator = "a@a.a", emailEnrolledOne = "z@z.z", emailEnrolledTwo = "c@c.c";
+        String emailCreator = "amador@arribas.alf", emailEnrolledOne = "z@z.z", emailEnrolledTwo = "casimiro@calpe.cat";
 
         userRepository.saveUser(UserTestUtils.createUser(emailCreator));
         userRepository.saveUser(UserTestUtils.createUser(emailEnrolledOne));
@@ -69,7 +69,7 @@ public class EnrollmentRepositoryTest {
 
     @Test
     void givenEnrollmentsStoredInDatabaseWhenRetrievedByUserReturnEnrollments() {
-        String emailCreator = "a@a.a", emailEnrolled = "z@z.z";
+        String emailCreator = "amador@arribas.alf", emailEnrolled = "z@z.z";
 
         userRepository.saveUser(UserTestUtils.createUser(emailCreator));
         userRepository.saveUser(UserTestUtils.createUser(emailEnrolled));
@@ -89,7 +89,7 @@ public class EnrollmentRepositoryTest {
 
     @Test
     void givenEnrollmentsStoredInDatabaseWhenSaveSameEnrollmentThenThrowException() {
-        String emailCreator = "a@a.a", emailEnrolled = "z@z.z";
+        String emailCreator = "amador@arribas.alf", emailEnrolled = "z@z.z";
 
         userRepository.saveUser(UserTestUtils.createUser(emailCreator));
         userRepository.saveUser(UserTestUtils.createUser(emailEnrolled));
@@ -111,7 +111,7 @@ public class EnrollmentRepositoryTest {
         enrollmentRepository.saveEnrollment(eventId, enrolledEmail);
         enrollmentRepository.deleteEnrollment(eventId, enrolledEmail);
         List<String> emailsEnrolled = enrollmentRepository.getEnrollmentsOfEvent(eventId);
-        assert (!emailsEnrolled.contains(enrolledEmail));
+        assertFalse(emailsEnrolled.contains(enrolledEmail));
     }
 
 }

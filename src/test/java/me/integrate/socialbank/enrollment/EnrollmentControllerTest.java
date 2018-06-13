@@ -65,7 +65,7 @@ public class EnrollmentControllerTest {
     @Disabled     // <----------------------------------------- test does not work
     @WithMockUser
     void whenDateIsNotValidShouldReturnConflictStatus() throws Exception {
-        given(auth.getName()).willReturn("a@a.a");
+        given(auth.getName()).willReturn("amador@arribas.alf");
         given(enrollmentService.saveEnrollment(any(), any())).willThrow(TooLateException.class);
 
         this.mockMvc.perform(post("/events/" + 123 + "/enroll")
@@ -78,7 +78,7 @@ public class EnrollmentControllerTest {
     @Disabled  // <----------------------------------------- test does not work
     @WithMockUser
     void whenUserIsSameAsCreatorShouldReturnConflictStatus() throws Exception {
-        String email = "b@b.b";
+        String email = "baltasar@baudilio.bat";
         int id = 123;
         given(auth.getName()).willReturn(email);
         given(enrollmentService.saveEnrollment(id, email)).willThrow(UserIsTheCreatorException.class);
@@ -93,7 +93,7 @@ public class EnrollmentControllerTest {
     @Test
     @WithMockUser
     void shouldReturnListOfEnrollmentsOfUser() throws Exception {
-        String emailCreator = "a@a.a", emailEnrolled = "b@b.com";
+        String emailCreator = "amador@arribas.alf", emailEnrolled = "b@b.com";
         UserTestUtils.createUser(emailCreator);
         UserTestUtils.createUser(emailEnrolled);
         Event e1 = EventTestUtils.createEvent(emailCreator);
@@ -110,7 +110,7 @@ public class EnrollmentControllerTest {
     @Test
     @WithMockUser
     void shouldReturnListOfEnrollmentsOfEvent() throws Exception {
-        String emailCreator = "a@a.a", emailEnrolledOne = "b@b.com", emailEnrolledTwo = "c@c.c";
+        String emailCreator = "amador@arribas.alf", emailEnrolledOne = "b@b.com", emailEnrolledTwo = "casimiro@calpe.cat";
         UserTestUtils.createUser(emailCreator);
         UserTestUtils.createUser(emailEnrolledOne);
         UserTestUtils.createUser(emailEnrolledTwo);

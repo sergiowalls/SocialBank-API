@@ -39,7 +39,7 @@ public class EnrollmentServiceTest {
 
     @Test
     void givenEnrollmentThenIsStoredCorrectly() {
-        String emailCreator = "a@a.com";
+        String emailCreator = "amador@arribas.alf";
         String emailEnrolled = "z@z.z";
         User userCreator = UserTestUtils.createUser(emailCreator);
         User userEnrolled = UserTestUtils.createUser(emailEnrolled);
@@ -55,7 +55,7 @@ public class EnrollmentServiceTest {
 
     @Test
     void givenEnrollmentsStoredInDatabaseWhenRetrievedByEventReturnEnrollments() {
-        String emailCreator = "a@a.a", emailEnrolledOne = "z@z.z", emailEnrolledTwo = "c@c.c";
+        String emailCreator = "amador@arribas.alf", emailEnrolledOne = "z@z.z", emailEnrolledTwo = "casimiro@calpe.cat";
         userService.saveUser(UserTestUtils.createUser(emailCreator));
         userService.saveUser(UserTestUtils.createUser(emailEnrolledOne));
         userService.saveUser(UserTestUtils.createUser(emailEnrolledTwo));
@@ -74,7 +74,7 @@ public class EnrollmentServiceTest {
 
     @Test
     void givenEnrollmentsStoredInDatabaseWhenRetrievedByUserReturnEnrollments() {
-        String emailCreator = "a@a.a", emailEnrolled = "z@z.z";
+        String emailCreator = "amador@arribas.alf", emailEnrolled = "z@z.z";
 
         userService.saveUser(UserTestUtils.createUser(emailCreator));
         userService.saveUser(UserTestUtils.createUser(emailEnrolled));
@@ -102,7 +102,7 @@ public class EnrollmentServiceTest {
         enrollmentService.saveEnrollment(eventId, enrolledEmail);
         enrollmentService.deleteEnrollment(eventId, enrolledEmail);
         List<String> emailsEnrolled = enrollmentService.getEnrollmentsOfEvent(eventId);
-        assert (!emailsEnrolled.contains(enrolledEmail));
+        assertTrue(!emailsEnrolled.contains(enrolledEmail));
     }
 
     @Test
@@ -117,18 +117,18 @@ public class EnrollmentServiceTest {
 
         enrollmentService.saveEnrollment(eventId, enrolledEmail);
         event = eventService.getEventById(eventId);
-        assert (event.getNumberEnrolled() == 1);
+        assertEquals(1, (int) event.getNumberEnrolled());
 
         enrollmentService.deleteEnrollment(eventId, enrolledEmail);
         event = eventService.getEventById(eventId);
-        assert (event.getNumberEnrolled() == 0);
+        assertEquals(0, (int) event.getNumberEnrolled());
     }
 
     @Test
     @Disabled
         //this goes against requirements
     void whenEnrollUnder24HourBeforeIniDateThenShouldReturnTooLateException() {
-        String emailCreator = ("a@a.com");
+        String emailCreator = ("amador@arribas.alf");
         String emailEnrolled = ("z@z.z");
         userService.saveUser(UserTestUtils.createUser(emailCreator));
         userService.saveUser(UserTestUtils.createUser(emailEnrolled));
