@@ -42,7 +42,7 @@ public class EnrollmentServiceTest {
     @Test
     void givenEnrollmentThenIsStoredCorrectly() {
         String emailCreator = "amador@arribas.alf";
-        String emailEnrolled = "z@z.z";
+        String emailEnrolled = "zaratrusta@z.z";
         User userCreator = UserTestUtils.createUser(emailCreator);
         User userEnrolled = UserTestUtils.createUser(emailEnrolled);
         userService.saveUser(userCreator);
@@ -58,7 +58,7 @@ public class EnrollmentServiceTest {
     @Test
     void givenUserIsVerifiedWhenEnrollThenThrowVerifiedException() {
         String emailCreator = "amador@arribas.alf";
-        String emailEnrolled = "z@z.z";
+        String emailEnrolled = "zaratrusta@z.z";
         User userCreator = UserTestUtils.createUser(emailCreator);
         User userEnrolled = UserTestUtils.createUser(emailEnrolled);
         userService.saveUser(userCreator);
@@ -112,7 +112,7 @@ public class EnrollmentServiceTest {
     @Test
     void givenEnrollmentStoredInDatabaseWhenDeletedThenIsNoLongerStored() {
         String creatorEmail = "email@email.tld";
-        String enrolledEmail = "e@e.e";
+        String enrolledEmail = "emilio@e.e";
         userService.saveUser(UserTestUtils.createUser(creatorEmail));
         userService.saveUser(UserTestUtils.createUser(enrolledEmail));
         int eventId = eventService.saveEvent(EventTestUtils.createEvent(creatorEmail)).getId();
@@ -125,7 +125,7 @@ public class EnrollmentServiceTest {
     @Test
     void whenAddOrDeleteEnrollmentThenEventIsCorrectlyUpdated() {
         String creatorEmail = "email@email.tld";
-        String enrolledEmail = "e@e.e";
+        String enrolledEmail = "emailio@e.e";
         userService.saveUser(UserTestUtils.createUser(creatorEmail));
         userService.saveUser(UserTestUtils.createUser(enrolledEmail));
         Event event = eventService.saveEvent(EventTestUtils.createEvent(creatorEmail));
@@ -146,7 +146,7 @@ public class EnrollmentServiceTest {
         //this goes against requirements
     void whenEnrollUnder24HourBeforeIniDateThenShouldReturnTooLateException() {
         String emailCreator = ("amador@arribas.alf");
-        String emailEnrolled = ("z@z.z");
+        String emailEnrolled = ("zaratrusta@z.z");
         userService.saveUser(UserTestUtils.createUser(emailCreator));
         userService.saveUser(UserTestUtils.createUser(emailEnrolled));
 
@@ -164,7 +164,7 @@ public class EnrollmentServiceTest {
     @Test
     void givenEventWhenUserWithNotEnoughBalanceEnrollsThenThrowException() {
         String creatorEmail = "email@email.tld";
-        String enrolledEmail = "e@e.e";
+        String enrolledEmail = "emilio@e.e";
         userService.saveUser(UserTestUtils.createUser(creatorEmail));
         User userEnrolled = UserTestUtils.createUser(enrolledEmail);
         userEnrolled.setBalance(0);
