@@ -1,5 +1,6 @@
 package me.integrate.socialbank.event;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
 import org.springframework.lang.Nullable;
 
@@ -25,6 +26,7 @@ public class Event {
     private Integer capacity;
     @ApiModelProperty(readOnly = true)
     private int numberEnrolled;
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private List<String> tags;
 
     public int getId() {
