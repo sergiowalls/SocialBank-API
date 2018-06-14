@@ -42,6 +42,7 @@ public class EnrollmentService {
 
         }
         if (creatorEmail.equals(email)) throw new UserIsTheCreatorException();
+        if (user.getVerified()) throw new UserIsVerifiedException();
         if (user.getBalance() < event.getIntervalTime())
             throw new UserDoesNotHaveEnoughHours();
         Enrollment enrollment = null;
