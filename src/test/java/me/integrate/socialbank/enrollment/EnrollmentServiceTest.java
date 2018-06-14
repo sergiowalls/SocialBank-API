@@ -1,6 +1,7 @@
 package me.integrate.socialbank.enrollment;
 
 import me.integrate.socialbank.enrollment.exceptions.TooLateException;
+import me.integrate.socialbank.enrollment.exceptions.UserIsVerifiedException;
 import me.integrate.socialbank.event.Event;
 import me.integrate.socialbank.event.EventService;
 import me.integrate.socialbank.event.EventTestUtils;
@@ -51,6 +52,21 @@ public class EnrollmentServiceTest {
         Enrollment enrollment = new Enrollment(id, emailEnrolled);
         Enrollment enrollment2 = enrollmentService.saveEnrollment(id, emailEnrolled);
         assertEquals(enrollment, enrollment2);
+    }
+
+    @Test
+    void givenUserIsVerifiedWhenEnrollThenThrowVerifiedException() {
+        String emailCreator = "amador@arribas.alf";
+        String emailEnrolled = "z@z.z";
+        User userCreator = UserTestUtils.createUser(emailCreator);
+        User userEnrolled = UserTestUtils.createUser(emailEnrolled);
+        userService.saveUser(userCreator);
+        userService.saveUser(userEnrolled);
+        userService.setAccountVerified(emailEnrolled);
+        userEnrolled = userService.getUserByEmail(emailEnrolled);
+
+        int id = eventService.saveEvent(EventTestUtils.createEvent(emailCreator)).getId();
+        assertThrows(UserIsVerifiedException.class, () -> enrollmentService.saveEnrollment(id, emailEnrolled));
     }
 
     @Test
