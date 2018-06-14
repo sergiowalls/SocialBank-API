@@ -1,7 +1,6 @@
 package me.integrate.socialbank.purchase;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import me.integrate.socialbank.user.UserService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -78,14 +78,14 @@ public class EventService {
         return this.getEventById(id);
     }
 
-    public Event incrementNumberEnrolled(int id) {
+    public void incrementNumberEnrolled(int id) {
         eventRepository.incrementNumberEnrolled(id);
-        return this.getEventById(id);
+        this.getEventById(id);
     }
 
-    public Event decrementNumberEnrolled(int id) {
+    public void decrementNumberEnrolled(int id) {
         eventRepository.decrementNumberEnrolled(id);
-        return this.getEventById(id);
+        this.getEventById(id);
     }
 
     public Event deleteEvent(int id) {
