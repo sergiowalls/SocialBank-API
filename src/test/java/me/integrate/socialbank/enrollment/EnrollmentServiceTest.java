@@ -1,6 +1,7 @@
 package me.integrate.socialbank.enrollment;
 
 import me.integrate.socialbank.enrollment.exceptions.TooLateException;
+import me.integrate.socialbank.enrollment.exceptions.UserDoesNotHaveEnoughHours;
 import me.integrate.socialbank.enrollment.exceptions.UserIsVerifiedException;
 import me.integrate.socialbank.event.Event;
 import me.integrate.socialbank.event.EventService;
@@ -158,5 +159,20 @@ public class EnrollmentServiceTest {
         Event event = eventService.saveEvent(EventTestUtils.createEvent(emailCreator, iniDate, cal.getTime()));
 
         assertThrows(TooLateException.class, () -> enrollmentService.saveEnrollment(event.getId(), emailEnrolled));
+    }
+
+    @Test
+    void givenEventWhenUserWithNotEnoughBalanceEnrollsThenThrowException() {
+        String creatorEmail = "email@email.tld";
+        String enrolledEmail = "e@e.e";
+        userService.saveUser(UserTestUtils.createUser(creatorEmail));
+        User userEnrolled = UserTestUtils.createUser(enrolledEmail);
+        userEnrolled.setBalance(0);
+        userService.saveUser(userEnrolled);
+        Event event = eventService.saveEvent(EventTestUtils.createEvent(creatorEmail));
+        int eventId = event.getId();
+
+        assertThrows(UserDoesNotHaveEnoughHours.class, () -> enrollmentService.saveEnrollment(eventId, enrolledEmail));
+
     }
 }
