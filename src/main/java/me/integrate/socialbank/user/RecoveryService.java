@@ -18,11 +18,11 @@ public class RecoveryService {
         this.mailSender = mailSender;
     }
 
-    public String requestEmail(String email) {
+    public void requestEmail(String email) {
         String recoveryToken = UUID.randomUUID().toString();
         userRepository.updateRecoveryToken(email, recoveryToken);
 
-        return mailSender.sendRecoveryEmail(email, recoveryToken);
+        mailSender.sendRecoveryEmail(email, recoveryToken);
     }
 
     public void requestPasswordChange(String token, String newPassword) {

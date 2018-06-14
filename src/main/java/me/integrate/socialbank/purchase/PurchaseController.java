@@ -3,11 +3,9 @@ package me.integrate.socialbank.purchase;
 import com.braintreegateway.BraintreeGateway;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
-import java.util.Set;
 
 @RestController
 public class PurchaseController {

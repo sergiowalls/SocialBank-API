@@ -33,7 +33,7 @@ public class PurchaseService {
 
         Result<Transaction> result = gateway.transaction().sale(request);
 
-        Transaction transaction = null;
+        Transaction transaction;
         if (result.isSuccess()) {
             transaction = result.getTarget();
         } else {

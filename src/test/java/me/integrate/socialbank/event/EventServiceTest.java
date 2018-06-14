@@ -76,15 +76,16 @@ public class EventServiceTest {
     }
 
     @Test
-    void givenEventsOfDifferentCategoriesWhenGetByAnotherCategoryThenReturnsEmptyList() {
+    void givenEventsOfDifferentCategoriesWhenGetByAnotherCategoryThenDoesntReturnSameEvents() {
         String email = "pepito@pepito.com";
         userRepository.saveUser(UserTestUtils.createUser(email));
-        eventService.saveEvent(createEvent(email, Category.CULTURE));
-        eventService.saveEvent(createEvent(email, Category.GASTRONOMY));
+        Event event = eventService.saveEvent(createEvent(email, Category.CULTURE));
+        Event event2 = eventService.saveEvent(createEvent(email, Category.GASTRONOMY));
 
         List<Event> events = eventService.getEventsByCategory(Category.LEISURE);
 
-        assertTrue(events.isEmpty());
+        assertFalse(events.contains(event));
+        assertFalse(events.contains(event2));
     }
 
     @Test
