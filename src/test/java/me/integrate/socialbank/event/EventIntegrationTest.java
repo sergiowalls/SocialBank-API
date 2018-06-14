@@ -17,6 +17,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.hamcrest.Matchers.is;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -56,6 +57,32 @@ class EventIntegrationTest {
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(jsonPath("$.description", is("Description")))
                 .andExpect(jsonPath("$.image", is("image")));
+    }
+
+    @Test
+    @WithMockUser("aaa@aaa.aaa")
+    void whenInsertEventShouldReturnCreatedEvent() throws Exception {
+        User user = UserTestUtils.createUser("aaa@aaa.aaa");
+        userService.saveUser(user);
+        String json = "{\n" +
+                "  \"creatorEmail\": \"aaa@aaa.aaa\",\n" +
+                "  \"description\": \"string\",\n" +
+                "  \"endDate\": \"2019-04-25T15:12:44.867Z\",\n" +
+                "  \"id\": 0,\n" +
+                "  \"image\": \"string\",\n" +
+                "  \"iniDate\": \"2019-04-25T15:12:44.865Z\",\n" +
+                "  \"location\": \"string\",\n" +
+                "  \"title\": \"string\",\n" +
+                "  \"demand\": \"false\",\n" +
+                "  \"category\": \"CULTURE\",\n" +
+                "  \"capacity\": \"10\",\n" +
+                "  \"tags\": []" +
+                "}";
+        this.mockMvc.perform(
+                post("/events")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpect(status().isCreated());
     }
 
 }
