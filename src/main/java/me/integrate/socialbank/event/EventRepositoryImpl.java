@@ -4,11 +4,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,6 +19,7 @@ import java.util.Map;
 public class EventRepositoryImpl implements EventRepository {
 
     private static String EVENT_TABLE = "event";
+    private static String EVENT_TAGS_TABLE = "event_tags";
     private static String ID = "id";
     private static String CREATOR = "creatorEmail";
     private static String INIDATE = "iniDate";
@@ -31,13 +34,17 @@ public class EventRepositoryImpl implements EventRepository {
     private static String CATEGORY = "category";
     private static String CAPACITY = "capacity";
     private static String NUMBER_ENROLLED = "number_enrolled";
+    private static String EVENT_ID = "event_id";
+    private static String TAG = "tag";
     private final SimpleJdbcInsert simpleJdbcInsert;
 
     private JdbcTemplate jdbcTemplate;
+    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     @Autowired
     public EventRepositoryImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
+        this.namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
         this.simpleJdbcInsert = new SimpleJdbcInsert(this.jdbcTemplate)
                 .withTableName(EVENT_TABLE).usingColumns(CREATOR, INIDATE, ENDDATE, LOCATION, TITLE, DESCRIPTION,
                         IMAGE, ISDEMAND, LATITUDE, LONGITUDE, CATEGORY, CAPACITY, NUMBER_ENROLLED)
@@ -62,6 +69,13 @@ public class EventRepositoryImpl implements EventRepository {
         Number id = this.simpleJdbcInsert.executeAndReturnKey(params);
         event.setId(id.intValue());
         return event;
+    }
+
+    public void saveTags(int id, List<String> tags) {
+        for (String tag : tags) {
+            jdbcTemplate.update("INSERT INTO " + EVENT_TAGS_TABLE + " VALUES(?, ?)",
+                    id, tag);
+        }
     }
 
     public Event getEventById(int id) {
@@ -104,6 +118,14 @@ public class EventRepositoryImpl implements EventRepository {
     public List<Event> getEventsByCategory(Category category) {
         return jdbcTemplate.query("SELECT * FROM " + EVENT_TABLE + " WHERE " + CATEGORY + "= ?",
                 new Object[]{category.name()}, new EventRowMapper());
+    }
+
+    public List<Event> getEventsByTags(List<String> tags) {
+        String query = "SELECT * FROM " + EVENT_TABLE + " e WHERE EXISTS ( SELECT * FROM " + EVENT_TAGS_TABLE
+                + " et WHERE e." + ID + " = et." + EVENT_ID + " AND et." + TAG + " IN (:tags))";
+        Map namedParameters = Collections.singletonMap("tags", tags);
+
+        return namedParameterJdbcTemplate.query(query, namedParameters, new EventRowMapper());
     }
 
     public List<Event> getAllEvents() {

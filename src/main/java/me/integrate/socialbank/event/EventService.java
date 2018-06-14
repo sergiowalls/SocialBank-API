@@ -5,6 +5,7 @@ import me.integrate.socialbank.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -32,7 +33,29 @@ public class EventService {
                 if (event.getIntervalTime() > user.getBalance()) throw new UserNotEnoughHoursException();
             }
         }
-        return eventRepository.saveEvent(event);
+        Event newEvent = eventRepository.saveEvent(event);
+        eventRepository.saveTags(newEvent.getId(), newEvent.getTags());
+        return newEvent;
+    }
+
+    public List<Event> getEvents(Category category, List<String> tags) {
+        List<Event> categoryEvents = new ArrayList<>();
+        List<Event> tagsEvents = new ArrayList<>();
+        if (category != null) categoryEvents.addAll(eventRepository.getEventsByCategory(category));
+        if (tags != null) tagsEvents.addAll(eventRepository.getEventsByTags(tags));
+
+        if (category != null || tags != null) {
+            if (category == null)
+                return tagsEvents;
+
+            if (tags == null)
+                return categoryEvents;
+
+            categoryEvents.retainAll(tagsEvents);
+            return categoryEvents;
+        }
+
+        return eventRepository.getAllEvents();
     }
 
     public List<Event> getAllEvents() {
@@ -46,6 +69,7 @@ public class EventService {
     public List<Event> getEventsByCategory(Category category) {
         return eventRepository.getEventsByCategory(category);
     }
+
 
     public Event updateEvent(int id, Event event) {
         Event eventById = eventRepository.getEventById(id);

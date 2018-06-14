@@ -164,7 +164,7 @@ class EventControllerTest {
         le.add(e1);
         le.add(e2);
 
-        when(eventService.getAllEvents()).thenReturn(le);
+        when(eventService.getEvents(any(), any())).thenReturn(le);
         this.mockMvc.perform(get("/events/"))
                 .andDo(print())
                 .andExpect(jsonPath("$", hasSize(le.size())))
@@ -184,7 +184,7 @@ class EventControllerTest {
         le.add(e1);
         le.add(e2);
 
-        when(eventService.getAllEvents()).thenReturn(le);
+        when(eventService.getEvents(any(), any())).thenReturn(le);
         this.mockMvc.perform(get("/events/"))
                 .andDo(print())
                 .andExpect(jsonPath("$", hasSize(le.size())))

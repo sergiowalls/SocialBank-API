@@ -6,7 +6,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @RestController
 public class EventController {
@@ -38,9 +41,9 @@ public class EventController {
 
     @GetMapping("/events")
     public @ResponseBody
-    List<Event> getAllEvents(@RequestParam(value = "category", required = false) Category category) {
-        if (category != null) return eventService.getEventsByCategory(category);
-        return eventService.getAllEvents();
+    List<Event> getAllEvents(@RequestParam(value = "category", required = false) Category category,
+                            @RequestParam(value = "tags", required = false) List<String> tags) {
+        return eventService.getEvents(category, tags);
     }
 
     @GetMapping("/users/{emailCreator}/events")

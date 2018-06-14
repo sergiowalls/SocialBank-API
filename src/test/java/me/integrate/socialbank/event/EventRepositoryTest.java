@@ -10,8 +10,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
+import java.util.Collections;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 @Transactional
@@ -72,5 +77,18 @@ class EventRepositoryTest {
         eventRepository.deleteEvent(eventOne.getId());
         assertEquals(eventTwo, eventRepository.getEventById(eventTwo.getId()));
         assertThrows(EventNotFoundException.class, () -> eventRepository.getEventById(eventOne.getId()));
+    }
+
+    @Test
+    void givenEventsStoredWhenRetrievedByTagTheyAreCorrectlyReturned() {
+        String email = "em@email.tld";
+        userRepository.saveUser(UserTestUtils.createUser(email));
+
+
+        Event event = eventRepository.saveEvent(EventTestUtils.createEvent(email));
+        eventRepository.saveTags(event.getId(), Arrays.asList("tinder", "trap", "hoes", "andrea"));
+
+        assertTrue(eventRepository.getEventsByTags(Arrays.asList("trap", "andrea", "faketag")).contains(event));
+        assertFalse(eventRepository.getEventsByTags(Collections.singletonList("faketagfaketag")).contains(event));
     }
 }

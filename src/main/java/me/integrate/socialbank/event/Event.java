@@ -5,6 +5,7 @@ import org.springframework.lang.Nullable;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 public class Event {
@@ -24,6 +25,7 @@ public class Event {
     private Integer capacity;
     @ApiModelProperty(readOnly = true)
     private int numberEnrolled;
+    private List<String> tags;
 
     public int getId() {
         return id;
@@ -120,6 +122,15 @@ public class Event {
     public void setCategory(Category category) {
         this.category = category;
     }
+
+    public List<String> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<String> tags) {
+        this.tags = tags;
+    }
+
 
     @Override
     public boolean equals(Object o)
