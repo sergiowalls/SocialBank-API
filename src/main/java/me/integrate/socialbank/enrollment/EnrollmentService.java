@@ -28,26 +28,19 @@ public class EnrollmentService {
         this.userService = userService;
     }
 
-    public Enrollment saveEnrollment(int id, String email) {
+    public Enrollment saveEnrollment(int id, String emailEnrolled) {
         Event event = eventService.getEventById(id);
-        String creatorEmail = event.getCreatorEmail();
-        User user = userService.getUserByEmail(creatorEmail);
+        User userEnrolled = userService.getUserByEmail(emailEnrolled);
         Date eventIniDate = event.getIniDate();
-        if (eventIniDate == null) {
-            if (event.isClosed()) throw new EventIsClosedException();
-
-        } else {
-            if (eventIniDate.before(new Date())) throw new TooLateException();
-            //if (event.beginsInLessThan24h()) throw new TooLateException();
-
-        }
-        if (creatorEmail.equals(email)) throw new UserIsTheCreatorException();
-        if (user.getVerified()) throw new UserIsVerifiedException();
-        if (user.getBalance() < event.getIntervalTime())
-            throw new UserDoesNotHaveEnoughHours();
+        if (eventIniDate == null) { if (event.isClosed()) throw new EventIsClosedException(); }
+        else if (eventIniDate.before(new Date())) throw new TooLateException();
+        if (event.getCreatorEmail().equals(emailEnrolled)) throw new UserIsTheCreatorException();
+        if (userEnrolled.getVerified()) throw new UserIsVerifiedException();
+        if (userEnrolled.getBalance() < event.getIntervalTime())
+            throw new UserDoesNotHaveEnoughHoursException();
         Enrollment enrollment = null;
         try {
-            enrollment = enrollmentRepository.saveEnrollment(id, email);
+            enrollment = enrollmentRepository.saveEnrollment(id, emailEnrolled);
             eventService.incrementNumberEnrolled(id);
         } catch (DataAccessException e) {
             e.printStackTrace();

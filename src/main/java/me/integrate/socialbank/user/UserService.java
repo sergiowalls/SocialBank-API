@@ -50,4 +50,8 @@ public class UserService {
     public void requestAccountVerification(String email, String message) {
         userRepository.saveRequestAccountVerification(email, message);
     }
+
+    public void setAccountVerified(String email) {
+        userRepository.setAccountVerified(email);
+    }
 }
