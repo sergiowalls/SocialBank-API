@@ -37,7 +37,7 @@ public class EnrollmentService {
         if (event.getCreatorEmail().equals(emailEnrolled)) throw new UserIsTheCreatorException();
         if (userEnrolled.getVerified()) throw new UserIsVerifiedException();
         if (userEnrolled.getBalance() < event.getIntervalTime())
-            throw new UserDoesNotHaveEnoughHours();
+            throw new UserDoesNotHaveEnoughHoursException();
         Enrollment enrollment = null;
         try {
             enrollment = enrollmentRepository.saveEnrollment(id, emailEnrolled);

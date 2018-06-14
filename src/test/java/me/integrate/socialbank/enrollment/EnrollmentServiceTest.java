@@ -1,7 +1,7 @@
 package me.integrate.socialbank.enrollment;
 
 import me.integrate.socialbank.enrollment.exceptions.TooLateException;
-import me.integrate.socialbank.enrollment.exceptions.UserDoesNotHaveEnoughHours;
+import me.integrate.socialbank.enrollment.exceptions.UserDoesNotHaveEnoughHoursException;
 import me.integrate.socialbank.enrollment.exceptions.UserIsVerifiedException;
 import me.integrate.socialbank.event.Event;
 import me.integrate.socialbank.event.EventService;
@@ -172,7 +172,7 @@ public class EnrollmentServiceTest {
         Event event = eventService.saveEvent(EventTestUtils.createEvent(creatorEmail));
         int eventId = event.getId();
 
-        assertThrows(UserDoesNotHaveEnoughHours.class, () -> enrollmentService.saveEnrollment(eventId, enrolledEmail));
+        assertThrows(UserDoesNotHaveEnoughHoursException.class, () -> enrollmentService.saveEnrollment(eventId, enrolledEmail));
 
     }
 }
