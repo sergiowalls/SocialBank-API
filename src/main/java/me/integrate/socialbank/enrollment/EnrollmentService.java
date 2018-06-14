@@ -30,19 +30,11 @@ public class EnrollmentService {
 
     public Enrollment saveEnrollment(int id, String emailEnrolled) {
         Event event = eventService.getEventById(id);
-        String creatorEmail = event.getCreatorEmail();
-        User userCreator = userService.getUserByEmail(creatorEmail);
         User userEnrolled = userService.getUserByEmail(emailEnrolled);
         Date eventIniDate = event.getIniDate();
-        if (eventIniDate == null) {
-            if (event.isClosed()) throw new EventIsClosedException();
-
-        } else {
-            if (eventIniDate.before(new Date())) throw new TooLateException();
-            //if (event.beginsInLessThan24h()) throw new TooLateException();
-
-        }
-        if (creatorEmail.equals(emailEnrolled)) throw new UserIsTheCreatorException();
+        if (eventIniDate == null) { if (event.isClosed()) throw new EventIsClosedException(); }
+        else if (eventIniDate.before(new Date())) throw new TooLateException();
+        if (event.getCreatorEmail().equals(emailEnrolled)) throw new UserIsTheCreatorException();
         if (userEnrolled.getVerified()) throw new UserIsVerifiedException();
         if (userEnrolled.getBalance() < event.getIntervalTime())
             throw new UserDoesNotHaveEnoughHours();
