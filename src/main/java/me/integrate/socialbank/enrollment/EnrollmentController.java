@@ -31,6 +31,11 @@ public class EnrollmentController {
         enrollmentService.exchangeHours(id, exchangeToken, auth.getName());
     }
 
+    @PostMapping("/events/{id}/pay")
+    public void payHours(@PathVariable int id, Authentication auth) {
+        enrollmentService.payHours(id, auth.getName());
+    }
+
     @GetMapping("/events/{id}/enrollments")
     @ResponseStatus(HttpStatus.OK)
     public @ResponseBody
