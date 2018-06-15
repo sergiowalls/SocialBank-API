@@ -1,8 +1,12 @@
 package me.integrate.socialbank.event;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.annotations.ApiModelProperty;
 import org.springframework.lang.Nullable;
 
+import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 public class Event {
@@ -19,6 +23,13 @@ public class Event {
     private Double latitude;
     private Double longitude;
     private Category category;
+    private Integer capacity;
+    @ApiModelProperty(readOnly = true)
+    private int numberEnrolled;
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    private List<String> tags;
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private String exchangeToken;
 
     public int getId() {
         return id;
@@ -116,6 +127,22 @@ public class Event {
         this.category = category;
     }
 
+    public List<String> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<String> tags) {
+        this.tags = tags;
+    }
+
+    public String getExchangeToken() {
+        return exchangeToken;
+    }
+
+    public void setExchangeToken(String exchangeToken) {
+        this.exchangeToken = exchangeToken;
+    }
+
     @Override
     public boolean equals(Object o)
     {
@@ -140,5 +167,45 @@ public class Event {
     public int hashCode()
     {
         return Objects.hash(id, creatorEmail, iniDate, endDate, /*hours,*/ location, title, description, category);
+    }
+
+    @ApiModelProperty(hidden = true, readOnly = true)
+    public boolean isClosed() {
+        return false;
+    }
+
+    public boolean beginsInLessThan24h() {
+        if (iniDate == null) return false;
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(new Date());
+        cal.add(Calendar.DAY_OF_MONTH, 1);
+        return (iniDate.before(cal.getTime()));
+    }
+
+    public float getIntervalTime() {
+        long difference = 0;
+        try {
+            if (iniDate != null && endDate != null) difference = endDate.getTime() - iniDate.getTime();
+        }
+        catch (Exception e) {
+            e.printStackTrace(); //should not get here, but just in case
+        }
+        return difference / (60 * 60 * 1000); //convert from millisecond to hour
+    }
+
+    public Integer getCapacity() {
+        return capacity;
+    }
+
+    public void setCapacity(Integer capacity) {
+        this.capacity = capacity;
+    }
+
+    public Integer getNumberEnrolled() {
+        return numberEnrolled;
+    }
+
+    public void setNumberEnrolled(Integer numberEnrolled) {
+        this.numberEnrolled = numberEnrolled;
     }
 }

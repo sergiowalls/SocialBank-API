@@ -1,11 +1,13 @@
 package me.integrate.socialbank.event;
 
+import me.integrate.socialbank.enrollment.EnrollmentService;
 import me.integrate.socialbank.user.User;
 import me.integrate.socialbank.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
-import java.util.Calendar;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -13,15 +15,27 @@ import java.util.List;
 public class EventService {
     private EventRepository eventRepository;
     private UserService userService;
+    private EnrollmentService enrollmentService;
 
     @Autowired
-    public EventService(EventRepository eventRepository, UserService userService) {
+    public EventService(EventRepository eventRepository, UserService userService, @Lazy EnrollmentService enrollmentService) {
         this.eventRepository = eventRepository;
         this.userService = userService;
+        this.enrollmentService = enrollmentService;
     }
 
     public Event getEventById(int id) {
         return eventRepository.getEventById(id);
+    }
+
+    public Event getEventById(int eventId, String username) {
+        Event event = this.getEventById(eventId);
+        List<Integer> enrollmentsOfUser = this.enrollmentService.getEnrollmentsOfUser(username);
+        if ((!event.isDemand() && enrollmentsOfUser.contains(eventId))) {
+            String exchangeToken = this.enrollmentService.getExchangeToken(eventId, username);
+            event.setExchangeToken(exchangeToken);
+        }
+        return event;
     }
 
     public Event saveEvent(Event event) {
@@ -29,13 +43,33 @@ public class EventService {
             if (event.getIniDate().after(event.getEndDate()) || event.getIniDate().before(new Date()))
                 throw new EventWithIncorrectDateException();
             if (event.isDemand()) {
-                long diff = Math.abs(event.getIniDate().getTime() - event.getEndDate().getTime());
-                diff = diff / (60 * 60 * 1000);
                 User user = userService.getUserByEmail(event.getCreatorEmail());
-                if (diff > user.getBalance()) throw new UserNotEnoughHoursException();
+                if (event.getIntervalTime() > user.getBalance()) throw new UserNotEnoughHoursException();
             }
         }
-        return eventRepository.saveEvent(event);
+        Event newEvent = eventRepository.saveEvent(event);
+        eventRepository.saveTags(newEvent.getId(), newEvent.getTags());
+        return newEvent;
+    }
+
+    public List<Event> getEvents(Category category, List<String> tags) {
+        List<Event> categoryEvents = new ArrayList<>();
+        List<Event> tagsEvents = new ArrayList<>();
+        if (category != null) categoryEvents.addAll(eventRepository.getEventsByCategory(category));
+        if (tags != null) tagsEvents.addAll(eventRepository.getEventsByTags(tags));
+
+        if (category != null || tags != null) {
+            if (category == null)
+                return tagsEvents;
+
+            if (tags == null)
+                return categoryEvents;
+
+            categoryEvents.retainAll(tagsEvents);
+            return categoryEvents;
+        }
+
+        return eventRepository.getAllEvents();
     }
 
     public List<Event> getAllEvents() {
@@ -50,11 +84,22 @@ public class EventService {
         return eventRepository.getEventsByCategory(category);
     }
 
+
     public Event updateEvent(int id, Event event) {
         Event eventById = eventRepository.getEventById(id);
         if (eventById == null) throw new EventNotFoundException();
         eventRepository.updateEvent(id, event);
-        return eventRepository.getEventById(id);
+        return this.getEventById(id);
+    }
+
+    public void incrementNumberEnrolled(int id) {
+        eventRepository.incrementNumberEnrolled(id);
+        this.getEventById(id);
+    }
+
+    public void decrementNumberEnrolled(int id) {
+        eventRepository.decrementNumberEnrolled(id);
+        this.getEventById(id);
     }
 
     public Event deleteEvent(int id) {
@@ -62,10 +107,7 @@ public class EventService {
 
         if (event == null) throw new EventNotFoundException();
 
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(new Date());
-        cal.add(Calendar.DAY_OF_MONTH, 1);
-        if (event.getIniDate().before(cal.getTime())) throw new TooLateException();
+        if (event.beginsInLessThan24h()) throw new TooLateException();
 
         eventRepository.deleteEvent(id);
         return event;

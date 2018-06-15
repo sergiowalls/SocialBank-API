@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
 import java.util.Set;
 
 @Service
@@ -50,5 +49,13 @@ public class UserService {
 
     public void requestAccountVerification(String email, String message) {
         userRepository.saveRequestAccountVerification(email, message);
+    }
+
+    public void setAccountVerified(String email) {
+        userRepository.setAccountVerified(email);
+    }
+
+    public void updateBalanceBy(String email, float hours) {
+        userRepository.updateHoursBy(email, hours);
     }
 }

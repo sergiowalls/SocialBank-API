@@ -5,7 +5,7 @@
 
     <groupId>me.integrate</groupId>
     <artifactId>socialbank</artifactId>
-    <version>3.0.0</version>
+    <version>4.0.0</version>
     <packaging>jar</packaging>
 
     <name>socialbank</name>
@@ -117,6 +117,11 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-core</artifactId>
             <version>5.0.4.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>com.braintreepayments.gateway</groupId>
+            <artifactId>braintree-java</artifactId>
+            <version>2.81.0</version>
         </dependency>
     </dependencies>
 

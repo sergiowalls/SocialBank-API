@@ -164,7 +164,7 @@ class EventControllerTest {
         le.add(e1);
         le.add(e2);
 
-        when(eventService.getAllEvents()).thenReturn(le);
+        when(eventService.getEvents(any(), any())).thenReturn(le);
         this.mockMvc.perform(get("/events/"))
                 .andDo(print())
                 .andExpect(jsonPath("$", hasSize(le.size())))
@@ -184,7 +184,7 @@ class EventControllerTest {
         le.add(e1);
         le.add(e2);
 
-        when(eventService.getAllEvents()).thenReturn(le);
+        when(eventService.getEvents(any(), any())).thenReturn(le);
         this.mockMvc.perform(get("/events/"))
                 .andDo(print())
                 .andExpect(jsonPath("$", hasSize(le.size())))
@@ -195,10 +195,10 @@ class EventControllerTest {
     }
 
     @Test
-    @WithMockUser
+    @WithMockUser("aaa@aaa.aaa")
     void shouldReturnNotFoundStatus() throws Exception {
         int id = 123;
-        given(eventService.getEventById(id))
+        given(eventService.getEventById(id, "aaa@aaa.aaa"))
                 .willThrow(EventNotFoundException.class);
 
         this.mockMvc.perform(
@@ -207,7 +207,7 @@ class EventControllerTest {
     }
 
     @Test
-    void shouldReturnUnauthorizedStatus() throws Exception {
+    void shouldReturnForbiddenStatus() throws Exception {
         this.mockMvc.perform(
                 get("/events/1"))
                 .andExpect(status().isForbidden());

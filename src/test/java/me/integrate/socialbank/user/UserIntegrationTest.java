@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
@@ -17,6 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
+@AutoConfigureMockMvc
 @Transactional
 @ActiveProfiles("test")
 class UserIntegrationTest {
@@ -34,6 +36,8 @@ class UserIntegrationTest {
     void whenUserGetsVerifiedAlsoGetsVerifiedAward() {
         User user = UserTestUtils.createUser("swaggaaa@aimassist.me");
         userRepository.saveUser(user);
+
+        assertTrue(true);
 
         String sql = "UPDATE \"user\" SET verified_account = TRUE WHERE email = 'swaggaaa@aimassist.me'";
         jdbcTemplate.execute(sql);

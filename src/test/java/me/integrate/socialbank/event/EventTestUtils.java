@@ -2,6 +2,7 @@ package me.integrate.socialbank.event;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 public class EventTestUtils {
@@ -52,6 +53,8 @@ public class EventTestUtils {
         event.setLatitude(37.2);
         event.setLongitude(19.9);
         event.setCategory(Category.OTHER);
+        event.setCapacity(5);
+        event.setTags(new ArrayList<>());
         return event;
     }
 }

@@ -9,9 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import static me.integrate.socialbank.event.EventTestUtils.createEvent;
 import static org.junit.jupiter.api.Assertions.*;
@@ -78,15 +76,16 @@ public class EventServiceTest {
     }
 
     @Test
-    void givenEventsOfDifferentCategoriesWhenGetByAnotherCategoryThenReturnsEmptyList() {
+    void givenEventsOfDifferentCategoriesWhenGetByAnotherCategoryThenDoesntReturnSameEvents() {
         String email = "pepito@pepito.com";
         userRepository.saveUser(UserTestUtils.createUser(email));
-        eventService.saveEvent(createEvent(email, Category.CULTURE));
-        eventService.saveEvent(createEvent(email, Category.GASTRONOMY));
+        Event event = eventService.saveEvent(createEvent(email, Category.CULTURE));
+        Event event2 = eventService.saveEvent(createEvent(email, Category.GASTRONOMY));
 
         List<Event> events = eventService.getEventsByCategory(Category.LEISURE);
 
-        assertTrue(events.isEmpty());
+        assertFalse(events.contains(event));
+        assertFalse(events.contains(event2));
     }
 
     @Test
@@ -142,5 +141,69 @@ public class EventServiceTest {
         assertThrows(TooLateException.class, () -> eventService.deleteEvent(EventIdTwo));
     }
 
+    @Test
+    void givenStoredEventsWhenRetrievedByCategoryAndTagsTheyAreReturned() {
+        String email = "pepito@pepito.com";
+        userRepository.saveUser(UserTestUtils.createUser(email));
 
+        Event event = createEvent(email, Category.CULTURE);
+        event.setTags(Arrays.asList("Funny", "Boring"));
+        eventService.saveEvent(event);
+        Event event2 = createEvent(email, Category.GASTRONOMY);
+        event2.setTags(Arrays.asList("Funny", "Scary"));
+        eventService.saveEvent(event2);
+
+        assertTrue(eventService.getEvents(Category.CULTURE, Collections.singletonList("Funny")).contains(event));
+        assertFalse(eventService.getEvents(Category.CULTURE, Collections.singletonList("Funny")).contains(event2));
+    }
+
+    @Test
+    void givenStoredEventsWhenRetrievedWithoutParamsTheyAreReturned() {
+        String email = "pepito@pepito.com";
+        userRepository.saveUser(UserTestUtils.createUser(email));
+
+        Event event = createEvent(email, Category.CULTURE);
+        event.setTags(Arrays.asList("Funny", "Boring"));
+        eventService.saveEvent(event);
+        Event event2 = createEvent(email, Category.GASTRONOMY);
+        event2.setTags(Arrays.asList("Funny", "Scary"));
+        eventService.saveEvent(event2);
+
+        assertTrue(eventService.getEvents(null, null).contains(event));
+        assertTrue(eventService.getEvents(null, null).contains(event2));
+    }
+
+    @Test
+    void givenStoredEventsWhenRetrievedByCategoryTheyAreReturned() {
+        String email = "pepito@pepito.com";
+        userRepository.saveUser(UserTestUtils.createUser(email));
+
+        Event event = createEvent(email, Category.CULTURE);
+        event.setTags(Arrays.asList("Funny", "Boring"));
+        eventService.saveEvent(event);
+        Event event2 = createEvent(email, Category.GASTRONOMY);
+        event2.setTags(Arrays.asList("Funny", "Scary"));
+        eventService.saveEvent(event2);
+
+        assertTrue(eventService.getEvents(Category.CULTURE, null).contains(event));
+        assertFalse(eventService.getEvents(Category.CULTURE, null).contains(event2));
+    }
+
+    @Test
+    void givenStoredEventsWhenRetrievedByTagsTheyAreReturned() {
+        String email = "pepito@pepito.com";
+        userRepository.saveUser(UserTestUtils.createUser(email));
+
+        Event event = createEvent(email, Category.CULTURE);
+        event.setTags(Arrays.asList("Funny", "Boring"));
+        eventService.saveEvent(event);
+        Event event2 = createEvent(email, Category.GASTRONOMY);
+        event2.setTags(Arrays.asList("Funny", "Scary"));
+        eventService.saveEvent(event2);
+
+        assertTrue(eventService.getEvents(null, Collections.singletonList("Funny")).contains(event));
+        assertTrue(eventService.getEvents(null, Collections.singletonList("Funny")).contains(event2));
+        assertTrue(eventService.getEvents(null, Collections.singletonList("Boring")).contains(event));
+        assertFalse(eventService.getEvents(null, Collections.singletonList("Boring")).contains(event2));
+    }
 }

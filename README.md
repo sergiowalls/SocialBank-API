@@ -40,4 +40,23 @@ pass: vagrant
 db:   vagrant
 ```
 
-To connect to it from IntelliJ IDEA go to _Database > New > Data Source > PostgreSQL_, put information on popup window and download missing driver  
+To connect to it from IntelliJ IDEA go to _Database > New > Data Source > PostgreSQL_, put information on popup window and download missing driver
+
+### With Docker
+
+You must have Docker installed and Hyper-V enabled. Run following commands in order to build image and run a Docker container:
+
+```
+docker image build -t socialbank .
+docker run --name socialbank -p 5432:5432 -d socialbank
+```  
+
+Dockerfile comes with default user, password and database configurations. These are:
+
+```
+user: socialbank
+pass: socialbank
+db:   socialbank
+```
+
+To connect to it from IntelliJ IDEA go to _Database > New > Data Source > PostgreSQL_, put information on popup window and download missing driver

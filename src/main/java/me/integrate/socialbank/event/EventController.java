@@ -1,6 +1,5 @@
 package me.integrate.socialbank.event;
 
-import me.integrate.socialbank.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
@@ -11,17 +10,15 @@ import java.util.List;
 @RestController
 public class EventController {
     private EventService eventService;
-    private UserService userService;
 
     @Autowired
-    public EventController(EventService eventService, UserService userService) {
+    public EventController(EventService eventService) {
         this.eventService = eventService;
-        this.userService = userService;
     }
 
     @GetMapping("/events/{id}")
-    public Event getEventById(@PathVariable int id) {
-        return eventService.getEventById(id);
+    public Event getEventById(@PathVariable int id, Authentication authentication) {
+        return eventService.getEventById(id, authentication.getName());
     }
 
     @PutMapping("/events/{id}")
@@ -38,9 +35,9 @@ public class EventController {
 
     @GetMapping("/events")
     public @ResponseBody
-    List<Event> getAllEvents(@RequestParam(value = "category", required = false) Category category) {
-        if (category != null) return eventService.getEventsByCategory(category);
-        return eventService.getAllEvents();
+    List<Event> getAllEvents(@RequestParam(value = "category", required = false) Category category,
+                            @RequestParam(value = "tags", required = false) List<String> tags) {
+        return eventService.getEvents(category, tags);
     }
 
     @GetMapping("/users/{emailCreator}/events")
