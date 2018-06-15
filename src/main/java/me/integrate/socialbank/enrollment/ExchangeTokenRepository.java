@@ -1,7 +1,7 @@
 package me.integrate.socialbank.enrollment;
 
 interface ExchangeTokenRepository {
-    String getExchangeToken(int eventId, String username);
+    String getExchangeToken(String token);
 
     void save(int eventId, String username, String exchangeToken);
 

@@ -23,11 +23,11 @@ public class ExchangeTokenRepositoryImpl implements ExchangeTokenRepository {
     }
 
     @Override
-    public String getExchangeToken(int eventId, String username) {
+    public String getExchangeToken(String token) {
         try {
             String sql = "SELECT " + TOKEN + " FROM " + EXCHANGE_TOKEN_TABLE +
-                    " WHERE " + EVENT + " = ? AND " + USER + " = ?";
-            return jdbcTemplate.queryForObject(sql, new Object[]{eventId, username}, String.class);
+                    " WHERE " + TOKEN + " = ?";
+            return jdbcTemplate.queryForObject(sql, new Object[]{token}, String.class);
         } catch (EmptyResultDataAccessException ex) {
             return null;
         }

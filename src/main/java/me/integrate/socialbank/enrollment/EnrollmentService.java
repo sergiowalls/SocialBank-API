@@ -82,7 +82,7 @@ public class EnrollmentService {
     }
 
     public String getExchangeToken(int eventId, String username) {
-        String exchangeToken = this.exchangeTokenRepository.getExchangeToken(eventId, username);
+        String exchangeToken = this.exchangeTokenRepository.getExchangeToken(username);
         if (exchangeToken == null) {
             exchangeToken = generateToken(eventId, username);
             this.exchangeTokenRepository.save(eventId, username, exchangeToken);
@@ -103,7 +103,7 @@ public class EnrollmentService {
 
 
     void exchangeHours(int eventId, String token, String username) {
-        String existingToken = exchangeTokenRepository.getExchangeToken(eventId, username);
+        String existingToken = exchangeTokenRepository.getExchangeToken(token);
         if (!existingToken.equals(token) || exchangeTokenRepository.isTokenUsed(token)) {
             throw new InvalidTokenException();
         }
