@@ -31,8 +31,7 @@ public class EventService {
     public Event getEventById(int eventId, String username) {
         Event event = this.getEventById(eventId);
         List<Integer> enrollmentsOfUser = this.enrollmentService.getEnrollmentsOfUser(username);
-        if ((!event.isDemand() && enrollmentsOfUser.contains(eventId)) ||
-                (event.isDemand() && event.getCreatorEmail().equals(username))) {
+        if ((!event.isDemand() && enrollmentsOfUser.contains(eventId))) {
             String exchangeToken = this.enrollmentService.getExchangeToken(eventId, username);
             event.setExchangeToken(exchangeToken);
         }
