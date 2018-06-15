@@ -119,10 +119,6 @@ public class EnrollmentService {
 
 
     void payHours(int id, String username) {
-        if (!userService.getUserByEmail(username).getVerified()) {
-            // TODO: put custom exception
-            throw new RuntimeException();
-        }
         Event event = eventService.getEventById(id);
         if (!event.getCreatorEmail().equals(username)) {
             // TODO: put custom exception
