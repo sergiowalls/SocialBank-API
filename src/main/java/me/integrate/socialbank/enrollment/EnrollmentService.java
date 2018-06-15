@@ -108,11 +108,13 @@ public class EnrollmentService {
             throw new InvalidTokenException();
         }
 
+        String tokenOwner = token.substring(token.indexOf("-") + 1, token.lastIndexOf("-"));
+
         exchangeTokenRepository.markAsUsed(token);
         Event event = eventService.getEventById(eventId);
-        float hoursToIncrease = event.getIntervalTime() / event.getCapacity();
+        float hoursToIncrease = event.getIntervalTime() / ((float) event.getCapacity());
         userService.updateBalanceBy(event.getCreatorEmail(), hoursToIncrease);
-        userService.updateBalanceBy(username, -1.f * event.getIntervalTime());
+        userService.updateBalanceBy(tokenOwner, -1.f * event.getIntervalTime());
     }
 
 
