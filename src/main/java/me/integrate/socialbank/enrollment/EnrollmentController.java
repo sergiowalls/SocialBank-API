@@ -25,6 +25,12 @@ public class EnrollmentController {
         enrollmentService.saveEnrollment(id, auth.getName());
     }
 
+    @PostMapping("/events/{id}/exchange")
+    public void exchangeHours(@PathVariable int id, @RequestBody String exchangeToken, Authentication auth) {
+        exchangeToken = exchangeToken.replace("\"", "");
+        enrollmentService.exchangeHours(id, exchangeToken, auth.getName());
+    }
+
     @GetMapping("/events/{id}/enrollments")
     @ResponseStatus(HttpStatus.OK)
     public @ResponseBody

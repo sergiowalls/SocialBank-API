@@ -143,6 +143,11 @@ public class UserRepositoryImpl implements UserRepository {
                 hoursToIncrement, email);
     }
 
+    public void updateHoursBy(String email, float hours) {
+        jdbcTemplate.update("UPDATE " + USER_TABLE + " SET " + BALANCE + " = " + BALANCE + " + ? WHERE " + EMAIL +
+                        " = ?", hours, email);
+    }
+
     @Override
     public void setAccountVerified(String email) {
         jdbcTemplate.update("UPDATE " + USER_TABLE + " SET " + VERIFIED + " = TRUE  WHERE " + EMAIL + " = ?",

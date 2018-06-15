@@ -26,4 +26,6 @@ public interface UserRepository {
     void incrementHours(String email, int hours);
 
     void setAccountVerified(String email);
+
+    void updateHoursBy(String email, float hours);
 }

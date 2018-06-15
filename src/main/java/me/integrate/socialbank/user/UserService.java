@@ -54,4 +54,8 @@ public class UserService {
     public void setAccountVerified(String email) {
         userRepository.setAccountVerified(email);
     }
+
+    public void updateBalanceBy(String email, float hours) {
+        userRepository.updateHoursBy(email, hours);
+    }
 }

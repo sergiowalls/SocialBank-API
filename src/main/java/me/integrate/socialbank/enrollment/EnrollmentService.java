@@ -102,4 +102,18 @@ public class EnrollmentService {
     }
 
 
+    void exchangeHours(int eventId, String token, String username) {
+        String existingToken = exchangeTokenRepository.getExchangeToken(eventId, username);
+        if (!existingToken.equals(token) || exchangeTokenRepository.isTokenUsed(token)) {
+            throw new InvalidTokenException();
+        }
+
+        exchangeTokenRepository.markAsUsed(token);
+        Event event = eventService.getEventById(eventId);
+        float hoursToIncrease = event.getIntervalTime() / event.getCapacity();
+        userService.updateBalanceBy(event.getCreatorEmail(), hoursToIncrease);
+        userService.updateBalanceBy(username, -1.f * event.getIntervalTime());
+    }
+
+
 }
