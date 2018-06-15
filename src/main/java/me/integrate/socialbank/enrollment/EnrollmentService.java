@@ -104,7 +104,7 @@ public class EnrollmentService {
 
     void exchangeHours(int eventId, String token, String username) {
         String existingToken = exchangeTokenRepository.getExchangeToken(token);
-        if (!existingToken.equals(token) || exchangeTokenRepository.isTokenUsed(token)) {
+        if (existingToken == null || exchangeTokenRepository.isTokenUsed(token)) {
             throw new InvalidTokenException();
         }
 
