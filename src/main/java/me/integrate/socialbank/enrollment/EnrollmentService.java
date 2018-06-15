@@ -134,6 +134,6 @@ public class EnrollmentService {
         for (String user : users) {
             userService.updateBalanceBy(user, duration);
         }
-        userService.updateBalanceBy(username, duration * users.size());
+        userService.updateBalanceBy(username, - duration * users.size());
     }
 }
