@@ -1,8 +1,10 @@
 package me.integrate.socialbank.event;
 
+import me.integrate.socialbank.enrollment.EnrollmentService;
 import me.integrate.socialbank.user.User;
 import me.integrate.socialbank.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -13,15 +15,27 @@ import java.util.List;
 public class EventService {
     private EventRepository eventRepository;
     private UserService userService;
+    private EnrollmentService enrollmentService;
 
     @Autowired
-    public EventService(EventRepository eventRepository, UserService userService) {
+    public EventService(EventRepository eventRepository, UserService userService, @Lazy EnrollmentService enrollmentService) {
         this.eventRepository = eventRepository;
         this.userService = userService;
+        this.enrollmentService = enrollmentService;
     }
 
     public Event getEventById(int id) {
         return eventRepository.getEventById(id);
+    }
+
+    public Event getEventById(int eventId, String username) {
+        Event event = this.getEventById(eventId);
+        List<Integer> enrollmentsOfUser = this.enrollmentService.getEnrollmentsOfUser(username);
+        if (enrollmentsOfUser.contains(eventId)) {
+            String exchangeToken = this.enrollmentService.getExchangeToken(eventId, username);
+            event.setExchangeToken(exchangeToken);
+        }
+        return event;
     }
 
     public Event saveEvent(Event event) {

@@ -28,6 +28,8 @@ public class Event {
     private int numberEnrolled;
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private List<String> tags;
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private String exchangeToken;
 
     public int getId() {
         return id;
@@ -133,6 +135,13 @@ public class Event {
         this.tags = tags;
     }
 
+    public String getExchangeToken() {
+        return exchangeToken;
+    }
+
+    public void setExchangeToken(String exchangeToken) {
+        this.exchangeToken = exchangeToken;
+    }
 
     @Override
     public boolean equals(Object o)

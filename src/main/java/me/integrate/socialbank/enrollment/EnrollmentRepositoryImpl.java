@@ -13,8 +13,8 @@ import java.util.List;
 public class EnrollmentRepositoryImpl implements EnrollmentRepository{
 
     private static String ENROLLMENT_TABLE ="user_event_enrollment";
-    private static String USEREMAIL = "user_email";
-    private static String EVENTID = "event_id";
+    private static String USER_EMAIL = "user_email";
+    private static String EVENT_ID = "event_id";
 
     private final SimpleJdbcInsert simpleJdbcInsert;
 
@@ -25,7 +25,7 @@ public class EnrollmentRepositoryImpl implements EnrollmentRepository{
         this.jdbcTemplate = jdbcTemplate;
         this.simpleJdbcInsert = new SimpleJdbcInsert(this.jdbcTemplate)
                 .withTableName(ENROLLMENT_TABLE)
-                .usingColumns(EVENTID, USEREMAIL);
+                .usingColumns(EVENT_ID, USER_EMAIL);
     }
 
     @Override
@@ -41,25 +41,25 @@ public class EnrollmentRepositoryImpl implements EnrollmentRepository{
 
     @Override
     public List<String> getEnrollmentsOfEvent(int id) {
-        return jdbcTemplate.queryForList("SELECT " + USEREMAIL + " FROM " + ENROLLMENT_TABLE + " WHERE " + EVENTID + "= ?",
+        return jdbcTemplate.queryForList("SELECT " + USER_EMAIL + " FROM " + ENROLLMENT_TABLE + " WHERE " + EVENT_ID + "= ?",
                 new Object[]{id}, String.class);
     }
 
     @Override
     public int getNumberOfUsersEnrolledInEvent(int id) {
-        return jdbcTemplate.queryForObject("SELECT COUNT(*) FROM " + ENROLLMENT_TABLE + " WHERE " + EVENTID + "= ?",
+        return jdbcTemplate.queryForObject("SELECT COUNT(*) FROM " + ENROLLMENT_TABLE + " WHERE " + EVENT_ID + "= ?",
                 new Object[]{id}, Integer.class);
     }
 
     @Override
     public List<Integer> getEnrollmentsOfUser(String email) {
-        return jdbcTemplate.queryForList("SELECT " + EVENTID + " FROM " + ENROLLMENT_TABLE + " WHERE " + USEREMAIL + "= ?",
+        return jdbcTemplate.queryForList("SELECT " + EVENT_ID + " FROM " + ENROLLMENT_TABLE + " WHERE " + USER_EMAIL + "= ?",
                 new Object[]{email},Integer.class);
     }
 
     @Override
     public void deleteEnrollment(int id, String email) {
-        jdbcTemplate.update("DELETE FROM " + ENROLLMENT_TABLE + " WHERE " + USEREMAIL+ "=? AND "+EVENTID + "=?", email, id);
+        jdbcTemplate.update("DELETE FROM " + ENROLLMENT_TABLE + " WHERE " + USER_EMAIL + "=? AND "+ EVENT_ID + "=?", email, id);
     }
 
 }

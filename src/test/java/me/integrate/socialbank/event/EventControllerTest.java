@@ -195,10 +195,10 @@ class EventControllerTest {
     }
 
     @Test
-    @WithMockUser
+    @WithMockUser("aaa@aaa.aaa")
     void shouldReturnNotFoundStatus() throws Exception {
         int id = 123;
-        given(eventService.getEventById(id))
+        given(eventService.getEventById(id, "aaa@aaa.aaa"))
                 .willThrow(EventNotFoundException.class);
 
         this.mockMvc.perform(
